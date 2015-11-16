@@ -11,8 +11,14 @@
 }
 /* Headers */
 .sectionHeader{
-	font-weight:bold; font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size:11pt !important; color:#21658c;
+	font-weight:bold; font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size:11pt !important; color:#21658c; margin-top:5px;
 }
+.sectionHeader1{
+	font-size:11pt !important; color:#21658c; cursor: default; margin-bottom:0px; margin-top:10px;
+}
+.sectionHeader2{
+	color:#21658c; cursor: pointer; margin-top: 3px;
+}	
 /* Chosen select menu elements */
 .selectDivs{
 	margin-bottom:5px;
@@ -35,6 +41,39 @@
 abbr.search-choice-close {
   cursor: pointer;
 }
+/* Checkbox and labels */
+.crsCb{
+	cursor:pointer;
+}
+.checkBoxLabels{
+	margin-left:0px; display:inline-block;
+}
+label.checkBoxLabels input[type=checkbox]{
+	position: relative; vertical-align: middle; bottom: 1px; margin-right:3px;
+}
+/* Info icons */
+.infoOpen{
+	cursor:pointer; margin-left:4px; margin-bottom:-3px;
+}
+/* Indents */
+.firstIndent{
+	margin-left:5px;	
+}
+.secondIndent{
+	margin-top:5px;
+	margin-left:22px;	
+}
+.thirdIndent{
+	margin-left:42px;	
+}
+/* Expand/contract arrows and child content */
+.upa, .childContent{
+	display:none;
+}	
+/* Hide elements before Open Space Parcel Eligible is clicked */
+.step2{
+	display:none;
+}	
 /* Bottom Bar Elements */
 .bottomDiv{
 	position:absolute; bottom:0px; left:0px; width:100%; border-top-style:groove !important; height:30px !important; 

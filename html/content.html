@@ -9,6 +9,33 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		<option value="Dale County">Dale County</option>
 	</select>
 </div>
+<div>Parcels or areas that  can currently  receive points for the below CRS activities without regulatory changes</div>
+<div class='sectionHeader'>Green Infrastructure 420 Activities (Element)</div>
+<!--Open Space Parcel Eligible section-->
+<label class='sectionHeader1 checkBoxLabels firstIndent'><input type='checkbox' id='cb-osp' class='crsCb'>Open Space Parcel Eligible (422a)</label><img id='ospInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
+<div class='secondIndent'>Total OSP acres in tax district: <span id='ospAcres'>200</span></div>
+<div class='secondIndent'>Total OSP points in tax district: <span id='ospPoints'>16</span></div>
+<div id="ptqHeader" class="sectionHeader2 secondIndent showHide"><span class="upa">-</span><span class="downa">+</span> Parcels that qualify based on:</div>
+<div class='childContent'>
+	<label class='checkBoxLabels thirdIndent'><input type='checkbox' id='cb-lu' class='ptqCb' checked>Land Use</label>
+	<label class='checkBoxLabels thirdIndent'><input type='checkbox' id='cb-ies' class='ptqCb' checked>Intersect with Estuarine Setback</label>
+	<label class='checkBoxLabels thirdIndent'><input type='checkbox' id='cb-ios' class='ptqCb' checked>Intersect with Ocean Setback</label>
+	<label class='checkBoxLabels thirdIndent'><input type='checkbox' id='cb-ipb' class='ptqCb' checked>Intersect with Public Beach</label>
+</div>
+<!--Natural Functioning Open Space section-->
+<div class='step2'>
+	<label class='sectionHeader1 checkBoxLabels firstIndent'><input type='checkbox' id='cb-nfos' class='crsCb'>Natural Functioning Open Space (422c)</label>
+	<img id='nfosInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
+	<div class='secondIndent'>Total NFOS acres in tax district: <span id='nfosAcres'></span></div>
+	<div class='secondIndent'>Total NFOS points in tax district: <span id='nfosPoints'></span></div>
+</div>
+<!--Coastal Erosion Open Space section-->
+<div class='step2'>
+	<label class='sectionHeader1 checkBoxLabels firstIndent'><input type='checkbox' id='cb-ceos' class='crsCb'>Natural Functioning Open Space (422c)</label>
+	<img id='ceosInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
+</div>
+<!--Natural Shoreline Protection Section-->
+<label class='sectionHeader1 checkBoxLabels firstIndent'><input type='checkbox' id='cb-nsp' class='crsCb'>Natural Shoreline Protection (422g)</label><img id='nspInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
 <!--Bottom bar with slider and print/csv buttons-->
 <div id='bottomDiv' class='bottomDiv'>
 	<div id='printReport' class='printReport bottomLinks'>Print Report</div>
