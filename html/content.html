@@ -1,0 +1,28 @@
+﻿<!--This HTML is used in the render function to build the elements within the plugin. The render function first creats a 
+Dijit ContentPane to hold all the elements. The ContentPane is assigned a dynamic id upon creation. The render function 
+takes the ContentPane id and prepends it to every element with a declared id in this HTML before the elements are created. 
+The unique ContentPane id makes all the element ids unique and prevents duplicate id errors in split screen mode.-->
+<!--Opening view of the app. Give a little background and instructions to get started-->
+<div class="selectDivs">
+	<select id='ch-CRS' data-placeholder="Choose a CRS" class="chosen-select" tabindex="16">
+		<option value=""></option>
+		<option value="Dale County">Dale County</option>
+	</select>
+</div>
+<!--Bottom bar with slider and print/csv buttons-->
+<div id='bottomDiv' class='bottomDiv'>
+	<div id='printReport' class='printReport bottomLinks'>Print Report</div>
+	<div id='sliderDiv' class='sliderDiv'>
+		<div class='leftSliderLabel'>
+			Opaque
+		</div>
+		<div id='slider' class='slider'>
+		</div>
+		<div class='rightSliderLabel'>
+			Transparent
+		</div>
+	</div>
+	<div id='dlCSV' class='dlCSV bottomLinks'>
+		Get CSV
+	</div>
+</div>	
