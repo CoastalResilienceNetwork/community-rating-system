@@ -22,42 +22,19 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con = dom.byId('plugins/community-rating-system-0');
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
-					domStyle.set(this.con1, "width", "330px");
+					domStyle.set(this.con1, "width", "340px");
 					domStyle.set(this.con1, "height", "510px");
 				}else{
-					domStyle.set(this.con, "width", "330px");
+					domStyle.set(this.con, "width", "340px");
 					domStyle.set(this.con, "height", "510px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
 				// Define global config not needed by Save and Share
-				this.items = [];
-				this.itemsFiltered = [];
-				this.atRow = [];
-				this.firstRun = "yes";
-				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/New_York/NY_CLIMAD_species/MapServer"
+				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer"
 			},
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
-				this.small = "yes";
-				if (this.appDiv != undefined){
-					$('#' + this.appDiv.id).hide();
-					$('#' + this.appDiv.id + 'bottomDiv').hide();
-					$('#' + this.appDiv.id + 'myLegendDiv').hide();
-				}
-				if (this.dynamicLayer != undefined)  {
-					this.dynamicLayer.setVisibility(false);
-					this.map.graphics.clear();
-				}
-				if (this.fc != undefined){
-					this.fc.clear()
-				}
-				if (this.map != undefined){
-					this.map.graphics.clear();
-				}
-				if (this.fcDraw != undefined){
-					this.map.removeLayer(this.fcDraw);	
-				}
 				$('.legend').removeClass("hideLegend");
 			},
 			// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
@@ -85,7 +62,6 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			},
 			// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 			deactivate: function () {
-				this.small = "no"
 			},	
 			// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 			// Write anything to you config.json file you have tracked during user activity.		
@@ -130,30 +106,12 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			// Called by activate and builds the plugins elements and functions
 			render: function() {
 				// Define Content Pane		
-				this.appDiv = new ContentPane({style:'padding:8px 2px 8px 8px'});
+				this.appDiv = new ContentPane({style:'padding:8px 8px 8px 8px'});
 				parser.parse();
 				dom.byId(this.container).appendChild(this.appDiv.domNode);					
 				// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
 				var idUpdate = content.replace(/id='/g, "id='" + this.appDiv.id);	
 				$('#' + this.appDiv.id).html(idUpdate);
-				// Custom legend
-				// Get the parent element of the map for placement
-				var a = $('#' + $(this.map).attr('id')).parent();
-				// Use legend.html to build the elements in the ContentPane - update the ids with this.appDiv
-				var legHTML = legendContent.replace(/id='/g, "id='" + this.appDiv.id);
-				this.legendWin = new ContentPane({ id: this.appDiv.id + "myLegendDiv", innerHTML: legHTML	});
-				// Add legend window to maps parent and add class for symbology
-				dom.byId(a[0]).appendChild(this.legendWin.domNode)
-				$('#' + this.appDiv.id + 'myLegendDiv').addClass('myLegendDiv');
-				$('#' + this.appDiv.id + 'myLegendDiv').hide();
-				// Make legend div movable
-				var p = new ConstrainedMoveable( dom.byId(this.legendWin.id), {
-					handle: dom.byId(this.appDiv.id + "myLegendHeader"), within: true
-				});
-				// Click handler to close legend
-				$('#' + this.appDiv.id + 'myLegendDiv .myLegendCloser' ).on('click',lang.hitch(this,function(){
-					$('#' + this.appDiv.id + 'myLegendDiv').hide();
-				}));
 				// Add dynamic map service
 				this.dynamicLayer = new esri.layers.ArcGISDynamicMapServiceLayer(this.url, {opacity: 1 - this.config.sliderVal/10});
 				this.map.addLayer(this.dynamicLayer);
@@ -188,9 +146,27 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				// Use selections on chosen menus to update this.config.filter object
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
-						// Figure out which menu was selected
-						var filterField = c.currentTarget.id.split("-").pop()
-						console.log(filterField)
+						// something was selected
+						if (p) {
+							$.each(this.layersArray, lang.hitch(this,function(i,v){
+								this.config.taxDistrictLayer = c.currentTarget.value;
+								if (v.name == this.config.taxDistrictLayer){
+									// Add a feature layer of the selected layer mouseover and mouseout listeners
+									this.fcDraw = new FeatureLayer(this.url + "/" + v.id, { mode: FeatureLayer.MODE_SNAPSHOT });
+									this.map.addLayer(this.fcDraw);	
+									dojo.connect(this.fcDraw, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
+									dojo.connect(this.fcDraw, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
+									this.buildLegend();
+									return false	
+								}	
+							}))
+							console.log(c.currentTarget.value)
+							$('.step1').slideDown();
+						}
+						// selection was cleared
+						else{	
+							$('.step1, .step2').slideUp();
+						}
 					}));
 				}));
 				// Clicks on showHide classes - expand and contract child div and switches out up and down arrow
@@ -211,29 +187,23 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			},
 			// Build legend from JSON request
 			buildLegend: function(){
-				// Refresh Legend div content and height and width
-				var hmw = { height: '235px', minWidth: '150px' }	
-				$('#' + this.appDiv.id + 'myLegendDiv').css(hmw);
+				// Refresh Legend div content 
 				$('#' + this.appDiv.id + 'mySpeciesLegend').html('');
 				$.getJSON( this.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
-					var speciesArray = [];
+					var legendArray = [];
 					//get legend pics
 					$.each(json.layers, lang.hitch(this,function(i, v){
-						if (v.layerName == this.config.sppcode){
-							speciesArray.push(v)	
+						if (v.layerName == this.config.taxDistrictLayer){
+							legendArray.push(v)	
 						}	
 					}));
 					// Set Title
-					$('#' + this.appDiv.id + 'mySpeciesLegend').append("<div style='display:inline;text-decoration:underline;font-weight:bold;margin-top:5px;'>" + this.config.speciesRow + "</div><br>")
+					$('#' + this.appDiv.id + 'mySpeciesLegend').append("<div style='display:inline;text-decoration:underline;margin-top:0px;'>" + this.config.taxDistrictLayer + "</div><br>")
+					console.log($('#' + this.appDiv.id + 'mySpeciesLegend:first-child').width())
 					// build legend items
-					$.each(speciesArray[0].legend, lang.hitch(this,function(i, v){
+					$.each(legendArray[0].legend, lang.hitch(this,function(i, v){
 						$('#' + this.appDiv.id + 'mySpeciesLegend').append("<p style='display:inline;'>" + v.label + "</p><img style='margin-bottom:-5px; margin-left:5px;' src='data:image/png;base64," + v.imageData + "' alt='Legend color'><br>")		
 					})) 
-					// Set legend div height and width
-					var h = $('#' + this.appDiv.id + 'mySpeciesLegend').height() + 60;
-					var w = $('#' + this.appDiv.id + 'mySpeciesLegend').width() + 30;
-					var hw = { height: h + 'px', width: w + 'px' }	
-					$('#' + this.appDiv.id + 'myLegendDiv').css(hw);
 				})); 	
 			}			
 		});

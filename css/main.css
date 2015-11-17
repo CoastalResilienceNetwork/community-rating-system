@@ -11,14 +11,27 @@
 }
 /* Headers */
 .sectionHeader{
-	font-weight:bold; font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size:11pt !important; color:#21658c; margin-top:5px;
+	font-weight:bold; color:#21658c; margin-top:5px;
+}
+.sectionHeaderUR{
+	position:absolute; font-weight:bold; right:20px; top:31px; color:#21658c; margin-top:5px;
 }
 .sectionHeader1{
-	font-size:11pt !important; color:#21658c; cursor: default; margin-bottom:0px; margin-top:10px;
+	font-size:11pt !important; color:#21658c; cursor: default; margin-bottom:0px; margin-top:5px;
 }
 .sectionHeader2{
 	color:#21658c; cursor: pointer; margin-top: 3px;
 }	
+/* hr lines */
+hr.style-four {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(33, 101, 140, 0), rgba(33, 101, 140, 0.75), rgba(33, 101, 140, 0));
+	margin-top:7px;
+	margin-bottom:7px;
+	margin-left:-8px;
+	margin-right:-8px;
+}
 /* Chosen select menu elements */
 .selectDivs{
 	margin-bottom:5px;
@@ -71,7 +84,7 @@ label.checkBoxLabels input[type=checkbox]{
 	display:none;
 }	
 /* Hide elements before Open Space Parcel Eligible is clicked */
-.step2{
+.step1, .step2{
 	display:none;
 }	
 /* Bottom Bar Elements */
@@ -126,9 +139,8 @@ label.checkBoxLabels input[type=checkbox]{
 	background-color:#545754; border-right:1px solid #666; border-left:none; 
 }	
 .myLegendDiv{
-	z-index:8; position:absolute; right:105px; min-width:150px; height:300px; bottom:50px; background-color:#FFF; border-style:solid; border-width:4px; 
-	border-color:#444; border-radius:5px;box-shadow: 3px 3px 5px 0px rgba(102,102,102,0.7); 
+	width:180px; height:300px;
 }
 .mySpeciesLegend{
-	float:right; display:block; text-align:right; margin-left:-10px; padding:10px !important;
+	display:block; text-align:right; margin-left:-10px; padding:10px !important;
 }
