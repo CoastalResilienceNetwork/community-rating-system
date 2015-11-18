@@ -36,6 +36,14 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
 				$('.legend').removeClass("hideLegend");
+				$('.step0, .step1, .step2').slideUp();
+				this.map.graphics.clear();
+				if (this.taxDistFL != undefined){
+					this.map.removeLayer(this.taxDistFL)
+				}
+				if (this.appDiv != undefined){
+					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
+				}
 			},
 			// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 			activate: function () {
@@ -54,10 +62,6 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							this.map.setLevel(12)	
 						}	
 					}
-					if (this.taxDistFL != undefined){
-						this.map.addLayer(this.taxDistFL);	
-					}
-					
 				}
 			},
 			// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
