@@ -13,6 +13,9 @@
 .sectionHeader{
 	font-weight:bold; color:#21658c; margin-top:5px;
 }
+.sectionHeaderS2{
+	font-weight:bold; color:#21658c; margin-top:5px; margin-bottom:8px;
+}
 .sectionHeaderUR{
 	position:absolute; font-weight:bold; right:20px; top:31px; color:#21658c; margin-top:5px;
 }
@@ -22,16 +25,10 @@
 .sectionHeader2{
 	color:#21658c; cursor: pointer; margin-top: 3px;
 }	
-/* hr lines */
-hr.style-four {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(33, 101, 140, 0), rgba(33, 101, 140, 0.75), rgba(33, 101, 140, 0));
-	margin-top:7px;
-	margin-bottom:7px;
-	margin-left:-8px;
-	margin-right:-8px;
-}
+/* Tax District Data */
+.s2Atts{
+	font-weight:bold;
+} 	
 /* Chosen select menu elements */
 .selectDivs{
 	margin-bottom:5px;
@@ -74,23 +71,27 @@ label.checkBoxLabels input[type=checkbox]{
 }
 .secondIndent{
 	margin-top:5px;
-	margin-left:22px;	
+	margin-left:15px;	
 }
 .thirdIndent{
-	margin-left:42px;	
+	margin-top:5px;
+	margin-left:25px;	
 }
-/* Expand/contract arrows and child content */
-.upa, .childContent{
-	display:none;
-}	
 /* Hide elements before Open Space Parcel Eligible is clicked */
-.step1, .step2{
+.step0, .step1, .step2{
 	display:none;
 }	
+.step1, .step2{
+	margin-top:20px;
+}	
+/* Symbolize bottom of top group */
+.borderDiv{
+	position:absolute; top:72px; left:0px; width:330px; height:1px; border-bottom:2px solid #666; -webkit-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); -moz-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); 
+}
 /* Bottom Bar Elements */
 .bottomDiv{
 	position:absolute; bottom:0px; left:0px; width:100%; border-top-style:groove !important; height:30px !important; 
-	background-color:#F3F3F3 !important; padding-top:3px !important; 
+	background-color:#F3F3F3 !important; padding-top:3px !important; display:none;
 }
 .sliderDiv{
 	width:252px; text-align:center; display:none;
@@ -125,6 +126,13 @@ label.checkBoxLabels input[type=checkbox]{
 .rightSliderLabel{
 	display:inline-block; margin-left:5px; font-size:10pt;
 }
+/* Clear Tax District Clicks */
+.clearTD{
+	cursor:pointer; color:blue;	
+}
+.clearTD:active{
+	color:#21658c;
+}	
 /* Popup Legend Elements */
 .myLegendHeader{
 	background-color:#424542; color:#fff; height:28px; font-size:1em; font-weight:bold; padding:8px 0px 0px 10px; cursor:move;

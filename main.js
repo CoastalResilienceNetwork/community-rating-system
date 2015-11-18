@@ -23,10 +23,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
 					domStyle.set(this.con1, "width", "340px");
-					domStyle.set(this.con1, "height", "510px");
+					domStyle.set(this.con1, "height", "540px");
 				}else{
 					domStyle.set(this.con, "width", "340px");
-					domStyle.set(this.con, "height", "510px");
+					domStyle.set(this.con, "height", "540px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
@@ -54,8 +54,8 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							this.map.setLevel(12)	
 						}	
 					}
-					if (this.fcDraw != undefined){
-						this.map.addLayer(this.fcDraw);	
+					if (this.taxDistFL != undefined){
+						this.map.addLayer(this.taxDistFL);	
 					}
 					
 				}
@@ -148,32 +148,34 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
 						// something was selected
 						if (p) {
+							// Loop through dynamic map service infos and check if and see which layer matches the selected value
 							$.each(this.layersArray, lang.hitch(this,function(i,v){
 								this.config.taxDistrictLayer = c.currentTarget.value;
 								if (v.name == this.config.taxDistrictLayer){
-									// Add a feature layer of the selected layer mouseover and mouseout listeners
-									this.fcDraw = new FeatureLayer(this.url + "/" + v.id, { mode: FeatureLayer.MODE_SNAPSHOT });
-									this.map.addLayer(this.fcDraw);	
-									dojo.connect(this.fcDraw, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
-									dojo.connect(this.fcDraw, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
+									// create feature layer of selected layer and add it to map
+									this.crsSelected(v.id);
+									// build a legend for selected layer
 									this.buildLegend();
 									return false	
 								}	
 							}))
-							console.log(c.currentTarget.value)
-							$('.step1').slideDown();
+							$('.step0, .step1').slideDown();
 						}
 						// selection was cleared
 						else{	
-							$('.step1, .step2').slideUp();
+							$('.step0, .step1, .step2').slideUp();
+							this.map.graphics.clear();
+							this.map.removeLayer(this.taxDistFL)
 						}
 					}));
 				}));
-				// Clicks on showHide classes - expand and contract child div and switches out up and down arrow
-				$('.showHide').on('click', lang.hitch(this,function(c){
-					$(c.currentTarget).next().slideToggle();
-					$(c.currentTarget).children().toggle();
-				}));	
+				// Clear a selected Tax District
+				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
+					$('.step2').slideUp();
+					$('.step1').slideDown();
+					this.map.graphics.clear();
+					this.taxDistFL.show();
+				}));		
 				// Main level checkbox clicks
 				$('.crsCb').on('click', lang.hitch(this,function(c){
 					var ct = c.currentTarget.id.split("-").pop()
@@ -185,6 +187,41 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				}));	
 				this.rendered = true;				
 			},
+			// CRS Selected
+			crsSelected: function(lid){
+				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
+				this.taxDistFL = new FeatureLayer(this.url + "/" + lid, { mode: FeatureLayer.MODE_SNAPSHOT, outFields: ["*"] });
+				this.map.addLayer(this.taxDistFL);	
+				dojo.connect(this.taxDistFL, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
+				dojo.connect(this.taxDistFL, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
+				this.taxDistFL.on('click', lang.hitch(this,function(c){
+					// get selected graphics attributes
+					this.atts = c.graphic.attributes;
+					// zoom to selected graphic's exent and remove the feature layer
+					var extent = new esri.geometry.Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new esri.SpatialReference({ wkid:102100 }));
+					this.map.setExtent(extent.expand(2), true);
+					this.taxDistFL.hide();
+					var hlsymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
+						SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([125,125,125,0])
+					);
+					// add the selected graphic to the map seperate from it's source feature layer
+					this.map.graphics.add(new Graphic(c.graphic.geometry, hlsymbol))
+					this.map.setMapCursor("default")
+					// update visiblity of app elements
+					$('.step1').slideUp();
+					$('.step2').slideDown();
+					// place attributes in elements
+					$('#' + this.appDiv.id + 's2Div .s2Atts').each(lang.hitch(this,function (i,v){
+						var field = v.id.split("-").pop()
+						var val = this.atts[field]
+						if ( isNaN(this.atts[field]) == false ){
+							val = Math.round(val);
+							val = commaSeparateNumber(val);
+						}	
+						$('#' + v.id).html(val)
+					}));	
+				}));
+			},	
 			// Build legend from JSON request
 			buildLegend: function(){
 				// Refresh Legend div content 
@@ -199,7 +236,6 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					}));
 					// Set Title
 					$('#' + this.appDiv.id + 'mySpeciesLegend').append("<div style='display:inline;text-decoration:underline;margin-top:0px;'>" + this.config.taxDistrictLayer + "</div><br>")
-					console.log($('#' + this.appDiv.id + 'mySpeciesLegend:first-child').width())
 					// build legend items
 					$.each(legendArray[0].legend, lang.hitch(this,function(i, v){
 						$('#' + this.appDiv.id + 'mySpeciesLegend').append("<p style='display:inline;'>" + v.label + "</p><img style='margin-bottom:-5px; margin-left:5px;' src='data:image/png;base64," + v.imageData + "' alt='Legend color'><br>")		
@@ -207,4 +243,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				})); 	
 			}			
 		});
-	});						   
+	});	
+function commaSeparateNumber(val){
+    while (/(\d+)(\d{3})/.test(val.toString())){
+		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+	}
+	return val;
+}
+	
