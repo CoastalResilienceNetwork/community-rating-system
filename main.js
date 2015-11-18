@@ -195,7 +195,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			crsSelected: function(lid){
 				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
 				this.taxDistFL = new FeatureLayer(this.url + "/" + lid, { mode: FeatureLayer.MODE_SNAPSHOT, outFields: ["*"] });
-				this.map.addLayer(this.taxDistFL);	
+				this.map.addLayer(this.taxDistFL);
+				this.map.on('layer-add-result', lang.hitch(this,function(){
+					var extent = new esri.geometry.Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new esri.SpatialReference({ wkid:102100 }));
+					this.map.setExtent(extent, true);
+				}));
 				dojo.connect(this.taxDistFL, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
 				dojo.connect(this.taxDistFL, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
 				this.taxDistFL.on('click', lang.hitch(this,function(c){
@@ -203,7 +207,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					this.atts = c.graphic.attributes;
 					// zoom to selected graphic's exent and remove the feature layer
 					var extent = new esri.geometry.Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new esri.SpatialReference({ wkid:102100 }));
-					this.map.setExtent(extent.expand(2), true);
+					this.map.setExtent(extent, true);
 					this.taxDistFL.hide();
 					var hlsymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
 						SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([125,125,125,0])
