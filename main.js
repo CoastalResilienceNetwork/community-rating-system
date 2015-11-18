@@ -170,6 +170,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							$('.step0, .step1, .step2').slideUp();
 							this.map.graphics.clear();
 							this.map.removeLayer(this.taxDistFL)
+							this.map.setExtent(this.crsExtent, true);
 						}
 					}));
 				}));
@@ -179,6 +180,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					$('.step1').slideDown();
 					this.map.graphics.clear();
 					this.taxDistFL.show();
+					this.map.setExtent(this.crsExtent, true);
 				}));		
 				// Main level checkbox clicks
 				$('.crsCb').on('click', lang.hitch(this,function(c){
@@ -197,8 +199,8 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.taxDistFL = new FeatureLayer(this.url + "/" + lid, { mode: FeatureLayer.MODE_SNAPSHOT, outFields: ["*"] });
 				this.map.addLayer(this.taxDistFL);
 				this.map.on('layer-add-result', lang.hitch(this,function(){
-					var extent = new esri.geometry.Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new esri.SpatialReference({ wkid:102100 }));
-					this.map.setExtent(extent, true);
+					this.crsExtent = new esri.geometry.Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new esri.SpatialReference({ wkid:102100 }));
+					this.map.setExtent(this.crsExtent, true);
 				}));
 				dojo.connect(this.taxDistFL, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
 				dojo.connect(this.taxDistFL, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
