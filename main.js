@@ -144,7 +144,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				}));					
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
-					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"138px", disable_search:true}}
+					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
 					for (var selector in config) { $(selector).chosen(config[selector]); }
 				}));	
 				// Use selections on chosen menus to update this.config.filter object
