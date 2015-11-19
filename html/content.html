@@ -9,11 +9,11 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		<option value="Total CRS Points by Tax District">Dare County</option>
 	</select>
 </div>
-<div class='step0'>
+<div class='step0' id='step0'>
 	<div class='borderDiv'></div>
 	<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class 8 (1,183 Points)</div> 
 </div>
-<div class='step1'>
+<div class='step1' id='step1'>
 	<div>Higher NFIP discounts are given to parcels within floodplains</div>
 	<div class='sectionHeader'>Click map to select a Tax District</div>
 	<!--Placeholder for dynamic legend. Inner HTML is reset with each legend build by .html(''). 
@@ -22,9 +22,13 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		<div id='mySpeciesLegend' class='mySpeciesLegend'></div>
 	</div>
 </div>	
-<div id='s2Div' class='step2'>	
+<div class='step1a'  id='step1a'>
 	<div class='sectionHeaderS2'><span id='s2-TAX_DIST' class='s2Atts'></span> Tax District - <span id='clearTD' class='clearTD'>Clear</span></div>
-	<div class='sectionHeader'>Summary of Green Infrastructure 420 Activities (Element)</div>
+	<div class='sectionHeader'>
+		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Parcels</span><span class='sumView'>View Summary</span></div>
+	</div>
+</div>	
+<div class='step2' id='step2'>	
 	<!--Summary Section-->
 	<div class='firstIndent checkBoxLabels'>
 		<div class='expCol'>
@@ -69,8 +73,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		</div>
 	</div>
 </div>
-<div class='step3'>
-	<div class='sectionHeader'>Qualifying Green Infrastructure Activities Parcels</div>
+<div class='step3' id='step3'>
 	<div class="firstIndent">
 		<div>View Parcels that qualify based on:</div>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='ptqCb' value='OSP Eligible Parcels - Land Use'>Land Use</label></div>

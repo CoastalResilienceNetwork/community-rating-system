@@ -29,9 +29,19 @@
 .s2Atts{
 	font-weight:bold;
 } 	
+/* Summary Parcel Toggles */
+.parView, .sumView{
+	color:blue; cursor:pointer;
+}
+.sumView, .parText{
+	display:none;
+}
+.viewClick{
+	display:inline-block;	
+}	
 /* expand collapse icons */
 .gExp, .gCol{
-	height:12px; width:12px; cursor:pointer; 	
+	height:10px; width:10px; cursor:pointer; 	
 }
 .gCol{
 	display:none;	
@@ -89,10 +99,10 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:25px;	
 }
 /* Hide elements before Open Space Parcel Eligible is clicked */
-.step0, .step1, .step2, .step3{
+.step0, .step1, .step1a, .step2, .step3{
 	display:none;
 }	
-.step1, .step2{
+.step1, .step1a{
 	margin-top:20px;
 }	
 /* Symbolize bottom of top group */

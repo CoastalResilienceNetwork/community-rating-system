@@ -36,13 +36,13 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
 				$('.legend').removeClass("hideLegend");
-				$('.step0, .step1, .step2').slideUp();
 				this.map.graphics.clear();
 				if (this.taxDistFL != undefined){
 					this.map.removeLayer(this.taxDistFL)
 				}
 				if (this.appDiv != undefined){
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
+					$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + '#step1, #' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2').slideUp();
 				}
 			},
 			// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
@@ -163,11 +163,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 									return false	
 								}	
 							}))
-							$('.step0, .step1').slideDown();
+							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1').slideDown();
 						}
 						// selection was cleared
 						else{	
-							$('.step0, .step1, .step2').slideUp();
+							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 							this.map.graphics.clear();
 							this.map.removeLayer(this.taxDistFL)
 							this.map.setExtent(this.crsExtent, true);
@@ -176,21 +176,19 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				}));
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
-					$('.step2').slideUp();
-					$('.step1').slideDown();
+					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
+					$('#' + this.appDiv.id + 'step1').slideDown();
 					this.map.graphics.clear();
 					this.taxDistFL.show();
 					this.map.setExtent(this.crsExtent, true);
-				}));		
-				// Main level checkbox clicks
-				$('.crsCb').on('click', lang.hitch(this,function(c){
-					var ct = c.currentTarget.id.split("-").pop()
-					console.log(ct)
-					var checked = c.currentTarget.checked
-					if (ct == 'osp'){
-						$('.step2').slideToggle();	
-					}	
-				}));	
+				}));
+				// Toggle summary and parcel section
+				$('.viewClick').on('click', lang.hitch(this,function(c){
+					$(c.currentTarget).children().toggle();
+					$(c.currentTarget).parent().find('.sumText').toggle();
+					$(c.currentTarget).parent().find('.parText').toggle();
+					$('#' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideToggle();
+				}));
 				// Expand collapse info on activities
 				$('.expCol').on('click', lang.hitch(this,function(c){
 					$(c.currentTarget).children().toggle();
@@ -223,10 +221,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					this.map.graphics.add(new Graphic(c.graphic.geometry, hlsymbol))
 					this.map.setMapCursor("default")
 					// update visiblity of app elements
-					$('.step1').slideUp();
-					$('.step2').slideDown();
+					$('#' + this.appDiv.id + 'step1').slideUp();
+					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2').slideDown();
 					// place attributes in elements
-					$('#' + this.appDiv.id + 's2Div .s2Atts').each(lang.hitch(this,function (i,v){
+					$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
 						var field = v.id.split("-").pop()
 						var val = this.atts[field]
 						if ( isNaN(this.atts[field]) == false ){
