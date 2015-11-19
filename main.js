@@ -22,10 +22,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con = dom.byId('plugins/community-rating-system-0');
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
-					domStyle.set(this.con1, "width", "340px");
+					domStyle.set(this.con1, "width", "380px");
 					domStyle.set(this.con1, "height", "540px");
 				}else{
-					domStyle.set(this.con, "width", "340px");
+					domStyle.set(this.con, "width", "380px");
 					domStyle.set(this.con, "height", "540px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
@@ -191,6 +191,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						$('.step2').slideToggle();	
 					}	
 				}));	
+				// Expand collapse info on activities
+				$('.expCol').on('click', lang.hitch(this,function(c){
+					$(c.currentTarget).children().toggle();
+					$(c.currentTarget).parent().find('.infoOpen').slideToggle();
+				}));
 				this.rendered = true;				
 			},
 			// CRS Selected

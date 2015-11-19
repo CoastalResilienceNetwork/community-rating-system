@@ -11,13 +11,13 @@
 }
 /* Headers */
 .sectionHeader{
-	font-weight:bold; color:#21658c; margin-top:5px;
+	font-weight:bold; margin-top:5px;
 }
 .sectionHeaderS2{
 	font-weight:bold; color:#21658c; margin-top:5px; margin-bottom:8px;
 }
 .sectionHeaderUR{
-	position:absolute; font-weight:bold; right:10px; top:31px; color:#21658c; margin-top:5px;
+	position:absolute; font-weight:bold; right:10px; top:31px; color:#21658c; margin-top:5px; text-align:right;
 }
 .sectionHeader1{
 	font-size:11pt !important; color:#21658c; cursor: default; margin-bottom:0px; margin-top:5px;
@@ -29,6 +29,16 @@
 .s2Atts{
 	font-weight:bold;
 } 	
+/* expand collapse icons */
+.gExp, .gCol{
+	height:12px; width:12px; cursor:pointer; 	
+}
+.gCol{
+	display:none;	
+}	
+.expCol{
+	margin-bottom:-6px !important; display:inline-block;	
+}	
 /* Chosen select menu elements */
 .selectDivs{
 	margin-bottom:5px;
@@ -63,11 +73,12 @@ label.checkBoxLabels input[type=checkbox]{
 }
 /* Info icons */
 .infoOpen{
-	cursor:pointer; margin-left:4px; margin-bottom:-3px;
+	cursor:pointer; margin-left:4px; margin-bottom:-3px; display:none;
 }
 /* Indents */
 .firstIndent{
-	margin-left:5px;	
+	margin-left:5px;
+	margin-top:8px;	
 }
 .secondIndent{
 	margin-top:5px;
@@ -78,7 +89,7 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:25px;	
 }
 /* Hide elements before Open Space Parcel Eligible is clicked */
-.step0, .step1, .step2{
+.step0, .step1, .step2, .step3{
 	display:none;
 }	
 .step1, .step2{
@@ -86,7 +97,7 @@ label.checkBoxLabels input[type=checkbox]{
 }	
 /* Symbolize bottom of top group */
 .borderDiv{
-	position:absolute; top:72px; left:0px; width:330px; height:1px; border-bottom:2px solid #666; -webkit-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); -moz-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); 
+	position:absolute; top:72px; left:0px; width:100%; height:1px; border-bottom:2px solid #666; -webkit-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); -moz-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); 
 }
 /* Bottom Bar Elements */
 .bottomDiv{

@@ -11,7 +11,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 </div>
 <div class='step0'>
 	<div class='borderDiv'></div>
-	<div class='sectionHeaderUR'>10% in or 5% out NFIP Discount<br>Class 8 (1,183 Points)</div> 
+	<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class 8 (1,183 Points)</div> 
 </div>
 <div class='step1'>
 	<div>Higher NFIP discounts are given to parcels within floodplains</div>
@@ -24,37 +24,62 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 </div>	
 <div id='s2Div' class='step2'>	
 	<div class='sectionHeaderS2'><span id='s2-TAX_DIST' class='s2Atts'></span> Tax District - <span id='clearTD' class='clearTD'>Clear</span></div>
-	<div>Parcels or areas that  can currently  receive points for the below CRS activities without regulatory changes</div>
-	<div class='sectionHeader'>Green Infrastructure 420 Activities (Element)</div>
-	<!--Open Space Parcel Eligible section-->
-	<div class='sectionHeader1 firstIndent checkBoxLabels'>Open Space Parcel Eligible (422a)</div>
-	<img id='ospInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
-	<div class='secondIndent'><span id='s2-SUM_OSP_SUM_ca' class='s2Atts'></span> OSP acres and <span id='s2-SUM_OSP_SUM_cp' class='s2Atts'></span> OSP points in tax district</div>
-	<div class="secondIndent">View Parcels that qualify based on:</div>
-	<div class='thirdIndent'>
+	<div class='sectionHeader'>Summary of Green Infrastructure 420 Activities (Element)</div>
+	<!--Summary Section-->
+	<div class='firstIndent checkBoxLabels'>
+		<div class='expCol'>
+			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
+		</div> Open Space Parcel Eligible (422a): 
+		<span id='s2-SUM_OSP_SUM_ca' class='s2Atts'></span> acres &#38; 
+		<span id='s2-SUM_OSP_SUM_cp' class='s2Atts'></span> points
+		<div class='infoOpen secondIndent'>
+			Parcels that are eligible for Open Space Parcel credit based on their current land use or because they contribute to the public trust Ocean Beach area, the regulatory oceanside setback, or the regulatory estuarine setback.
+		</div>
+	</div>
+	<div class='checkBoxLabels firstIndent'>
+		<div class='expCol'>
+			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
+		</div> Natural Functioning Open Space (422c): 
+		<span id='s2-SUM_NFOS_cac' class='s2Atts'></span> acres &#38; 
+		<span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> points
+		<div class='infoOpen secondIndent'>
+			Natural Functioning Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND the area is preserved in or restored to its natural state AND has been designated as ecologically valuable. Natural Heritage data were used to determine OSP areas that overlapped known occurances of specides designated by the state as endangered, threatened, or of special concern. Restoration and conservation projects on OSP eligible land were also credited for Natural Functioning Open Space.
+		</div>
+	</div>
+	<div class='checkBoxLabels firstIndent'>
+		<div class='expCol'>
+			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
+		</div> Coastal Erosion Open Space (422c): 
+		<span id='s2-SUM_CEOS_cac' class='s2Atts'></span> acres &#38; 
+		<span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> points
+		<div class='infoOpen secondIndent'>
+			Coastal Erosion Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND are within the designated Coastal Erosion Hazard area. In Dare County, NC, this area overlaps the oceanfront setback factor buffer. All existing impervious surfaces are removed from eligibility.  
+		</div>
+	</div>	
+	<div class='checkBoxLabels firstIndent'>
+		<div class='expCol'>
+			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
+		</div> Natural Shoreline Protection (422g): <b>12</b> points in entire CRS
+		<div class='infoOpen secondIndent'>
+			Natural Shoreline protection is elegible for 12 points across the entire CRS and does not apply to individual tax districts.
+		</div>
+	</div>
+</div>
+<div class='step3'>
+	<div class='sectionHeader'>Qualifying Green Infrastructure Activities Parcels</div>
+	<div class="firstIndent">
+		<div>View Parcels that qualify based on:</div>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='ptqCb' value='OSP Eligible Parcels - Land Use'>Land Use</label></div>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ies' class='ptqCb'>Intersect with Estuarine Setback</label></div>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ios' class='ptqCb'>Intersect with Ocean Setback</label></div>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ipb' class='ptqCb'>Intersect with Public Beach</label></div>
-	</div>
-	<!--Natural Functioning Open Space section-->
-	<div class='sectionHeader1 checkBoxLabels firstIndent'>Natural Functioning Open Space (422c)</div>
-	<img id='nfosInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
-	<div class='secondIndent'><span id='s2-SUM_NFOS_cac' class='s2Atts'></span> NFOS acres and <span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> NFOS points in tax district</div>
-	<div class='secondIndent'>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-nfos' class='ptqCb' value='Natural Functioning Open Space'>View Qualitfying Natural Functioning Open Space Parcels</label></div>
-	</div>
-	<!--Coastal Erosion Open Space section-->
-	<div class='sectionHeader1 checkBoxLabels firstIndent'>Coastal Erosion Open Space (422c)</div>
-	<img id='ceosInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
-	<div class='secondIndent'><span id='s2-SUM_CEOS_cac' class='s2Atts'></span> CEOS acres and <span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> CEOS points in tax district</div>
-	<div class='secondIndent'>
 		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ceos' class='ptqCb' value='Coastal Erosion Open Space'>View Qualitfying Coastal Erosion Open Space Parcels</label></div>
-	</div>
-	<!--Natural Shoreline Protection Section-->
-	<div class='sectionHeader1 checkBoxLabels firstIndent'>Natural Shoreline Protection (422g)</div>
-	<img id='nspInfo' class="infoOpen" src="plugins/community-rating-system/images/info.png" alt="Info icon">
-	<div class='secondIndent'><b>12</b> CEOS points in entire CRS</div>
+	</div>	
 </div>
 <!--Bottom bar with slider and print/csv buttons-->
 <div id='bottomDiv' class='bottomDiv'>
