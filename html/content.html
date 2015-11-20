@@ -3,15 +3,17 @@ Dijit ContentPane to hold all the elements. The ContentPane is assigned a dynami
 takes the ContentPane id and prepends it to every element with a declared id in this HTML before the elements are created. 
 The unique ContentPane id makes all the element ids unique and prevents duplicate id errors in split screen mode.-->
 <!--Opening view of the app. Give a little background and instructions to get started-->
-<div class='selectDivs'>
-	<select id='ch-CRS' data-placeholder="Choose a CRS" class="chosen-select" tabindex="16">
-		<option value=""></option>
-		<option value="Total CRS Points by Tax District">Dare County</option>
-	</select>
-</div>
-<div class='step0' id='step0'>
-	<div class='borderDiv'></div>
-	<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class 8 (1,183 Points)</div> 
+<div class='topWrapper'> 
+	<div class='selectDivs'>
+		<select id='ch-CRS' data-placeholder="Choose a CRS" class="chosen-select" tabindex="16">
+			<option value=""></option>
+			<option value="Total CRS Points by Tax District">Dare County</option>
+		</select>
+	</div>
+	<div class='step0' id='step0'>
+		<div class='borderDiv'></div>
+		<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class 8 (1,183 Points)</div> 
+	</div>
 </div>
 <div class='step1' id='step1'>
 	<div>Higher NFIP discounts are given to parcels within floodplains</div>
@@ -75,13 +77,39 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 </div>
 <div class='step3' id='step3'>
 	<div class="firstIndent">
-		<div>View Parcels that qualify based on:</div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='ptqCb' value='OSP Eligible Parcels - Land Use'>Land Use</label></div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ies' class='ptqCb'>Intersect with Estuarine Setback</label></div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ios' class='ptqCb'>Intersect with Ocean Setback</label></div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ipb' class='ptqCb'>Intersect with Public Beach</label></div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-nfos' class='ptqCb' value='Natural Functioning Open Space'>View Qualitfying Natural Functioning Open Space Parcels</label></div>
-		<div><label class='checkBoxLabels'><input type='checkbox' id='cb-ceos' class='ptqCb' value='Coastal Erosion Open Space'>View Qualitfying Coastal Erosion Open Space Parcels</label></div>
+		<div>Open Space Parcel Eligible Based On:</div>
+		<div class='secondIndent'>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='parcelsCB' value='OSP Eligible Parcels - Land Use'>Land Use</label>
+				<img id='cb-lu-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+			</div>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ies' class='parcelsCB' value='OSP Eligible Parcels - Estuarine Setback'>Intersect with Estuarine Setback</label>
+				<img id='cb-ies-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+			</div>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ios' class='parcelsCB' value='OSP Eligible Parcels - Oceanside Setback'>Intersect with Ocean Setback</label>
+				<img id='cb-ios-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+			</div>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ipb' class='parcelsCB' value='OSP Eligible Parcels - Ocean Beach'>Intersect with Public Beach</label>
+				<img id='cb-ipb-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+			</div>
+		</div>
+		<div>Natural Functioning Open Space:</div>
+		<div class='secondIndent'>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-nfos' class='parcelsCB' value='NFOS Eligible Parcels'>View Parcels</label>
+				<img id='cb-nfos-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>	
+			</div>
+		</div>
+		<div>Coastal Erosion Open Space:</div>
+		<div class='secondIndent'>
+			<div class='parcelRow'>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ceos' class='parcelsCB' value='CEOS Eligible Parcels'>View Parcels</label>
+				<img id='cb-ceos-img' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+			</div>
+		</div>
 	</div>	
 </div>
 <!--Bottom bar with slider and print/csv buttons-->

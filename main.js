@@ -23,10 +23,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
 					domStyle.set(this.con1, "width", "380px");
-					domStyle.set(this.con1, "height", "540px");
+					domStyle.set(this.con1, "height", "450px");
 				}else{
 					domStyle.set(this.con, "width", "380px");
-					domStyle.set(this.con, "height", "540px");
+					domStyle.set(this.con, "height", "450px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
@@ -171,11 +171,21 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							this.map.graphics.clear();
 							this.map.removeLayer(this.taxDistFL)
 							this.map.setExtent(this.crsExtent, true);
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+							if (v.checked == true){
+									$('#' + v.id).trigger('click')	
+								}	
+							}));
 						}
 					}));
 				}));
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
+					$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+						if (v.checked == true){
+							$('#' + v.id).trigger('click')	
+						}	
+					}));
 					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 					$('#' + this.appDiv.id + 'step1').slideDown();
 					this.map.graphics.clear();
@@ -194,6 +204,27 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					$(c.currentTarget).children().toggle();
 					$(c.currentTarget).parent().find('.infoOpen').slideToggle();
 				}));
+				// View Parcels checkboxes
+				$('.parcelsCB').on('click', lang.hitch(this,function(c){
+					this.config.parcelLayer = c.currentTarget.value;
+					$.each(this.layersArray, lang.hitch(this,function(i,v){
+						if (v.name == this.config.parcelLayer){
+							if (c.currentTarget.checked == true){
+								this.config.visibleLayers.push(v.id)
+								this.config.layerDefs[v.id] = "TAX_DIST='" + this.config.taxDist + "'";
+								this.config.parcelRowId = c.currentTarget.id;
+								this.buildSmallLegends()
+							}else{
+								var index = this.config.visibleLayers.indexOf(v.id)
+								this.config.visibleLayers.splice(index, 1);
+								$('#' + this.config.parcelRowId + '-img').attr('src','plugins/community-rating-system/images/whiteBox.png');
+							}
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+							return false;
+						}	
+					}));
+				}));
 				this.rendered = true;				
 			},
 			// CRS Selected
@@ -210,6 +241,8 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.taxDistFL.on('click', lang.hitch(this,function(c){
 					// get selected graphics attributes
 					this.atts = c.graphic.attributes;
+					// get selected tax district for definition query
+					this.config.taxDist = this.atts.TAX_DIST;
 					// zoom to selected graphic's exent and remove the feature layer
 					var extent = new esri.geometry.Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new esri.SpatialReference({ wkid:102100 }));
 					this.map.setExtent(extent, true);
@@ -224,6 +257,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					$('#' + this.appDiv.id + 'step1').slideUp();
 					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2').slideDown();
 					// place attributes in elements
+					$('#' + this.appDiv.id + 'step1a .s2Atts').each(lang.hitch(this,function (i,v){
+						var field = v.id.split("-").pop()
+						var val = this.atts[field]	
+						$('#' + v.id).html(val)
+					}));	
 					$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
 						var field = v.id.split("-").pop()
 						var val = this.atts[field]
@@ -254,7 +292,27 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						$('#' + this.appDiv.id + 'mySpeciesLegend').append("<p style='display:inline;'>" + v.label + "</p><img style='margin-bottom:-5px; margin-left:5px;' src='data:image/png;base64," + v.imageData + "' alt='Legend color'><br>")		
 					})) 
 				})); 	
-			}			
+			},	
+			buildSmallLegends: function(){
+				$('#' + this.config.parcelRowId + '-img').html('');
+				$.getJSON( this.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
+					var legendArray = [];
+					//get legend pics
+					$.each(json.layers, lang.hitch(this,function(i, v){
+						if (v.layerName == this.config.parcelLayer){
+							legendArray.push(v)	
+						}	
+					}));
+					// build legend items
+					$.each(legendArray[0].legend, lang.hitch(this,function(i, v){
+						$('#' + this.config.parcelRowId + '-img').attr("src","data:image/png;base64," + v.imageData );
+					})) 
+				})); 	
+				
+				
+				
+				
+			}	
 		});
 	});	
 function commaSeparateNumber(val){
