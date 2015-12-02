@@ -23,10 +23,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
 					domStyle.set(this.con1, "width", "380px");
-					domStyle.set(this.con1, "height", "450px");
+					domStyle.set(this.con1, "height", "480px");
 				}else{
 					domStyle.set(this.con, "width", "380px");
-					domStyle.set(this.con, "height", "450px");
+					domStyle.set(this.con, "height", "480px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
@@ -134,7 +134,14 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						this.spid = this.config.visibleLayers[0];	
 					}
 					this.layersArray = this.dynamicLayer.layerInfos;;
-				}));				
+				}));
+				this.dynamicLayer.on("update-end", lang.hitch(this,function(e){
+					if (e.target.visibleLayers.length > 0){
+						$('#' + this.appDiv.id + 'bottomDiv').show();	
+					}else{
+						$('#' + this.appDiv.id + 'bottomDiv').hide();	
+					}
+				}));
 				this.resize();
 				// Create and handle transparency slider
 				$('#' + this.appDiv.id + 'slider').slider({ min: 0,	max: 10, value: this.config.sliderVal });
@@ -167,30 +174,19 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						}
 						// selection was cleared
 						else{	
+							this.clearItems();
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
-							this.map.graphics.clear();
 							this.map.removeLayer(this.taxDistFL)
-							this.map.setExtent(this.crsExtent, true);
-							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
-							if (v.checked == true){
-									$('#' + v.id).trigger('click')	
-								}	
-							}));
+							
 						}
 					}));
 				}));
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
-					$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
-						if (v.checked == true){
-							$('#' + v.id).trigger('click')	
-						}	
-					}));
+					this.clearItems();
 					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 					$('#' + this.appDiv.id + 'step1').slideDown();
-					this.map.graphics.clear();
 					this.taxDistFL.show();
-					this.map.setExtent(this.crsExtent, true);
 				}));
 				// Toggle summary and parcel section
 				$('.viewClick').on('click', lang.hitch(this,function(c){
@@ -198,6 +194,13 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					$(c.currentTarget).parent().find('.sumText').toggle();
 					$(c.currentTarget).parent().find('.parText').toggle();
 					$('#' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideToggle();
+					if (c.currentTarget.innerText == "View Summary"){
+						$.each( ($('#' + this.appDiv.id + 'step3').find('.supCB')), lang.hitch(this,function(i,v){		
+							if (v.checked == false){
+								$('#' + v.id).trigger('click');	
+							}
+						}));	
+					}	
 				}));
 				// Expand collapse info on activities
 				$('.expCol').on('click', lang.hitch(this,function(c){
@@ -207,24 +210,50 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				// View Parcels checkboxes
 				$('.parcelsCB').on('click', lang.hitch(this,function(c){
 					this.config.parcelLayer = c.currentTarget.value;
+					this.config.parcelLyrId = c.currentTarget.id;
+					this.pcbId = -1;
 					$.each(this.layersArray, lang.hitch(this,function(i,v){
 						if (v.name == this.config.parcelLayer){
-							if (c.currentTarget.checked == true){
-								this.config.visibleLayers.push(v.id)
-								this.config.layerDefs[v.id] = "TAX_DIST='" + this.config.taxDist + "'";
-								this.config.parcelRowId = c.currentTarget.id;
-								this.buildSmallLegends()
-							}else{
-								var index = this.config.visibleLayers.indexOf(v.id)
-								this.config.visibleLayers.splice(index, 1);
-								$('#' + this.config.parcelRowId + '-img').attr('src','plugins/community-rating-system/images/whiteBox.png');
-							}
-							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+							this.pcbId = v.id;
 							return false;
 						}	
 					}));
+					if (c.currentTarget.checked == true){
+						this.config.visibleLayers.push(this.pcbId)
+						this.config.layerDefs[this.pcbId] = "TAX_DIST='" + this.config.taxDist + "'";
+						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
+					}else{
+						var index = this.config.visibleLayers.indexOf(this.pcbId)
+						this.config.visibleLayers.splice(index, 1);
+						$('#' + this.config.parcelLyrId + '-img0').attr('src','plugins/community-rating-system/images/whiteBox.png');
+					}
+					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 				}));
+				// Suplemental data checkboxes
+				$('.supCB').on('click', lang.hitch(this,function(c){
+					this.config.supLayer = c.currentTarget.value;
+					this.config.supLyrId = c.currentTarget.id;
+					this.scbId = -1;
+					$.each(this.layersArray, lang.hitch(this,function(i,v){
+						if (v.name == this.config.supLayer){
+							this.scbId = v.id;
+							return false;
+						}	
+					}));
+					if (c.currentTarget.checked == true){
+						this.config.visibleLayers.push(this.scbId)
+						this.buildSmallLegends(this.config.supLyrId, this.config.supLayer)
+					}else{
+						var index = this.config.visibleLayers.indexOf(this.scbId)
+						this.config.visibleLayers.splice(index, 1);
+						$.each($(c.currentTarget).parent().parent().find('span'),lang.hitch(this,function(i,v){
+							$('#' + this.config.supLyrId + '-img' + i).attr('src','plugins/community-rating-system/images/whiteBox.png');	
+							$('#' + this.config.supLyrId + '-img' + i + 's').html("");
+						}));
+					}
+					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+				}));	
 				this.rendered = true;				
 			},
 			// CRS Selected
@@ -293,26 +322,40 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					})) 
 				})); 	
 			},	
-			buildSmallLegends: function(){
-				$('#' + this.config.parcelRowId + '-img').html('');
+			buildSmallLegends: function(lyrId, lyrName){
+				$('#' + lyrId + '-img').html('');
 				$.getJSON( this.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
 					var legendArray = [];
 					//get legend pics
 					$.each(json.layers, lang.hitch(this,function(i, v){
-						if (v.layerName == this.config.parcelLayer){
+						if (v.layerName == lyrName){
 							legendArray.push(v)	
 						}	
 					}));
 					// build legend items
 					$.each(legendArray[0].legend, lang.hitch(this,function(i, v){
-						$('#' + this.config.parcelRowId + '-img').attr("src","data:image/png;base64," + v.imageData );
+						$('#' + lyrId + '-img' + i).attr("src","data:image/png;base64," + v.imageData );
+						$('#' + lyrId + '-img' + i + "s").html(v.label);
 					})) 
 				})); 	
+			},
+			clearItems: function(){
+				$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1a .sumText, #' + this.appDiv.id + 'step1a .parView').show();
+				$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step1a .parText, #' + this.appDiv.id + 'step1a .sumView').hide();
+				$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+					if (v.checked == true){
+						$('#' + v.id).trigger('click')	
+					}	
+				}));
+				$.each( ($('#' + this.appDiv.id + 'step3').find('.supCB')), lang.hitch(this,function(i,v){		
+					if (v.checked == true){
+						$('#' + v.id).trigger('click');	
+					}
+				}));
 				
-				
-				
-				
-			}	
+				this.map.setExtent(this.crsExtent, true);
+				this.map.graphics.clear();
+			}
 		});
 	});	
 function commaSeparateNumber(val){
