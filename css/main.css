@@ -61,6 +61,10 @@ input[type="text"]{
 	font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size:11pt !important;
 	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset;
 }
+.parcelAcresIn::-webkit-input-placeholder { font-size:10pt; }
+.parcelAcresIn::-moz-placeholder { font-size:10pt; } /* firefox 19+ */
+.parcelAcresIn:-ms-input-placeholder { font-size:10pt; } /* ie */
+.parcelAcresIn input:-moz-placeholder { font-size:10pt; }
 .parcelAcres{
 	float:right; width:100px; margin-bottom:-3px; margin-left:3px; 
 }	

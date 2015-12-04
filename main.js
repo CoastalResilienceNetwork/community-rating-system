@@ -36,13 +36,9 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
 				$('.legend').removeClass("hideLegend");
-				this.map.graphics.clear();
-				if (this.taxDistFL != undefined){
-					this.map.removeLayer(this.taxDistFL)
-				}
 				if (this.appDiv != undefined){
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
-					$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + '#step1, #' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2').slideUp();
+					$('#' + this.appDiv.id + 'ch-CRS').trigger('change');
 				}
 			},
 			// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
@@ -161,6 +157,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				// Use selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
+						console.log('made it')
 						// something was selected
 						if (p) {
 							// Loop through dynamic map service infos and check if and see which layer matches the selected value
