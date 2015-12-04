@@ -23,10 +23,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
 					domStyle.set(this.con1, "width", "380px");
-					domStyle.set(this.con1, "height", "480px");
+					domStyle.set(this.con1, "height", "540px");
 				}else{
 					domStyle.set(this.con, "width", "380px");
-					domStyle.set(this.con, "height", "480px");
+					domStyle.set(this.con, "height", "540px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
@@ -152,9 +152,13 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
 					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
+					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
+					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
 					for (var selector in config) { $(selector).chosen(config[selector]); }
+					for (var selector in config1) { $(selector).chosen(config1[selector]); }
+					for (var selector in config2) { $(selector).chosen(config2[selector]); }
 				}));	
-				// Use selections on chosen menus to update this.config.filter object
+				// Use selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
 						// something was selected
@@ -180,6 +184,29 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							
 						}
 					}));
+					$('#' + this.appDiv.id + 'ch-OWNER_TYPE').chosen().change(lang.hitch(this,function(c, p){
+						if (p) {
+							this.config.ownerDef = " AND OWNER_TYPE='" + c.currentTarget.value + "'";
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						}else{
+							this.config.ownerDef = "";
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						}	
+					}));	
 				}));
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
@@ -220,12 +247,23 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					}));
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.pcbId)
-						this.config.layerDefs[this.pcbId] = "TAX_DIST='" + this.config.taxDist + "'";
+						this.config.taxDistDef = "TAX_DIST='" + this.config.taxDist + "'";
+						this.config.layerDefs[this.pcbId] = this.config.taxDistDef + this.config.ownerDef;
 						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
+						$('#' + this.appDiv.id + 'filterDiv').slideDown();
 					}else{
 						var index = this.config.visibleLayers.indexOf(this.pcbId)
 						this.config.visibleLayers.splice(index, 1);
 						$('#' + this.config.parcelLyrId + '-img0').attr('src','plugins/community-rating-system/images/whiteBox.png');
+						this.pchecked = false;
+						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+							if (v.checked == true){
+								this.pchecked = true;
+							}	
+						}));
+						if (this.pchecked == false){
+							$('#' + this.appDiv.id + 'filterDiv').slideUp();
+						}	
 					}
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
@@ -352,7 +390,9 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						$('#' + v.id).trigger('click');	
 					}
 				}));
-				
+				$("#" + this.appDiv.id + "ch-OWNER_TYPE").val('').trigger("chosen:updated");
+				this.config.taxDistDef = "";
+				this.config.ownerDef = "";
 				this.map.setExtent(this.crsExtent, true);
 				this.map.graphics.clear();
 			}

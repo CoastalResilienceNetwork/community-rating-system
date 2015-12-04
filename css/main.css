@@ -50,6 +50,20 @@
 .viewClick{
 	display:inline-block;	
 }	
+.filterDiv{
+	display:none;
+}	
+.filterInline{
+	display:inline-block;	
+}	
+input[type="text"]{
+	width:95px !important; height:25px !important; padding:3px !important; margin:0px 5px 5px 0px !important;
+	font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size:11pt !important;
+	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset;
+}
+.parcelAcres{
+	float:right; width:100px; margin-bottom:-3px; margin-left:3px; 
+}	
 /* expand collapse icons */
 .gExp, .gCol{
 	height:10px; width:10px; cursor:pointer; 	
@@ -104,6 +118,11 @@ label.checkBoxLabels input[type=checkbox]{
 .firstIndent{
 	margin-left:5px;
 	margin-top:8px;	
+}
+.secondIndent1{
+	margin-top:4px;
+	margin-left:15px;
+	margin-bottom:0px;
 }
 .secondIndent{
 	margin-top:4px;
