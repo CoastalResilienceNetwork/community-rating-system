@@ -158,7 +158,6 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
 					//Select CRS 
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
-						console.log('made it')
 						// something was selected
 						if (p) {
 							// Loop through dynamic map service infos and check if and see which layer matches the selected value
@@ -189,7 +188,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef;
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -199,7 +198,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef;
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -211,16 +210,74 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						if (p){
 							this.gTlT = c.currentTarget.value;
 							$('#' + this.appDiv.id + 'parcelAcresDiv').show();
+							if (this.config.acresValue.length > 0){
+								this.config.acresDef = " AND PARCEL_AC" + this.gTlT + this.config.acresValue;
+								$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
+									$.each(this.layersArray, lang.hitch(this,function(j,w){
+										if (w.name == v.value){
+											this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+										}	
+									}));
+								}));
+								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+							}	
 						}else{
 							$('#' + this.appDiv.id + 'parcelAcres').val('');
 							this.config.acresDef = "";
+							this.config.acresValue = "";
 							$('#' + this.appDiv.id + 'parcelAcresDiv').hide();
+							$('#' + this.appDiv.id + 'acreText').hide();
+							$('#' + this.appDiv.id + 'parcelAcres').css('border', '1pt solid #ccc');
+							this.config.acresDef = "";
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 						}					
 					}));	
 				}));
 				// Parcel acres input change listener
 				$('#' + this.appDiv.id + 'parcelAcres').on('keyup', lang.hitch(this,function(c){
-					console.log(c.currentTarget.value)
+					this.config.acresValue = c.currentTarget.value;
+					if (c.currentTarget.value.length > 0){
+						// Invalid character entered - not a number
+						if ( isNaN(c.currentTarget.value)){
+							console.log("not a number")	
+							$('#' + this.appDiv.id + 'parcelAcres').css('border', '1pt solid red');
+							$('#' + this.appDiv.id + 'acreText').show();
+						}
+						// number entered - build definition and apply to parcel layers
+						else {
+							$('#' + this.appDiv.id + 'acreText').hide();
+							$('#' + this.appDiv.id + 'parcelAcres').css('border', '1pt solid #ccc');
+							this.config.acresDef = " AND PARCEL_AC" + this.gTlT + " " + c.currentTarget.value;
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						}
+					// nothing entered in input - reset definition 
+					}else{
+						$('#' + this.appDiv.id + 'acreText').hide();
+						$('#' + this.appDiv.id + 'parcelAcres').css('border', '1pt solid #ccc');
+						this.config.acresDef = "";
+						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
+							$.each(this.layersArray, lang.hitch(this,function(j,w){
+								if (w.name == v.value){
+									this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+								}	
+							}));
+						}));
+						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					}	
 				}));		
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
@@ -262,7 +319,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.pcbId)
 						this.config.taxDistDef = "TAX_DIST='" + this.config.taxDist + "'";
-						this.config.layerDefs[this.pcbId] = this.config.taxDistDef + this.config.ownerDef;
+						this.config.layerDefs[this.pcbId] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
 						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
 						$('#' + this.appDiv.id + 'filterDiv').slideDown();
 					}else{
