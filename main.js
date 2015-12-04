@@ -156,6 +156,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				}));	
 				// Use selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
+					//Select CRS 
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
 						console.log('made it')
 						// something was selected
@@ -181,6 +182,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							
 						}
 					}));
+					// Select Owner Type
 					$('#' + this.appDiv.id + 'ch-OWNER_TYPE').chosen().change(lang.hitch(this,function(c, p){
 						if (p) {
 							this.config.ownerDef = " AND OWNER_TYPE='" + c.currentTarget.value + "'";
@@ -203,8 +205,23 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							}));
 							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 						}	
+					}));
+					// Select greater than or less than	acres	
+					$('#' + this.appDiv.id + 'ch-PARCEL_AC').chosen().change(lang.hitch(this,function(c, p){
+						if (p){
+							this.gTlT = c.currentTarget.value;
+							$('#' + this.appDiv.id + 'parcelAcresDiv').show();
+						}else{
+							$('#' + this.appDiv.id + 'parcelAcres').val('');
+							this.config.acresDef = "";
+							$('#' + this.appDiv.id + 'parcelAcresDiv').hide();
+						}					
 					}));	
 				}));
+				// Parcel acres input change listener
+				$('#' + this.appDiv.id + 'parcelAcres').on('keyup', lang.hitch(this,function(c){
+					console.log(c.currentTarget.value)
+				}));		
 				// Clear a selected Tax District
 				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
 					this.clearItems();
@@ -387,9 +404,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 						$('#' + v.id).trigger('click');	
 					}
 				}));
-				$("#" + this.appDiv.id + "ch-OWNER_TYPE").val('').trigger("chosen:updated");
+				$("#" + this.appDiv.id + 'ch-OWNER_TYPE').val('').trigger('chosen:updated');
+				$("#" + this.appDiv.id + 'ch-OWNER_TYPE').trigger('change');
+				$('#' + this.appDiv.id + 'ch-PARCEL_AC').val('').trigger('chosen:updated');
+				$('#' + this.appDiv.id + 'ch-PARCEL_AC').trigger('change');
 				this.config.taxDistDef = "";
-				this.config.ownerDef = "";
 				this.map.setExtent(this.crsExtent, true);
 				this.map.graphics.clear();
 			}

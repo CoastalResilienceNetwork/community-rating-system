@@ -3,8 +3,8 @@
 	display:none !important;
 }
 /* wrapper for top section of app */
-.topWrapper{
-	position:absolute; left:0px; top:30px; width:100%; height:45px; background-color:#fff; z-index:9;
+.topWrapper{ 
+	position:absolute; left:0px; top:30px; width:100%; height:45px; background-color:#fff; z-index:9; 
 }	
 .selectDivs{
 	margin-bottom:5px; margin-left:10px; margin-top:10px;
@@ -65,8 +65,8 @@ input[type="text"]{
 .parcelAcresIn::-moz-placeholder { font-size:10pt; } /* firefox 19+ */
 .parcelAcresIn:-ms-input-placeholder { font-size:10pt; } /* ie */
 .parcelAcresIn input:-moz-placeholder { font-size:10pt; }
-.parcelAcres{
-	float:right; width:100px; margin-bottom:-3px; margin-left:3px; 
+.parcelAcresDiv{
+	float:right; width:100px; margin-bottom:-3px; margin-left:3px; display:none;
 }	
 /* expand collapse icons */
 .gExp, .gCol{
