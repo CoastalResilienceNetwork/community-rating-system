@@ -116,10 +116,13 @@ label.checkBoxLabels input[type=checkbox]{
 }
 /* Parcel checkbox rows */
 .smallLegends{
-	margin-bottom:-5px; margin-left:1px; height:20px; width:20px;
+	margin-bottom:-5px; margin-left:-5px; height:20px; width:20px;
 }	
 .smIndent{
 	margin-left:15px;	
+}	
+.smIndent1{
+	margin-left:5px;	
 }	
 /* Indents */
 .firstIndent{
@@ -131,9 +134,17 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:15px;
 	margin-bottom:0px;
 }
+.labelIndent{
+	margin-left:18px;
+}	
 .secondIndent{
 	margin-top:4px;
 	margin-left:15px;
+	margin-bottom:6px;
+}
+.secondIndent2{
+	margin-top:4px;
+	margin-left:5px;
 	margin-bottom:6px;
 }
 .thirdIndent{
