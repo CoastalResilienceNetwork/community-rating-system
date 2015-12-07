@@ -23,10 +23,10 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
 					domStyle.set(this.con1, "width", "380px");
-					domStyle.set(this.con1, "height", "540px");
+					domStyle.set(this.con1, "height", "550px");
 				}else{
 					domStyle.set(this.con, "width", "380px");
-					domStyle.set(this.con, "height", "540px");
+					domStyle.set(this.con, "height", "550px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
@@ -140,10 +140,12 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				}));
 				this.resize();
 				// Create and handle transparency slider
+				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
 				$('#' + this.appDiv.id + 'slider').slider({ min: 0,	max: 10, value: this.config.sliderVal });
 				$('#' + this.appDiv.id + 'slider').on( "slidechange", lang.hitch(this,function( e, ui ) {
 					this.config.sliderVal = ui.value;
 					this.dynamicLayer.setOpacity(1 - ui.value/10);
+					$('.smallLegends').css('opacity', 1 - ui.value/10);
 				}));					
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
