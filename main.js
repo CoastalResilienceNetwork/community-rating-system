@@ -248,7 +248,6 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					if (c.currentTarget.value.length > 0){
 						// Invalid character entered - not a number
 						if ( isNaN(c.currentTarget.value)){
-							console.log("not a number")	
 							$('#' + this.appDiv.id + 'parcelAcres').css('border', '1pt solid red');
 							$('#' + this.appDiv.id + 'acreText').show();
 						}
