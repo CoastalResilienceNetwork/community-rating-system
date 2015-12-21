@@ -4,12 +4,14 @@ require({
 });
 // Bring in dojo and javascript api classes as well as config.json and content.html
 define([
+	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference",
 	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", 
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.0/jquery-ui'
 ],
-function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color,
+function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
+	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
 			toolbarName: "Community Rating System", showServiceLayersInLegend: false, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -86,11 +88,11 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 			// Called when the user hits the print icon
 			beforePrint: function(printDeferred, $printArea, mapObject) {
 				// Add hexagons
-				var layer = new esri.layers.ArcGISDynamicMapServiceLayer(this.url);
+				var layer = new ArcGISDynamicMapServiceLayer(this.url);
 				layer.setVisibleLayers([0])
 				mapObject.addLayer(layer);
 				// Add map graphics (selected hexagon) 
-				mapObject.graphics.add(new esri.Graphic(this.fc.graphics[0].geometry, this.fc.graphics[0].symbol ));
+				mapObject.graphics.add(new Graphic(this.fc.graphics[0].geometry, this.fc.graphics[0].symbol ));
 				// Add content to printed page
 				$printArea.append("<div id='title'>NY Species Report</div>")
                 printDeferred.resolve();
@@ -113,7 +115,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				var idUpdate = content.replace(/id='/g, "id='" + this.appDiv.id);	
 				$('#' + this.appDiv.id).html(idUpdate);
 				// Add dynamic map service
-				this.dynamicLayer = new esri.layers.ArcGISDynamicMapServiceLayer(this.url, {opacity: 1 - this.config.sliderVal/10});
+				this.dynamicLayer = new ArcGISDynamicMapServiceLayer(this.url, {opacity: 1 - this.config.sliderVal/10});
 				this.map.addLayer(this.dynamicLayer);
 				this.dynamicLayer.on("load", lang.hitch(this, function () {  
 					if (this.config.extent == ""){
@@ -121,7 +123,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 							this.map.setLevel(12)	
 						}	
 					}else{
-						var extent = new esri.geometry.Extent(this.config.extent.xmin, this.config.extent.ymin, this.config.extent.xmax, this.config.extent.ymax, new esri.SpatialReference({ wkid:4326 }))
+						var extent = new Extent(this.config.extent.xmin, this.config.extent.ymin, this.config.extent.xmax, this.config.extent.ymax, new SpatialReference({ wkid:4326 }))
 						this.map.setExtent(extent, true);
 						this.config.extent = ""; 	
 					}
@@ -372,7 +374,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 				this.taxDistFL = new FeatureLayer(this.url + "/" + lid, { mode: FeatureLayer.MODE_SNAPSHOT, outFields: ["*"] });
 				this.map.addLayer(this.taxDistFL);
 				this.map.on('layer-add-result', lang.hitch(this,function(){
-					this.crsExtent = new esri.geometry.Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new esri.SpatialReference({ wkid:102100 }));
+					this.crsExtent = new Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new SpatialReference({ wkid:102100 }));
 					this.map.setExtent(this.crsExtent, true);
 				}));
 				dojo.connect(this.taxDistFL, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
@@ -383,7 +385,7 @@ function ( declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol
 					// get selected tax district for definition query
 					this.config.taxDist = this.atts.TAX_DIST;
 					// zoom to selected graphic's exent and remove the feature layer
-					var extent = new esri.geometry.Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new esri.SpatialReference({ wkid:102100 }));
+					var extent = new Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new SpatialReference({ wkid:102100 }));
 					this.map.setExtent(extent, true);
 					this.taxDistFL.hide();
 					var hlsymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
