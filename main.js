@@ -209,9 +209,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"140px", disable_search:true}}
 					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
 					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
+					var config3 = { '.chosen-select3'           : {allow_single_deselect:true, width:"220px", disable_search:true}}
 					for (var selector in config) { $(selector).chosen(config[selector]); }
 					for (var selector in config1) { $(selector).chosen(config1[selector]); }
 					for (var selector in config2) { $(selector).chosen(config2[selector]); }
+					for (var selector in config3) { $(selector).chosen(config3[selector]); }
 				}));	
 				// Use selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
@@ -242,7 +244,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 									}	
 								}));
 							}));
@@ -252,7 +254,31 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						}	
+					}));
+					// Select Parcel Description filter
+					$('#' + this.appDiv.id + 'ch-OSP_DESC').chosen().change(lang.hitch(this,function(c, p){
+						if (p) {
+							this.config.descDef = " AND OSP_DESC='" + c.currentTarget.value + "'";
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+									}	
+								}));
+							}));
+							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						}else{
+							this.config.descDef = "";
+							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
+								$.each(this.layersArray, lang.hitch(this,function(j,w){
+									if (w.name == v.value){
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 									}	
 								}));
 							}));
@@ -269,7 +295,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 								$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 									$.each(this.layersArray, lang.hitch(this,function(j,w){
 										if (w.name == v.value){
-											this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+											this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 										}	
 									}));
 								}));
@@ -286,7 +312,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 									}	
 								}));
 							}));
@@ -311,7 +337,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 									}	
 								}));
 							}));
@@ -325,7 +351,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 							$.each(this.layersArray, lang.hitch(this,function(j,w){
 								if (w.name == v.value){
-									this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+									this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
 								}	
 							}));
 						}));
@@ -370,7 +396,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.pcbId)
 						this.config.crsDef = "CRS_NAME='" + this.config.crsSelected + "'";
-						this.config.layerDefs[this.pcbId] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
+						this.config.layerDefs[this.pcbId] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef;
 						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
 							if (v.checked == true){
