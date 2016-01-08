@@ -1,10 +1,11 @@
 {
     "visibleLayers": [],
 	"taxDistrictLayer": "",
+	"crsSelected": "",
 	"extent": "",
 	"sliderVal": 3,
 	"taxDist": "",
-	"taxDistDef": "",
+	"crsDef": "",
 	"ownerDef": "",
 	"acresDef": "",
 	"acresValue": "",

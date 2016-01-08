@@ -4,13 +4,13 @@ require({
 });
 // Bring in dojo and javascript api classes as well as config.json and content.html
 define([
-	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference",
+	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query",
 	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", 
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.0/jquery-ui'
 ],
-function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
+function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
@@ -24,16 +24,16 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 				this.con = dom.byId('plugins/community-rating-system-0');
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
-					domStyle.set(this.con1, "width", "380px");
+					domStyle.set(this.con1, "width", "390px");
 					domStyle.set(this.con1, "height", "550px");
 				}else{
-					domStyle.set(this.con, "width", "380px");
+					domStyle.set(this.con, "width", "390px");
 					domStyle.set(this.con, "height", "550px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
 				// Define global config not needed by Save and Share
-				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer"
+				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer"
 			},
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
@@ -131,7 +131,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 						this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 						this.spid = this.config.visibleLayers[0];	
 					}
-					this.layersArray = this.dynamicLayer.layerInfos;;
+					this.layersArray = this.dynamicLayer.layerInfos;
 				}));
 				this.dynamicLayer.on("update-end", lang.hitch(this,function(e){
 					if (e.target.visibleLayers.length > 0){
@@ -140,6 +140,61 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 						$('#' + this.appDiv.id + 'bottomDiv').hide();	
 					}
 				}));
+				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
+				this.crsFl = new FeatureLayer(this.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				this.crsFl.on('selection-complete', lang.hitch(this,function(evt){
+					// Get and zoom to extent of selected feature
+					var crsExtent = evt.features[0].geometry.getExtent();				
+					this.map.setExtent(crsExtent, true); 
+					// Get attributes of selected feature
+					this.atts = evt.features[0].attributes;
+					// Loop through all elements with class s0Atts in the step0 div and use their IDs to show selected features attributes
+					$('#' + this.appDiv.id + 'step0 .s0Atts').each(lang.hitch(this,function (i,v){
+						var field = v.id.split("-").pop()
+						var val = this.atts[field]
+						if ( isNaN(this.atts[field]) == false ){
+							val = Math.round(val);
+							val = commaSeparateNumber(val);
+						}	
+						$('#' + v.id).html(val)
+					}));
+					// Loop through all elements with class s2Atts in the step1 div and use their IDs to show selected features attributes
+					$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
+						var field = v.id.split("-").pop()
+						var val = this.atts[field]
+						if ( isNaN(this.atts[field]) == false ){
+							val = Math.round(val);
+							val = commaSeparateNumber(val);
+						}	
+						$('#' + v.id).html(val)
+					}));
+					// Update bar graphs values - get cur and potential points
+					this.n = [this.atts.CRS_POINTS, this.atts.SUM_ALL_cpts]
+					// find the remaining value so bar numbers can be calculated as percentages
+					var m = 4500 - (this.n[0] + this.n[1])
+					this.n.push(m)
+					// Create empty array and populate it with percentages of current, potential, and remaining
+					var p = [];
+					$.each(this.n, lang.hitch(function(i,v){
+						x = Math.round(v/4500*100);
+						p.push(x);
+					}));
+					// Update bar values with percentages array
+					$('#' + this.appDiv.id + 'bar2').animate({left : p[0]+"%", width: p[1]+"%"});
+					$('#' + this.appDiv.id + 'bar1').animate({left : "0%", width: p[0]+"%"});
+					// Add labels to current and potential bars (round decimals and add commas as necessary)
+					if (isNaN(this.atts.CRS_POINTS) == false){
+						var curPnts = Math.round(this.atts.CRS_POINTS);
+						curPnts = commaSeparateNumber(curPnts);
+						$('#' + this.appDiv.id + 'bar1L').html(curPnts)
+					}	
+					if (isNaN(this.atts.SUM_ALL_cpts) == false){
+						var potPnts = Math.round(this.atts.SUM_ALL_cpts);
+						potPnts = commaSeparateNumber(potPnts);
+						$('#' + this.appDiv.id + 'bar2L').html(potPnts);
+					}
+				}));	
+				this.map.addLayer(this.crsFl);
 				this.resize();
 				// Create and handle transparency slider
 				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
@@ -151,7 +206,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 				}));					
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
-					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
+					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"140px", disable_search:true}}
 					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
 					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
 					for (var selector in config) { $(selector).chosen(config[selector]); }
@@ -162,37 +217,32 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
 					//Select CRS 
 					$('#' + this.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(this,function(c, p){
+						this.clearItems();
 						// something was selected
 						if (p) {
-							// Loop through dynamic map service infos and check if and see which layer matches the selected value
-							$.each(this.layersArray, lang.hitch(this,function(i,v){
-								this.config.taxDistrictLayer = c.currentTarget.value;
-								if (v.name == this.config.taxDistrictLayer){
-									// create feature layer of selected layer and add it to map
-									this.crsSelected(v.id);
-									// build a legend for selected layer
-									this.buildLegend();
-									return false	
-								}	
-							}))
-							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1').slideDown();
+							this.config.crsSelected = c.currentTarget.value;
+							var q = new Query();
+							q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
+							this.crsFl.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
+							this.excludeFromCrs(this.config.crsSelected);
 						}
 						// selection was cleared
 						else{	
-							this.clearItems();
-							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
-							this.map.removeLayer(this.taxDistFL)
-							
+							this.crsFl.clear();
+							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
+							$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
+							$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();
 						}
 					}));
-					// Select Owner Type
+					// Select Owner Type filter
 					$('#' + this.appDiv.id + 'ch-OWNER_TYPE').chosen().change(lang.hitch(this,function(c, p){
 						if (p) {
 							this.config.ownerDef = " AND OWNER_TYPE='" + c.currentTarget.value + "'";
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -202,7 +252,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -219,7 +269,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 								$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 									$.each(this.layersArray, lang.hitch(this,function(j,w){
 										if (w.name == v.value){
-											this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+											this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 										}	
 									}));
 								}));
@@ -236,7 +286,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -261,7 +311,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 									}	
 								}));
 							}));
@@ -275,41 +325,39 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 							$.each(this.layersArray, lang.hitch(this,function(j,w){
 								if (w.name == v.value){
-									this.config.layerDefs[w.id] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+									this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 								}	
 							}));
 						}));
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 					}	
 				}));		
-				// Clear a selected Tax District
-				$('#' + this.appDiv.id + 'clearTD').on('click', lang.hitch(this,function( i, c ) {
-					this.clearItems();
-					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
-					$('#' + this.appDiv.id + 'step1').slideDown();
-					this.taxDistFL.show();
-				}));
 				// Toggle summary and parcel section
 				$('.viewClick').on('click', lang.hitch(this,function(c){
 					$(c.currentTarget).children().toggle();
 					$(c.currentTarget).parent().find('.sumText').toggle();
 					$(c.currentTarget).parent().find('.parText').toggle();
 					$('#' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideToggle();
-					if (c.currentTarget.innerText == "View Summary"){
+				/*	if (c.currentTarget.innerText == "View Summary"){
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.supCB')), lang.hitch(this,function(i,v){		
 							if (v.checked == false){
 								$('#' + v.id).trigger('click');	
 							}
 						}));	
-					}	
+					}	*/
 				}));
 				// Expand collapse info on activities
 				$('.expCol').on('click', lang.hitch(this,function(c){
 					$(c.currentTarget).children().toggle();
 					$(c.currentTarget).parent().find('.infoOpen').slideToggle();
 				}));
-				// View Parcels checkboxes
-				$('.parcelsCB').on('click', lang.hitch(this,function(c){
+				// Expand collapse info on layers page
+				$('.lyrExpCol').on('click', lang.hitch(this,function(c){
+					$(c.currentTarget).children().toggle();
+					$(c.currentTarget).parent().find('.infoOpen').slideToggle();
+				}));
+				// Activities checkboxes
+				$('.activitiesCB').on('click', lang.hitch(this,function(c){
 					this.config.parcelLayer = c.currentTarget.value;
 					this.config.parcelLyrId = c.currentTarget.id;
 					this.pcbId = -1;
@@ -321,10 +369,25 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 					}));
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.pcbId)
-						this.config.taxDistDef = "TAX_DIST='" + this.config.taxDist + "'";
-						this.config.layerDefs[this.pcbId] = this.config.taxDistDef + this.config.ownerDef + this.config.acresDef;
+						this.config.crsDef = "CRS_NAME='" + this.config.crsSelected + "'";
+						this.config.layerDefs[this.pcbId] = this.config.crsDef + this.config.ownerDef + this.config.acresDef;
 						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
-						$('#' + this.appDiv.id + 'filterDiv').slideDown();
+						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+							if (v.checked == true){
+								$('#' + this.appDiv.id + 'filterDiv').slideDown();
+								return false;
+							}	
+						}));
+						// Show NFOS if Land Use was selected
+						if (this.config.parcelLyrId == this.appDiv.id + 'cb-lu' ){
+							if (this.config.crsSelected != "Southern Shores NC"){
+								$('#' + this.appDiv.id + 'step3').find('.nfos').slideDown();
+							}	
+						}
+						// Show CEOS if Oceanside was selected
+						if (this.config.parcelLyrId == this.appDiv.id + 'cb-orsa' ){
+							$('#' + this.appDiv.id + 'step3').find('.ceos').slideDown();
+						}
 					}else{
 						var index = this.config.visibleLayers.indexOf(this.pcbId)
 						this.config.visibleLayers.splice(index, 1);
@@ -335,9 +398,23 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 								this.pchecked = true;
 							}	
 						}));
+						// Hide NFOS if Land Use was deselected
+						if (this.config.parcelLyrId == this.appDiv.id + 'cb-lu' ){
+							$('#' + this.appDiv.id + 'step3').find('.nfos').slideUp();
+							if ($('#' + this.appDiv.id + 'cb-nfos').prop('checked') == true){
+								$('#' + this.appDiv.id + 'cb-nfos').trigger('click');
+							}
+						}
+						// Hide CEOS if Oceanside was deselected			
+						if (this.config.parcelLyrId == this.appDiv.id + 'cb-orsa' ){
+							$('#' + this.appDiv.id + 'step3').find('.ceos').slideUp();
+							if ($('#' + this.appDiv.id + 'cb-ceos').prop('checked') == true){
+								$('#' + this.appDiv.id + 'cb-ceos').trigger('click');
+							}
+						}	
 						if (this.pchecked == false){
 							$('#' + this.appDiv.id + 'filterDiv').slideUp();
-						}	
+						}						
 					}
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
@@ -356,6 +433,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.scbId)
 						this.buildSmallLegends(this.config.supLyrId, this.config.supLayer)
+						$(c.currentTarget).parent().parent().find('.longLegDiv').slideDown();
 					}else{
 						var index = this.config.visibleLayers.indexOf(this.scbId)
 						this.config.visibleLayers.splice(index, 1);
@@ -363,76 +441,53 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 							$('#' + this.config.supLyrId + '-img' + i).attr('src','plugins/community-rating-system/images/whiteBox.png');	
 							$('#' + this.config.supLyrId + '-img' + i + 's').html("");
 						}));
+						$(c.currentTarget).parent().parent().find('.longLegDiv').slideUp();
 					}
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 				}));	
 				this.rendered = true;				
-			},
-			// CRS Selected
-			crsSelected: function(lid){
-				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
-				this.taxDistFL = new FeatureLayer(this.url + "/" + lid, { mode: FeatureLayer.MODE_SNAPSHOT, outFields: ["*"] });
-				this.map.addLayer(this.taxDistFL);
-				this.map.on('layer-add-result', lang.hitch(this,function(){
-					this.crsExtent = new Extent(this.taxDistFL.fullExtent.xmin, this.taxDistFL.fullExtent.ymin, this.taxDistFL.fullExtent.xmax, this.taxDistFL.fullExtent.ymax, new SpatialReference({ wkid:102100 }));
-					this.map.setExtent(this.crsExtent, true);
-				}));
-				dojo.connect(this.taxDistFL, "onMouseOver", lang.hitch(this,function(e){this.map.setMapCursor("pointer")}));
-				dojo.connect(this.taxDistFL, "onMouseOut", lang.hitch(this,function(e){this.map.setMapCursor("default")}));		
-				this.taxDistFL.on('click', lang.hitch(this,function(c){
-					// get selected graphics attributes
-					this.atts = c.graphic.attributes;
-					// get selected tax district for definition query
-					this.config.taxDist = this.atts.TAX_DIST;
-					// zoom to selected graphic's exent and remove the feature layer
-					var extent = new Extent(c.graphic._extent.xmin, c.graphic._extent.ymin, c.graphic._extent.xmax, c.graphic._extent.ymax, new SpatialReference({ wkid:102100 }));
-					this.map.setExtent(extent, true);
-					this.taxDistFL.hide();
-					var hlsymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
-						SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([125,125,125,0])
-					);
-					// add the selected graphic to the map seperate from it's source feature layer
-					this.map.graphics.add(new Graphic(c.graphic.geometry, hlsymbol))
-					this.map.setMapCursor("default")
-					// update visiblity of app elements
-					$('#' + this.appDiv.id + 'step1').slideUp();
-					$('#' + this.appDiv.id + 'step1a, #' + this.appDiv.id + 'step2').slideDown();
-					// place attributes in elements
-					$('#' + this.appDiv.id + 'step1a .s2Atts').each(lang.hitch(this,function (i,v){
-						var field = v.id.split("-").pop()
-						var val = this.atts[field]	
-						$('#' + v.id).html(val)
-					}));	
-					$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
-						var field = v.id.split("-").pop()
-						var val = this.atts[field]
-						if ( isNaN(this.atts[field]) == false ){
-							val = Math.round(val);
-							val = commaSeparateNumber(val);
-						}	
-						$('#' + v.id).html(val)
-					}));	
-				}));
 			},	
-			// Build legend from JSON request
-			buildLegend: function(){
-				// Refresh Legend div content 
-				$('#' + this.appDiv.id + 'mySpeciesLegend').html('');
-				$.getJSON( this.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
-					var legendArray = [];
-					//get legend pics
-					$.each(json.layers, lang.hitch(this,function(i, v){
-						if (v.layerName == this.config.taxDistrictLayer){
-							legendArray.push(v)	
-						}	
-					}));
-					// Set Title
-					$('#' + this.appDiv.id + 'mySpeciesLegend').append("<div style='display:inline;text-decoration:underline;margin-top:0px;'>" + this.config.taxDistrictLayer + "</div><br>")
-					// build legend items
-					$.each(legendArray[0].legend, lang.hitch(this,function(i, v){
-						$('#' + this.appDiv.id + 'mySpeciesLegend').append("<p style='display:inline;'>" + v.label + "</p><img style='margin-bottom:-5px; margin-left:5px;' src='data:image/png;base64," + v.imageData + "' alt='Legend color'><br>")		
-					})) 
-				})); 	
+			excludeFromCrs: function (crsName) {
+				// Show all of class parcelRow
+				$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelRow')), lang.hitch(this,function(i,v){
+					$('#' + v.id).show()		
+				}));
+				// Hide parcelRow rows based on selected CRS
+				if (crsName == "Dare County NC"){
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+				}	
+				if (crsName == "Duck NC"){
+					$('#' + this.appDiv.id + 'landUse').hide();		
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}
+				if (crsName == "Kill Devil Hills NC"){
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}
+				if (crsName == "Kitty Hawk NC"){
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}
+				if (crsName == "Manteo NC"){
+					$('#' + this.appDiv.id + 'oceanside').hide();
+					$('#' + this.appDiv.id + 'publicBeach').hide();
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}
+				if (crsName == "Nags Head NC"){
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}
+				if (crsName == "Southern Shores NC"){
+					$('#' + this.appDiv.id + 'devKillHills').hide();
+					$('#' + this.appDiv.id + 'dareOsp').hide();
+					$('#' + this.appDiv.id + 'dareTax').hide();
+				}				
 			},	
 			buildSmallLegends: function(lyrId, lyrName){
 				$('#' + lyrId + '-img').html('');
@@ -452,9 +507,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 				})); 	
 			},
 			clearItems: function(){
-				$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1a .sumText, #' + this.appDiv.id + 'step1a .parView').show();
-				$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step1a .parText, #' + this.appDiv.id + 'step1a .sumView').hide();
-				$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
+				$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step3 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
+				$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step3 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step3 .infoOpen, #' + 
+				this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();
+				$.each( ($('#' + this.appDiv.id + 'step3').find('.activitiesCB')), lang.hitch(this,function(i,v){
 					if (v.checked == true){
 						$('#' + v.id).trigger('click')	
 					}	
@@ -464,12 +520,13 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference,
 						$('#' + v.id).trigger('click');	
 					}
 				}));
+				$('#' + this.appDiv.id + 'step3').slideUp();
 				$("#" + this.appDiv.id + 'ch-OWNER_TYPE').val('').trigger('chosen:updated');
 				$("#" + this.appDiv.id + 'ch-OWNER_TYPE').trigger('change');
 				$('#' + this.appDiv.id + 'ch-PARCEL_AC').val('').trigger('chosen:updated');
 				$('#' + this.appDiv.id + 'ch-PARCEL_AC').trigger('change');
-				this.config.taxDistDef = "";
-				this.map.setExtent(this.crsExtent, true);
+				this.config.crsDef = "";
+				//this.map.setExtent(this.crsExtent, true);
 				this.map.graphics.clear();
 			}
 		});

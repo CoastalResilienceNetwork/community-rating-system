@@ -44,15 +44,15 @@
 .parView, .sumView{
 	color:blue; cursor:pointer;
 }
-.sumView, .parText{
+.sumView, .parText, .filterDiv, .nfos, .ceos{
 	display:none;
 }
-.viewClick{
-	display:inline-block;	
-}	
-.filterDiv{
+.hideDivs{
 	display:none;
 }	
+.viewClick{
+	display:inline-block;	
+}
 .filterInline{
 	display:inline-block;	
 }	
@@ -73,13 +73,19 @@ input[type="text"]{
 }	
 /* expand collapse icons */
 .gExp, .gCol{
-	height:10px; width:10px; cursor:pointer; 	
+	cursor:pointer; 	
 }
 .gCol{
 	display:none;	
 }	
 .expCol{
-	margin-bottom:-6px !important; display:inline-block;	
+	margin-right:3px !important; float:left;
+}	
+.lyrExpCol{
+	margin-left:1px !important; display:inline-block;
+}	
+.sumHeader{
+	display:inline-block;
 }	
 /* Chosen select menu elements */
 .chosen-container-single .chosen-single{
@@ -139,7 +145,7 @@ label.checkBoxLabels input[type=checkbox]{
 }	
 .secondIndent{
 	margin-top:4px;
-	margin-left:15px;
+	margin-left:19px;
 	margin-bottom:6px;
 }
 .secondIndent2{
@@ -152,15 +158,13 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:25px;	
 }
 /* Hide elements before Open Space Parcel Eligible is clicked */
-.step0, .step1, .step1a, .step2, .step3{
+.step0, .step1, .step2, .step3{
 	display:none;
 }	
-.step1a, .step2, .step3{
+.step1, .step2, .step3{
 	position:relative; top:45px;
 }
-.step1{
-	position:relative; top:50px;
-}	
+	
 /* Bottom Bar Elements */
 .bottomDiv{
 	position:absolute; bottom:0px; left:0px; width:100%; border-top-style:groove !important; height:30px !important; 
@@ -225,3 +229,58 @@ label.checkBoxLabels input[type=checkbox]{
 .mySpeciesLegend{
 	display:block; text-align:right; margin-left:-10px; padding:10px !important;
 }
+.barWrapper {
+	width: 346px; height: 34px; position: relative; top:-3px; left:6px; margin-bottom:-5px; background-color:#333; float:left;	
+	/*-moz-box-shadow: 2px 2px 3px #999; -webkit-box-shadow: 2px 2px 3px #999; box-shadow: 2px 2px 3px #999;*/
+} 
+.bars{
+	position: absolute; display: block; width: 342px; height: 30px; border: 0; left: 0px; bottom: 0%; float:left; color:black; 
+	-moz-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+	-webkit-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+	box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+}
+.spanBar{
+	top:2px; left:2px; overflow:hidden; text-indent:-30px;
+}
+.emBar{
+	border-top:1px solid #424542; border-right:1px solid #424542;
+}
+.barLabel{
+	position:relative; z-index:2; left:35px; top:7px;
+}
+.bar3{
+	background: repeating-linear-gradient(45deg, #ecefde, #ecefde 5px, #ccc 5px, #ccc 10px);
+}
+.bar2{
+	background-color:#8fb440;
+}
+.bar1{
+	background-color:#c8841d;
+}
+.topLabel{
+	margin-left:3px; margin-top:10px;
+}
+.bottomLabel{
+	margin-left:6px;  
+}	
+.graphLegLbl{
+	float:left;	margin-top:3px; margin-left:3px;
+}
+.graphLegend{
+	height: 20px; width:20px; float:left;
+	-moz-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+	-webkit-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+	box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
+}	
+.bar2a{
+	margin-left:7px;
+}
+.grLgDiv{
+	margin-left:21%; margin-top:5px; height:20px;
+}
+hr{
+	margin-bottom:10px !important; margin-top:15px !important;
+}	
+.longLegDiv{
+	margin-bottom:2px; display:none;
+}	

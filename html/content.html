@@ -5,71 +5,92 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 <!--Opening view of the app. Give a little background and instructions to get started-->
 <div class='topWrapper'> 
 	<div class='selectDivs'>
-		<select id='ch-CRS' data-placeholder="Choose a CRS" class="chosen-select" tabindex="16">
+		<!--The value of each option refers to the layer name and the text is what is used for the layers definition query-->
+		<select id='ch-CRS' data-placeholder="Choose a Community" class="chosen-select" tabindex="16">
 			<option value=""></option>
-			<option value="Total CRS Points by Tax District">Dare County</option>
+			<option value="Dare County NC">Dare County NC</option>
+			<option value="Duck NC">Duck NC</option>
+			<option value="Kill Devil Hills NC">Kill Devil Hills NC</option>
+			<option value="Kitty Hawk NC">Kitty Hawk NC</option>
+			<option value="Manteo NC">Manteo NC</option>
+			<option value="Nags Head NC">Nags Head NC</option>
+			<option value="Southern Shores NC">Southern Shores NC</option>
 		</select>
 	</div>
 	<div class='step0' id='step0'>
 		<div class='borderDiv'></div>
-		<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class 8 (1,183 Points)</div> 
-	</div>
-</div>
-<div class='step1' id='step1'>
-	<div>Higher NFIP discounts are given to parcels within floodplains</div>
-	<div class='sectionHeader'>Click map to select a Tax District</div>
-	<!--Placeholder for dynamic legend. Inner HTML is reset with each legend build by .html(''). 
-	Don't use .empty() because it will have trouble calculating height and width after the first build-->
-	<div id='myLegendDiv' class='myLegendDiv'>
-		<div id='mySpeciesLegend' class='mySpeciesLegend'></div>
+		<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class <span id='s0-CRS_CLASS' class='s0Atts'></span> (<span id='s0-CRS_POINTS' class='s0Atts'></span> Points)</div> 
 	</div>
 </div>	
-<div class='step1a'  id='step1a'>
-	<div class='sectionHeaderS2'><span id='s2-TAX_DIST' class='s2Atts'></span> Tax District - <span id='clearTD' class='clearTD'>Clear</span></div>
+<div class='step1'  id='step1'>
 	<div class='sectionHeader'>
-		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Parcels</span><span class='sumView'>View Summary</span></div>
+		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Eligible Parcels</span><span class='sumView'>View Summary</span></div>
 	</div>
 </div>	
 <div class='step2' id='step2'>	
 	<!--Summary Section-->
+	<div class='topLabel'>
+		<img src='plugins/community-rating-system/images/topLabel1.png' alt='class labels'>
+	</div>
+	<div class='barWrapper'>
+		<span class='bars spanBar bar3' id='bar3'>
+			<span class='bars emBar bar2' id='bar2'><span id='bar2L' class='barLabel'></span></span>
+			<span class='bars emBar bar1' id='bar1'><span id='bar1L' class='barLabel'></span></span>
+		</span>
+	</div>
+	<div class='bottomLabel'>
+		<img src='plugins/community-rating-system/images/bottomLabel1.png' alt='class labels'>
+	</div>
+	<div class='grLgDiv'>
+		<div class='bar1 graphLegend'></div><div class='graphLegLbl'>Current Points</div>
+		<div class='bar2 bar2a graphLegend'></div><div class='graphLegLbl'>Potential Points</div>
+	</div>
+	<hr>
 	<div class='firstIndent checkBoxLabels'>
 		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
-		</div> Open Space Parcel Eligible (422a): 
-		<span id='s2-SUM_OSP_ONLY_cac' class='s2Atts'></span> acres &#38; 
-		<span id='s2-SUM_OSP_ONLY_cpts' class='s2Atts'></span> points
+			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+		</div>
+		<div class='sumHeader'> Open Space Preservation (422a): 
+			<span id='s2-SUM_OSP_ONLY_cac' class='s2Atts'></span> acres &#38; 
+			<span id='s2-SUM_OSP_ONLY_cpts' class='s2Atts'></span> points
+		</div>
 		<div class='infoOpen secondIndent'>
 			Parcels that are eligible for Open Space Parcel credit based on their current land use or because they contribute to the public trust Ocean Beach area, the regulatory oceanside setback, or the regulatory estuarine setback.
 		</div>
 	</div>
 	<div class='checkBoxLabels firstIndent'>
 		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
-		</div> Natural Functioning Open Space (422c): 
-		<span id='s2-SUM_NFOS_cac' class='s2Atts'></span> acres &#38; 
-		<span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> points
+			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+		</div>
+		<div class='sumHeader'> Natural Functioning Open Space (422c): 
+			<span id='s2-SUM_NFOS_cac' class='s2Atts'></span> acres &#38; 
+			<span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> points
+		</div>
 		<div class='infoOpen secondIndent'>
 			Natural Functioning Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND the area is preserved in or restored to its natural state AND has been designated as ecologically valuable. Natural Heritage data were used to determine OSP areas that overlapped known occurances of specides designated by the state as endangered, threatened, or of special concern. Restoration and conservation projects on OSP eligible land were also credited for Natural Functioning Open Space.
 		</div>
 	</div>
 	<div class='checkBoxLabels firstIndent'>
 		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
-		</div> Coastal Erosion Open Space (422c): 
-		<span id='s2-SUM_CEOS_cac' class='s2Atts'></span> acres &#38; 
-		<span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> points
+			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+		</div>
+		<div class='sumHeader'> Coastal Erosion Open Space (422c): 
+			<span id='s2-SUM_CEOS_cac' class='s2Atts'></span> acres &#38; 
+			<span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> points
+		</div>
 		<div class='infoOpen secondIndent'>
 			Coastal Erosion Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND are within the designated Coastal Erosion Hazard area. In Dare County, NC, this area overlaps the oceanfront setback factor buffer. All existing impervious surfaces are removed from eligibility.  
 		</div>
 	</div>	
 	<div class='checkBoxLabels firstIndent'>
 		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/expand.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse.png' alt='expand group' class='gCol'>
-		</div> Natural Shoreline Protection (422g): <b>12</b> points in entire CRS
+			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+		</div>
+		<div class='sumHeader'> Natural Shoreline Protection (422g): <b>12</b> points in entire CRS</div>
 		<div class='infoOpen secondIndent'>
 			Natural Shoreline protection is elegible for 12 points across the entire CRS and does not apply to individual tax districts.
 		</div>
@@ -77,49 +98,93 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 </div>
 <div class='step3' id='step3'>
 	<div class="firstIndent">
-		<div>Open Space Parcel Eligible Based On:</div>
+		<div>Open Space Preservation Eligible Based On:</div>
 		<div class='secondIndent2'>
-			<div class='parcelRow'>
+			<div class='parcelRow' id='landUse'>
 				<img id='cb-lu-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-lu-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='parcelsCB' value='OSP Eligible Parcels - Land Use'>Land Use</label>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='parcelsCB activitiesCB' value='OSP Eligible Parcels - Land Use'>Land Use Parcels</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					Parcels that are eligible for OSP credit based on their current land use. Criteria used included: Currently Zoned for Open Space, Conservation tax credit properties, restoration/mitigation projects, Conservation easement or land trusts, Parks and Golf Courses, School Athletic Yards, Cemeteries, and Community Owned Vacant Land. All existing impervious surfaces within those are removed from the eligible OSP area. <br><br> NOTE: Parcels on vacant land are ONLY eligible if they are undeveloped, are not used as storage, and will be left as open space for at least 5 years. Local expertise is recommended to varify if the vacant land parcels identified by this app meet these qualifications prior to applying for OSP points.
+				</div>
 			</div>
-			<div class='parcelRow'>
+			<div class='parcelRow estuarine'>
 				<img id='cb-ies-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-ies-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-ies' class='parcelsCB' value='OSP Eligible Parcels - Estuarine Setback'>Intersect with Estuarine Setback</label>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ies' class='activitiesCB' value='Estuarine Regulatory Setback Area'>Estuarine Regulatory Setback Area</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					The estuarine regulatory setback area that is eligible for OSP. Per CAMA regulations, 'new' development is prohibited within the following setback buffer measured from the Mean High Water line: 30 ft for navigable waterways, 75 ft for estuarine shoreline, and 575 ft for outstanding water resources. All existing impervious surfaces as well as areas within the setback that already qualify for OSP based on land use are removed.
+				</div>
 			</div>
-			<div class='parcelRow'>
-				<img id='cb-ios-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-ios-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-ios' class='parcelsCB' value='OSP Eligible Parcels - Oceanside Setback'>Intersect with Ocean Setback</label>
+			<div class='parcelRow oceanside' id='oceanside'>
+				<img id='cb-orsa-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-orsa-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-orsa' class='activitiesCB' value='Oceanside Regulatory Setback Area'>Oceanside Regulatory Setback Area</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					The oceanside regulatory setback area that is eligible for OSP. Oceanfront construction setback factors are calculated using approximately 30 years of average annual shoreline change rates. The 2013 setback factor distances are buffered from the static vegetation line to create the setback area polygon. All existing impervious surfaces within that buffer were removed from the eligible OSP area. Areas that already qualify for OSP based on land are also removed.		
+				</div>
 			</div>
-			<div class='parcelRow'>
+			<div class='parcelRow publicBeach' id='publicBeach'>
 				<img id='cb-ipb-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-ipb-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-ipb' class='parcelsCB' value='OSP Eligible Parcels - Ocean Beach'>Intersect with Public Beach</label>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-ipb' class='activitiesCB' value='Public Beach Area'>Public Beach Area</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					The public trust beach area that is eligible for OSP credit. Per CAMA regulations, this area extends from the static vegetation line down to the Mean Low Water line and is a public trust Area of Environmental Concern (AEC) where development is prohibited.
+				</div>
 			</div>
 		</div>
-		<div>Natural Functioning Open Space:</div>
-		<div class='secondIndent2'>
-			<div class='parcelRow'>
-				<img id='cb-nfos-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-nfos-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-nfos' class='parcelsCB' value='NFOS Eligible Parcels'>View Parcels</label>
+		<div class='nfos'>Natural Functioning Open Space:
+			<div class='secondIndent2'>
+				<div class='parcelRow'>
+					<img id='cb-nfos-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-nfos-img0s'></span>
+					<label class='checkBoxLabels'><input type='checkbox' id='cb-nfos' class='parcelsCB activitiesCB' value='NFOS Eligible Parcels'>NFOS Parcels</label>
+					<div class='lyrExpCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='infoOpen secondIndent'>
+						NFOS provides additional credit for parcels that are already eligible for OSP credit AND the area is preserved in or restored to its natural state or is regulated by the state due to its designation as an ecologically important habitat. Natural Heritage data were used to determine OSP eligible areas that overlapped known occurances of specides designated by the state as endangered, threatened, or of special concern. Restoration and conservation projects on OSP eligible land were also credited for NFOS.
+					</div>
+				</div>
 			</div>
 		</div>
-		<div>Coastal Erosion Open Space:</div>
-		<div class='secondIndent2'>
-			<div class='parcelRow'>
-				<img id='cb-ceos-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-ceos-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-ceos' class='parcelsCB' value='CEOS Eligible Parcels'>View Parcels</label>
+		<div class='ceos'>Coastal Erosion Open Space:
+			<div class='secondIndent2'>
+				<div class='parcelRow'>
+					<img id='cb-ceos-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-ceos-img0s'></span>
+					<label class='checkBoxLabels'><input type='checkbox' id='cb-ceos' class='activitiesCB' value='CEOS Eligible Area'>View Area</label>
+					<div class='lyrExpCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='infoOpen secondIndent'>
+						CEOS provides additional credit for areas that are already eligible for OSP credit AND are within the designated Coastal Erosion Hazard area. In Dare County, NC, this area overlaps the oceanfront setback factor buffer. All existing impervious surfaces are removed from eligibility. 
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id='filterDiv' class='filterDiv'>
-			<div>Filter parcels by:</div>
+			<div>Show parcels whose:</div>
 			<div class='secondIndent1 filterInline'>
-				<span>Owner </span>
+				<span style='margin-right:9px;'>Owner is </span>
 				<select id='ch-OWNER_TYPE' data-placeholder="Select Owner Type" class="chosen-select1" tabindex="16">
 					<option value=""></option>
 					<option value="Federal">Federal</option>
@@ -129,31 +194,117 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 				</select>
 				<div class='acreText' id='acreText'>Numbers Only</div>
 			</div>
-			<div class='secondIndent filterInline'>
-				<span style='margin-right:3px;'>Acres</span>
+			<div class='secondIndent1 filterInline'>
+				<span style='margin-right:1px;'>Acreage is </span>
 				<select id='ch-PARCEL_AC' data-placeholder="" class="chosen-select2" tabindex="16">
 					<option value=""></option>
-					<option value=">">Acres Greater Than</option>
-					<option value="<">Acres Less Than</option>
+					<option value=">">Greater Than</option>
+					<option value="<">Less Than</option>
 				</select>
 				<div class='parcelAcresDiv' id='parcelAcresDiv'>
 					<input type='text' id='parcelAcres' class='parcelAcresIn' placeholder='Enter Acreage'>
 				</div>
 			</div>
 		</div>
-		<div>Supporting Layers:</div>
+		<div style='margin-top:5px;'>Supporting Layers:</div>
 		<div class='secondIndent2'>
+			<div class='parcelRow'>
+				<img id='cb-svl-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-svl-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-svl' class='supCB' value='Static Vegetation Line'>Static Vegetation Line</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					The first line of stable natural vegetation from which the oceanside regulatory construction setback is measured. This line was digitized from 2014 aerial imagery and only applies to shorelines that are eligible for OSP credit (all federally reguatled areas removed). 
+				</div>
+			</div>
 			<div class='parcelRow'>
 				<img id='cb-iaea-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-iaea-img0s'></span>
 				<label class='checkBoxLabels'><input type='checkbox' id='cb-iaea' class='supCB' value='Impact Adjusted Exclusion Area'>Impact Adjusted Exclusion Area</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					The area excluded from Open Space Preservation Calculations. Per the CRS manual, this area excludes all Federal Lands > 10 ac, open waters > 10 ac, rivers with average bank-to-bank width >500 ft, and all areas outside of FEMA's 100 yr floodplain.
+				</div>
 			</div>
 			<div class='parcelRow'>
-				<label class='checkBoxLabels labelIndent'><input type='checkbox' id='cb-sfha' class='supCB' value='Impact Adjusted Special Flood Hazard Area (SFHA)'>Impact Adjusted Special Flood Hazard Area (SFHA)</label><br>
-				<img id='cb-sfha-img0' class='smallLegends smIndent' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-sfha-img0s'></span><br>
-				<img id='cb-sfha-img1' class='smallLegends smIndent' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-sfha-img1s'></span>
+				<label class='checkBoxLabels labelIndent'><input type='checkbox' id='cb-sfha' class='supCB' value='Impact Adjusted Floodplain / SFHA'>Impact Adjusted Floodplain / SFHA</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='longLegDiv'>				
+					<img id='cb-sfha-img0' class='smallLegends smIndent' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-sfha-img0s'></span><br>
+					<img id='cb-sfha-img1' class='smallLegends smIndent' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-sfha-img1s'></span>
+				</div>
+				<div class='infoOpen secondIndent'>
+					This dataset shows the extent of the areas eligible for consideration of Open Space Preservation credits based criteria outlined in the CRS manual. Areas excluded are: all Federal Lands > 10 ac, open waters > 10 ac, rivers with average bank-to-bank width >500 ft, and all areas outside of FEMA's 100 yr floodplain.
+				</div>
+			</div>
+			<div class='parcelRow'>
+				<img id='cb-pceha-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-pceha-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-pceha' class='supCB' value='30 yr Projected Coastal Erosion Hazard Area'>30 yr Projected Coastal Erosion Hazard Area</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					For a community to recieve points for CEOS, they must map their "Coastal Erosion Hazard Area." The CRS manual states that this area must estimate where the oceansdie setback may be in 30 years due to coastal erosion. The current setback facotrs (based on 30 years of measured historical erosion data) were doubled to provide a course estimation of where the oceanside setback may be 30 years into the future due to coastal erosion. This dataset is strictly used for communicating potential risks and is not used in the calculation of CEOS points. CEOS points are based on the current setback area.
+				</div>
+			</div>
+			<div class='parcelRow' id='devKillHills'>
+				<img id='cb-kdh-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-kdh-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-kdh' class='supCB' value='Kill Devil Hills Submitted OSP 2015'>Kill Devil Hills Submitted OSP 2015</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					Parcels that have already been submitted for OSP credit as of 2015 by Kill Devil Hills CRS. 	
+				</div>
+			</div>
+			<div class='parcelRow' id='dareOsp'>
+				<img id='cb-dosp-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-dosp-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-dosp' class='supCB' value='Dare Co Submitted OSP 2015'>Dare Co Submitted OSP 2015</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='infoOpen secondIndent'>
+					Parcels that have already been submitted for OSP credit as of 2015 by Dare County CRS.	
+				</div>
+			</div>
+			<div class='parcelRow' id='dareTax'>
+				<label class='checkBoxLabels labelIndent'><input type='checkbox' id='cb-dtdr' class='supCB' value='Dare County Tax Districts Ranked'>Dare County Tax Districts Ranked</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div class='longLegDiv'>
+					<img id='cb-dtdr-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-dtdr-img0s'></span><br>
+					<img id='cb-dtdr-img1' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-dtdr-img1s'></span><br>
+					<img id='cb-dtdr-img2' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-dtdr-img2s'></span><br>
+					<img id='cb-dtdr-img3' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-dtdr-img3s'></span><br>
+					<img id='cb-dtdr-img4' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+					<span id='cb-dtdr-img4s'></span>
+				</div>
+				<div class='infoOpen secondIndent'>
+					Waiting for description.
+				</div>
 			</div>
 		</div>
 	</div>	
