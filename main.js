@@ -24,10 +24,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 				this.con = dom.byId('plugins/community-rating-system-0');
 				this.con1 = dom.byId('plugins/community-rating-system-1');
 				if (this.con1 != undefined){
-					domStyle.set(this.con1, "width", "390px");
+					domStyle.set(this.con1, "width", "400px");
 					domStyle.set(this.con1, "height", "550px");
 				}else{
-					domStyle.set(this.con, "width", "390px");
+					domStyle.set(this.con, "width", "400px");
 					domStyle.set(this.con, "height", "550px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
