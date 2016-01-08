@@ -432,6 +432,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 					}));
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.scbId)
+						this.config.crsDef = "CRS_NAME='" + this.config.crsSelected + "'";
+						this.config.layerDefs[this.scbId] = this.config.crsDef;
 						this.buildSmallLegends(this.config.supLyrId, this.config.supLayer)
 						$(c.currentTarget).parent().parent().find('.longLegDiv').slideDown();
 					}else{
@@ -443,6 +445,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 						}));
 						$(c.currentTarget).parent().parent().find('.longLegDiv').slideUp();
 					}
+					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 				}));	
 				this.rendered = true;				
