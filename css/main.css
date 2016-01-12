@@ -284,3 +284,8 @@ hr{
 .longLegDiv{
 	margin-bottom:2px; display:none;
 }	
+.selectParcels{
+	margin-top:5px;
+	cursor:pointer;
+	color:blue;
+}	

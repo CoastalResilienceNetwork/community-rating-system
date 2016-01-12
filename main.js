@@ -4,14 +4,14 @@ require({
 });
 // Bring in dojo and javascript api classes as well as config.json and content.html
 define([
-	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query",
-	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", 
+	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
+	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang",
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.0/jquery-ui'
 ],
-function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
-	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color,
+function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, PictureMarkerSymbol, TooltipDialog, dijitPopup,
+	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
 			toolbarName: "Community Rating System", showServiceLayersInLegend: false, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -33,7 +33,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
 				// Define global config not needed by Save and Share
-				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer"
+				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer"
 			},
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
@@ -196,6 +196,85 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 				}));	
 				this.map.addLayer(this.crsFl);
 				this.resize();
+				// Setup hover window for 20 largest parcels (as points)
+				this.map.infoWindow.resize(245,125);
+        		dialog = new TooltipDialog({
+				  id: "tooltipDialog",
+				  style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
+				});
+				dialog.startup();
+				// Create a feature layer to select the 20 largest parcels
+				this.parcelsFL = new FeatureLayer(this.url + "/16", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				this.parcelsFL.on('selection-complete', lang.hitch(this,function(evt){
+					this.labels = "stop";
+					// First selection based on user filters
+					if (this.parcelStep == "one"){
+						this.features = evt.features;
+						// If more than 20 features returned then reselect by the same query plus >= the 20th biggest layer
+						if (this.features.length > 20){
+							// Sort selected features by acres descending
+							this.features.sort(function(a,b){
+								return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
+							})
+							var q = new Query();
+							q.where = this.config.layerDefs[7] + " AND OSP_LU_cac >=" + this.features[19].attributes.PARCEL_AC;
+							this.parcelStep = "two";
+							this.parcelsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+						}else{
+							// the orignial selection had less than 20 features - define a variable to start feature labeling
+							this.labels = "go";
+						}		
+					}else{
+						// second selection than reduces original selection down to 20 features
+						this.parcelStep = "one";
+						// set variable to start feature labeling
+						this.labels = "go"; 
+					}	
+					if (this.labels == "go"){
+						this.features = this.parcelsFL.getSelectedFeatures()	
+						this.features.sort(function(a,b){
+							return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
+						})
+						$.each(this.features, lang.hitch(this,function(i,v){
+							var num = i + 1;
+							var symbol = new PictureMarkerSymbol('plugins/community-rating-system/images/numbers/point' + num + '_.png', 20, 20);
+							v.setSymbol(symbol)
+						}));	
+					}
+				}));
+				this.map.addLayer(this.parcelsFL);
+				this.parcelsFL.on("mouse-over", lang.hitch(this,function(evt){
+					var un = evt.graphic.symbol.url.indexOf("_")
+					n = evt.graphic.symbol.url.substring(52,un)
+					var symbol =  new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_h.png", 22, 22)
+					evt.graphic.setSymbol(symbol)
+					this.map.setMapCursor("help");
+					var t = "<b>PIN: ${PIN}</b><hr><b>Eligible Acres: </b>${OSP_LU_cac:NumberFormat}<br>"
+						+ "<b>Duplicate: </b>${OSP_LU_cac:NumberFormat}<br>";
+			  
+					var content = esriLang.substitute(evt.graphic.attributes,t);
+					dialog.setContent(content);
+					domStyle.set(dialog.domNode, "opacity", 0.85);
+					dijitPopup.open({
+						popup: dialog, 
+						x: evt.pageX,
+						y: evt.pageY
+					});
+				}));
+				this.parcelsFL.on("mouse-out", lang.hitch(this,function(evt){
+					var un = evt.graphic.symbol.url.indexOf("_")
+					n = evt.graphic.symbol.url.substring(52,un)
+					var symbol = new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_.png", 20, 20)
+					evt.graphic.setSymbol(symbol)
+					this.map.setMapCursor("default");
+					dijitPopup.close(dialog);
+				}));
+				$('#' + this.appDiv.id + 'selectParcels').on('click', lang.hitch(this,function(c){
+					var q = new Query();
+					q.where = this.config.layerDefs[7];
+					this.parcelStep = "one";
+					this.parcelsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+				}));
 				// Create and handle transparency slider
 				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
 				$('#' + this.appDiv.id + 'slider').slider({ min: 0,	max: 10, value: this.config.sliderVal });
@@ -207,9 +286,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
 					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"140px", disable_search:true}}
-					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
-					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"130px", disable_search:true}}
-					var config3 = { '.chosen-select3'           : {allow_single_deselect:true, width:"220px", disable_search:true}}
+					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"190px", disable_search:true}}
+					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"190px", disable_search:true}}
+					var config3 = { '.chosen-select3'           : {allow_single_deselect:true, width:"260px", disable_search:true}}
 					for (var selector in config) { $(selector).chosen(config[selector]); }
 					for (var selector in config1) { $(selector).chosen(config1[selector]); }
 					for (var selector in config2) { $(selector).chosen(config2[selector]); }
@@ -536,6 +615,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query,
 				})); 	
 			},
 			clearItems: function(){
+				this.parcelsFL.clear();
 				$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step3 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
 				$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step3 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step3 .infoOpen, #' + 
 				this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();

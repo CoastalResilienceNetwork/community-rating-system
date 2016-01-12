@@ -184,33 +184,33 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		<div id='filterDiv' class='filterDiv'>
 			<div>Show parcels whose:</div>
 			<div class='secondIndent1 filterInline'>
-				<span style='margin-right:9px;'>Owner is </span>
-				<select id='ch-OWNER_TYPE' data-placeholder="Select Owner Type" class="chosen-select1" tabindex="16">
+				<!--<span style='margin-right:9px;'>Owner is </span>-->
+				<select id='ch-OWNER_TYPE' data-placeholder="Owner is (click to select)" class="chosen-select1" tabindex="16">
 					<option value=""></option>
-					<option value="Local Government">Local Government</option>
-					<option value="Private">Private</option>
-					<option value="State">State</option>
+					<option value="Local Government">Owner is Local Government</option>
+					<option value="Private">Owner is Private</option>
+					<option value="State">Owner is State</option>
 				</select>
 			</div>
 			<div class='secondIndent1 filterInline'>
-				<span style='margin-right:9px;'>Description is </span>
-				<select id='ch-OSP_DESC' data-placeholder="Select Description" class="chosen-select3" tabindex="16">
+				<!--<span style='margin-right:9px;'>Description is </span>-->
+				<select id='ch-OSP_DESC' data-placeholder="Description is (click to select)" class="chosen-select3" tabindex="16">
 					<option value=""></option>
-					<option value="Community Owned Vacant Land">Community Owned Vacant Land</option>
-					<option value="Dedicated Nature Preserve Easement">Dedicated Nature Preserve Easement</option>
-					<option value="Easement">Easement</option>
-					<option value="Fee">Fee</option>
-					<option value="Mitigation Site">Mitigation Site</option>
-					<option value="OSP Eligible Land Use">OSP Eligible Land Use</option>
+					<option value="Community Owned Vacant Land">Description is Community-owned Vacant Land</option>
+					<option value="Dedicated Nature Preserve Easement">Description is Nature Preserve Easement</option>
+					<option value="Easement">Description is Easement</option>
+					<option value="Fee">Description is Fee</option>
+					<option value="Mitigation Site">Description is Mitigation Site</option>
+					<option value="OSP Eligible Land Use">Description is OSP Eligible Land Use</option>
 				</select>
 				<div class='acreText' id='acreText'>Numbers Only</div>
 			</div>
 			<div class='secondIndent1 filterInline'>
-				<span style='margin-right:1px;'>Acreage is </span>
-				<select id='ch-PARCEL_AC' data-placeholder="" class="chosen-select2" tabindex="16">
+				<!--<span style='margin-right:1px;'>Acreage is </span>-->
+				<select id='ch-PARCEL_AC' data-placeholder="Acreage is (click to select)" class="chosen-select2" tabindex="16">
 					<option value=""></option>
-					<option value=">">Greater Than</option>
-					<option value="<">Less Than</option>
+					<option value=">">Acreage is Greater Than</option>
+					<option value="<">Acreage is Less Than</option>
 				</select>
 				<div class='parcelAcresDiv' id='parcelAcresDiv'>
 					<input type='text' id='parcelAcres' class='parcelAcresIn' placeholder='Enter Acreage'>
@@ -318,6 +318,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 				</div>
 			</div>
 		</div>
+		<div id='selectParcels' class='selectParcels'>Select Parcels for Print</div>
 	</div>	
 </div>
 <!--Bottom bar with slider and print/csv buttons-->
