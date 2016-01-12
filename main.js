@@ -197,12 +197,12 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				this.map.addLayer(this.crsFl);
 				this.resize();
 				// Setup hover window for 20 largest parcels (as points)
-				this.map.infoWindow.resize(245,125);
-        		dialog = new TooltipDialog({
+				this.map.infoWindow.resize(225,125);
+        		this.dialog = new TooltipDialog({
 				  id: "tooltipDialog",
-				  style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
+				  style: "position: absolute; width: 230px; font: normal normal normal 10pt Helvetica;z-index:100"
 				});
-				dialog.startup();
+				this.dialog.startup();
 				// Create a feature layer to select the 20 largest parcels
 				this.parcelsFL = new FeatureLayer(this.url + "/16", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
 				this.parcelsFL.on('selection-complete', lang.hitch(this,function(evt){
@@ -246,29 +246,68 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				this.parcelsFL.on("mouse-over", lang.hitch(this,function(evt){
 					var un = evt.graphic.symbol.url.indexOf("_")
 					n = evt.graphic.symbol.url.substring(52,un)
-					var symbol =  new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_h.png", 22, 22)
-					evt.graphic.setSymbol(symbol)
-					this.map.setMapCursor("help");
-					var t = "<b>PIN: ${PIN}</b><hr><b>Eligible Acres: </b>${OSP_LU_cac:NumberFormat}<br>"
-						+ "<b>Duplicate: </b>${OSP_LU_cac:NumberFormat}<br>";
-			  
-					var content = esriLang.substitute(evt.graphic.attributes,t);
-					dialog.setContent(content);
-					domStyle.set(dialog.domNode, "opacity", 0.85);
-					dijitPopup.open({
-						popup: dialog, 
-						x: evt.pageX,
-						y: evt.pageY
-					});
+					if (n != this.pntSel){
+						var symbol =  new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_h.png", 22, 22)
+						evt.graphic.setSymbol(symbol)
+					}	
+					this.map.setMapCursor("pointer");
 				}));
 				this.parcelsFL.on("mouse-out", lang.hitch(this,function(evt){
 					var un = evt.graphic.symbol.url.indexOf("_")
 					n = evt.graphic.symbol.url.substring(52,un)
-					var symbol = new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_.png", 20, 20)
-					evt.graphic.setSymbol(symbol)
+					if (n != this.pntSel){
+						var symbol = new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_.png", 20, 20)
+						evt.graphic.setSymbol(symbol)
+					}
 					this.map.setMapCursor("default");
-					dijitPopup.close(dialog);
 				}));
+				this.parcelsFL.on("click", lang.hitch(this,function(evt){
+					var un = evt.graphic.symbol.url.indexOf("_")
+					n = evt.graphic.symbol.url.substring(52,un)
+					this.pntSel = n;
+					this.features = this.parcelsFL.getSelectedFeatures()
+					this.features.sort(function(a,b){
+						return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
+					})
+					$.each(this.features, lang.hitch(this,function(i,v){
+						var num = i + 1;
+						var symbol = new PictureMarkerSymbol('plugins/community-rating-system/images/numbers/point' + num + '_.png', 20, 20);
+						v.setSymbol(symbol)
+					}));
+					var symbol =  new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_s.png", 24, 24)
+					evt.graphic.setSymbol(symbol)
+					this.map.setMapCursor("help");
+					var t = "<b>Parcel ID:</b> ${PIN}<span id='" + this.appDiv.id + "infoClick' style='float:right; margin-right:3px; font-weight:bold; color:blue; cursor:pointer;'>X</span><br>" 
+						+ "<b>Eligible Acres: </b>${OSP_LU_cac:NumberFormat}<br>"
+						+ "<b>Owner Type: </b>${OWNER_TYPE}<br>"
+						+ "<b>Description: </b>${OSP_DESC}<br>"
+						+ "<span id='" + this.appDiv.id + "removeParcel' style='color:red; text-align:center; font-weight:bold;'>Remove this Parcel</span>";
+					var content = esriLang.substitute(evt.graphic.attributes,t);
+					this.dialog.setContent(content);
+					domStyle.set(this.dialog.domNode, "opacity", 0.85);
+					dijitPopup.open({
+						popup: this.dialog, 
+						x: evt.pageX,
+						y: evt.pageY
+					});
+					$('#' + this.appDiv.id + 'infoClick' ).on('click', lang.hitch(this,function(){
+						dijitPopup.close(this.dialog);	
+						this.pntSel = -1;
+						this.features = this.parcelsFL.getSelectedFeatures()
+						this.features.sort(function(a,b){
+							return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
+						})
+						$.each(this.features, lang.hitch(this,function(i,v){
+							var num = i + 1;
+							var symbol = new PictureMarkerSymbol('plugins/community-rating-system/images/numbers/point' + num + '_.png', 20, 20);
+							v.setSymbol(symbol)
+						}));
+					}));
+					$('#' + this.appDiv.id + 'removeParcel' ).on('click', lang.hitch(this,function(evt){
+						console.log(this.pntSel)
+						// START HERE AND FIGURE OUT HOW TO REMOVE PARCEL FROM LIST - PROBABLY UPDATE DEFINITION QUERY EXCLUDING CURRENT POINT AND THEN RUN A NEW SELECTION ON THE FEATURE LAYER.			
+					}));	
+				}));	
 				$('#' + this.appDiv.id + 'selectParcels').on('click', lang.hitch(this,function(c){
 					var q = new Query();
 					q.where = this.config.layerDefs[7];
