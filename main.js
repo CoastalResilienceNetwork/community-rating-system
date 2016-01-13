@@ -168,7 +168,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}	
 						$('#' + v.id).html(val)
 					}));
-					console.log(this.atts)
 					// Update bar graphs values - get cur and potential points
 					this.n = [this.atts.CRS_POINTS, this.atts.SUM_ALL_cpts]
 					// find the remaining value so bar numbers can be calculated as percentages
@@ -305,7 +304,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}));
 					}));
 					$('#' + this.appDiv.id + 'removeParcel' ).on('click', lang.hitch(this,function(evt){
-						console.log(this.pntSel)
+						
 						// START HERE AND FIGURE OUT HOW TO REMOVE PARCEL FROM LIST - PROBABLY UPDATE DEFINITION QUERY EXCLUDING CURRENT POINT AND THEN RUN A NEW SELECTION ON THE FEATURE LAYER.			
 					}));	
 				}));	
