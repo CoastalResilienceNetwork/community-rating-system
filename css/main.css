@@ -288,7 +288,7 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-bottom:2px; display:none;
 }	
 .selectParcels{
-	margin-top:5px; cursor:pointer;	color:blue; display:none;
+	margin-top:5px; cursor:pointer;	color:blue; display:inline-block;
 }	
 .dijitTooltipContainer{
 	background: #fff !important; padding:3px; width:225px; 

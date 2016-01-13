@@ -304,7 +304,12 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}));
 					}));
 					$('#' + this.appDiv.id + 'removeParcel' ).on('click', lang.hitch(this,function(evt){
-						
+						console.log(this.pntSel)
+						this.features = this.parcelsFL.getSelectedFeatures()
+						this.features.sort(function(a,b){
+							return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
+						})
+						console.log(this.features[this.pntSel - 1].attributes)
 						// START HERE AND FIGURE OUT HOW TO REMOVE PARCEL FROM LIST - PROBABLY UPDATE DEFINITION QUERY EXCLUDING CURRENT POINT AND THEN RUN A NEW SELECTION ON THE FEATURE LAYER.			
 					}));	
 				}));	
