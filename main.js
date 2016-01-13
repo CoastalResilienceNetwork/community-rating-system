@@ -168,6 +168,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}	
 						$('#' + v.id).html(val)
 					}));
+					console.log(this.atts)
 					// Update bar graphs values - get cur and potential points
 					this.n = [this.atts.CRS_POINTS, this.atts.SUM_ALL_cpts]
 					// find the remaining value so bar numbers can be calculated as percentages
@@ -277,11 +278,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					var symbol =  new esri.symbol.PictureMarkerSymbol("plugins/community-rating-system/images/numbers/point" + n + "_s.png", 24, 24)
 					evt.graphic.setSymbol(symbol)
 					this.map.setMapCursor("help");
-					var t = "<b>Parcel ID:</b> ${PIN}<span id='" + this.appDiv.id + "infoClick' style='float:right; margin-right:3px; font-weight:bold; color:blue; cursor:pointer;'>X</span><br>" 
+					var t = "<div class='myTooltip'><b>Parcel ID:</b> ${PIN}<span id='" + this.appDiv.id + "infoClick' class='closePup'>X</span><br>" 
 						+ "<b>Eligible Acres: </b>${OSP_LU_cac:NumberFormat}<br>"
 						+ "<b>Owner Type: </b>${OWNER_TYPE}<br>"
-						+ "<b>Description: </b>${OSP_DESC}<br>"
-						+ "<span id='" + this.appDiv.id + "removeParcel' style='color:red; text-align:center; font-weight:bold;'>Remove this Parcel</span>";
+						+ "<b>Description: </b>${OSP_DESC}<hr class='puHr'>"
+						+ "<span id='" + this.appDiv.id + "removeParcel' class='removeParcel'>Remove this Parcel</span></div>";
 					var content = esriLang.substitute(evt.graphic.attributes,t);
 					this.dialog.setContent(content);
 					domStyle.set(this.dialog.domNode, "opacity", 0.85);
@@ -619,6 +620,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					$('#' + this.appDiv.id + 'dareTax').hide();
 				}
 				if (crsName == "Manteo NC"){
+					$('#' + this.appDiv.id + 'staticVeg').hide();
+					$('#' + this.appDiv.id + 'coastalHaz').hide();
 					$('#' + this.appDiv.id + 'oceanside').hide();
 					$('#' + this.appDiv.id + 'publicBeach').hide();
 					$('#' + this.appDiv.id + 'devKillHills').hide();

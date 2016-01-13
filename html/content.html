@@ -19,15 +19,15 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 	</div>
 	<div class='step0' id='step0'>
 		<div class='borderDiv'></div>
-		<div class='sectionHeaderUR'>10% in &#38; 5% out of FP NFIP Discount<br>Class <span id='s0-CRS_CLASS' class='s0Atts'></span> (<span id='s0-CRS_POINTS' class='s0Atts'></span> Points)</div> 
+		<div class='sectionHeaderUR'><span id='s0-NFIP_IN' class='s0Atts'></span>% in &#38; <span id='s0-NFIP_OUT' class='s0Atts'></span>% out of FP NFIP Discount<br>Class <span id='s0-CRS_CLASS' class='s0Atts'></span> (<span id='s0-CRS_POINTS' class='s0Atts'></span> Points)</div> 
 	</div>
 </div>	
 <div class='step1'  id='step1'>
 	<div class='sectionHeader'>
-		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Eligible Parcels</span><span class='sumView'>View Summary</span></div>
+		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Eligible Areas</span><span class='sumView'>View Summary</span></div>
 	</div>
 </div>	
-<div class='step2' id='step2'>	
+<div class='step2 topPad' id='step2'>	
 	<!--Summary Section-->
 	<div class='topLabel'>
 		<img src='plugins/community-rating-system/images/topLabel1.png' alt='class labels'>
@@ -39,13 +39,24 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		</span>
 	</div>
 	<div class='bottomLabel'>
-		<img src='plugins/community-rating-system/images/bottomLabel1.png' alt='class labels'>
+		<img src='plugins/community-rating-system/images/bottomLabel.png' alt='class labels'>
 	</div>
 	<div class='grLgDiv'>
 		<div class='bar1 graphLegend'></div><div class='graphLegLbl'>Current Points</div>
 		<div class='bar2 bar2a graphLegend'></div><div class='graphLegLbl'>Potential Points</div>
 	</div>
-	<hr>
+	<hr class='sumHr'>
+	<div class='firstIndent checkBoxLabels'>
+		<div class='expCol'>
+			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+		</div>
+		<div class='sumHeader'> NFIP Discounts: <span id='s2-NFIP_IN' class='s2Atts'></span>% for in floodplain &#38; <span id='s2-NFIP_OUT' class='s2Atts'></span>% for out of floodplain 
+		</div>
+		<div class='infoOpen secondIndent'>
+			Nice explaination of NFIP discounts 
+		</div>
+	</div>	
 	<div class='firstIndent checkBoxLabels'>
 		<div class='expCol'>
 			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
@@ -100,18 +111,6 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 	<div class="firstIndent">
 		<div>Open Space Preservation Eligible Based On:</div>
 		<div class='secondIndent2'>
-			<div class='parcelRow' id='landUse'>
-				<img id='cb-lu-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
-				<span id='cb-lu-img0s'></span>
-				<label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='parcelsCB activitiesCB' value='OSP Eligible Parcels - Land Use'>Land Use Parcels</label>
-				<div class='lyrExpCol'>
-					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-				</div>
-				<div class='infoOpen secondIndent'>
-					Parcels that are eligible for OSP credit based on their current land use. Criteria used included: Currently Zoned for Open Space, Conservation tax credit properties, restoration/mitigation projects, Conservation easement or land trusts, Parks and Golf Courses, School Athletic Yards, Cemeteries, and Community Owned Vacant Land. All existing impervious surfaces within those are removed from the eligible OSP area. <br><br> NOTE: Parcels on vacant land are ONLY eligible if they are undeveloped, are not used as storage, and will be left as open space for at least 5 years. Local expertise is recommended to varify if the vacant land parcels identified by this app meet these qualifications prior to applying for OSP points.
-				</div>
-			</div>
 			<div class='parcelRow estuarine'>
 				<img id='cb-ies-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-ies-img0s'></span>
@@ -146,6 +145,19 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 				</div>
 				<div class='infoOpen secondIndent'>
 					The public trust beach area that is eligible for OSP credit. Per CAMA regulations, this area extends from the static vegetation line down to the Mean Low Water line and is a public trust Area of Environmental Concern (AEC) where development is prohibited.
+				</div>
+			</div>
+			<div class='parcelRow' id='landUse'>
+				<img id='cb-lu-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
+				<span id='cb-lu-img0s'></span>
+				<label class='checkBoxLabels'><input type='checkbox' id='cb-lu' class='parcelsCB activitiesCB' value='OSP Eligible Parcels - Land Use'>Land Use Parcels</label>
+				<div class='lyrExpCol'>
+					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+				</div>
+				<div id='selectParcels' class='selectParcels'>Show largest parcels (20 max)</div>
+				<div class='infoOpen secondIndent'>
+					Parcels that are eligible for OSP credit based on their current land use. Criteria used included: Currently Zoned for Open Space, Conservation tax credit properties, restoration/mitigation projects, Conservation easement or land trusts, Parks and Golf Courses, School Athletic Yards, Cemeteries, and Community Owned Vacant Land. All existing impervious surfaces within those are removed from the eligible OSP area. <br><br> NOTE: Parcels on vacant land are ONLY eligible if they are undeveloped, are not used as storage, and will be left as open space for at least 5 years. Local expertise is recommended to varify if the vacant land parcels identified by this app meet these qualifications prior to applying for OSP points.
 				</div>
 			</div>
 		</div>
@@ -219,7 +231,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 		</div>
 		<div style='margin-top:5px;'>Supporting Layers:</div>
 		<div class='secondIndent2'>
-			<div class='parcelRow'>
+			<div class='parcelRow' id='staticVeg'>
 				<img id='cb-svl-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-svl-img0s'></span>
 				<label class='checkBoxLabels'><input type='checkbox' id='cb-svl' class='supCB' value='Static Vegetation Line'>Static Vegetation Line</label>
@@ -259,7 +271,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 					This dataset shows the extent of the areas eligible for consideration of Open Space Preservation credits based criteria outlined in the CRS manual. Areas excluded are: all Federal Lands > 10 ac, open waters > 10 ac, rivers with average bank-to-bank width >500 ft, and all areas outside of FEMA's 100 yr floodplain.
 				</div>
 			</div>
-			<div class='parcelRow'>
+			<div class='parcelRow' id='coastalHaz'>
 				<img id='cb-pceha-img0' class='smallLegends' src='plugins/community-rating-system/images/whiteBox.png' alt='Legend color'>
 				<span id='cb-pceha-img0s'></span>
 				<label class='checkBoxLabels'><input type='checkbox' id='cb-pceha' class='supCB' value='30 yr Projected Coastal Erosion Hazard Area'>30 yr Projected Coastal Erosion Hazard Area</label>
@@ -318,7 +330,6 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 				</div>
 			</div>
 		</div>
-		<div id='selectParcels' style='display:none;' class='selectParcels'>Select Parcels for Print</div>
 	</div>	
 </div>
 <!--Bottom bar with slider and print/csv buttons-->

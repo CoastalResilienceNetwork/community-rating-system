@@ -230,7 +230,7 @@ label.checkBoxLabels input[type=checkbox]{
 	display:block; text-align:right; margin-left:-10px; padding:10px !important;
 }
 .barWrapper {
-	width: 346px; height: 34px; position: relative; top:-3px; left:6px; margin-bottom:-5px; background-color:#333; float:left;	
+	width: 346px; height: 34px; position: relative; left:6px; margin-bottom:4px; background-color:#333; float:left;	
 	/*-moz-box-shadow: 2px 2px 3px #999; -webkit-box-shadow: 2px 2px 3px #999; box-shadow: 2px 2px 3px #999;*/
 } 
 .bars{
@@ -257,17 +257,20 @@ label.checkBoxLabels input[type=checkbox]{
 .bar1{
 	background-color:#c8841d;
 }
+.topPad{
+	margin-top:15px;
+}	
 .topLabel{
-	margin-left:3px; margin-top:10px;
+	margin-left:3px; margin-bottom:-3px; 
 }
 .bottomLabel{
-	margin-left:6px;  
+	margin-left:2px; display:none;
 }	
 .graphLegLbl{
 	float:left;	margin-top:3px; margin-left:3px;
 }
 .graphLegend{
-	height: 20px; width:20px; float:left;
+	height: 17px; width:17px; float:left;
 	-moz-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
 	-webkit-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
 	box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
@@ -276,16 +279,32 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:7px;
 }
 .grLgDiv{
-	margin-left:21%; margin-top:5px; height:20px;
+	margin:auto; height:20px; width:210px; position:relative;
 }
-hr{
-	margin-bottom:10px !important; margin-top:15px !important;
+.sumHr{
+	margin-bottom:5px !important; margin-top:45px !important;
 }	
 .longLegDiv{
 	margin-bottom:2px; display:none;
 }	
 .selectParcels{
-	margin-top:5px;
-	cursor:pointer;
-	color:blue;
+	margin-top:5px; cursor:pointer;	color:blue; display:none;
+}	
+.dijitTooltipContainer{
+	background: #fff !important; padding:3px; width:225px; 
+}	
+.myTooltip{
+	font-size:10pt !important;
+}	
+.closePup{
+	float:right; margin-right:3px; font-weight:bold; color:blue; cursor:pointer;	
+}
+.removeParcel{
+	color:#a11226; margin-left:44px; cursor:pointer;
+}	
+.removeParcel:hover{
+	color:#e51a37;
+}	
+.puHr{
+	margin-bottom:3px !important; margin-top:3px !important;
 }	
