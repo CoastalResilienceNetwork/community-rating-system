@@ -155,7 +155,6 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 					<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
 					<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
 				</div>
-				<div id='selectParcels' class='selectParcels'>Show largest parcels (20 max)</div>
 				<div class='infoOpen secondIndent'>
 					Parcels that are eligible for OSP credit based on their current land use. Criteria used included: Currently Zoned for Open Space, Conservation tax credit properties, restoration/mitigation projects, Conservation easement or land trusts, Parks and Golf Courses, School Athletic Yards, Cemeteries, and Community Owned Vacant Land. All existing impervious surfaces within those are removed from the eligible OSP area. <br><br> NOTE: Parcels on vacant land are ONLY eligible if they are undeveloped, are not used as storage, and will be left as open space for at least 5 years. Local expertise is recommended to varify if the vacant land parcels identified by this app meet these qualifications prior to applying for OSP points.
 				</div>
@@ -227,6 +226,11 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 				<div class='parcelAcresDiv' id='parcelAcresDiv'>
 					<input type='text' id='parcelAcres' class='parcelAcresIn' placeholder='Enter Acreage'>
 				</div>
+			</div>
+			<div class='secondIndent1'>
+				<div id='selectParcels' class='selectParcels'>Add clickable labels to largest parcels (20 max)</div>
+				<div id='hideParcels' class='hideParcels'>Hide parcel labels</div>
+				<div id='undoRemove' class='undoRemove'>Undo Remove Parcel (<span id='numRemoved'></span> currently removed)</div>
 			</div>
 		</div>
 		<div style='margin-top:5px;'>Supporting Layers:</div>

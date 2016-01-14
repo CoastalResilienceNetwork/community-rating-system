@@ -304,20 +304,63 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}));
 					}));
 					$('#' + this.appDiv.id + 'removeParcel' ).on('click', lang.hitch(this,function(evt){
-						console.log(this.pntSel)
+						$('#' + this.appDiv.id + 'undoRemove').slideDown();
 						this.features = this.parcelsFL.getSelectedFeatures()
 						this.features.sort(function(a,b){
 							return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
 						})
-						console.log(this.features[this.pntSel - 1].attributes)
-						// START HERE AND FIGURE OUT HOW TO REMOVE PARCEL FROM LIST - PROBABLY UPDATE DEFINITION QUERY EXCLUDING CURRENT POINT AND THEN RUN A NEW SELECTION ON THE FEATURE LAYER.			
+						this.config.excludeArray.push(this.features[this.pntSel - 1].attributes.PIN)
+						$('#' + this.appDiv.id + 'numRemoved').html(this.config.excludeArray.length);
+						this.dropPins = "";
+						$.each(this.config.excludeArray, lang.hitch(this,function(i,v){
+							if (i == 0){
+								this.dropPins = "'" + v + "'";
+							}else{
+								this.dropPins = this.dropPins + ", '" + v + "'";
+							}			
+						}));
+						this.config.excludeDef = " AND PIN NOT IN (" + this.dropPins + ")";
+						this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
+						dijitPopup.close(this.dialog);
+						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
 					}));	
-				}));	
+				}));
+				$('#' + this.appDiv.id + 'undoRemove' ).on('click', lang.hitch(this,function(evt){				
+					this.config.excludeArray.pop()
+					if (this.config.excludeArray.length == 0){
+						this.config.excludeDef = "";
+						$('#' + this.appDiv.id + 'undoRemove' ).slideUp();
+					}else{
+						$('#' + this.appDiv.id + 'numRemoved').html(this.config.excludeArray.length);						
+						this.dropPins = "";
+						$.each(this.config.excludeArray, lang.hitch(this,function(i,v){
+							if (i == 0){
+								this.dropPins = "'" + v + "'";
+							}else{
+								this.dropPins = this.dropPins + ", '" + v + "'";
+							}			
+						}));
+						this.config.excludeDef = " AND PIN NOT IN (" + this.dropPins + ")";
+					}	
+					this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
+					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					$('#' + this.appDiv.id + 'selectParcels').trigger('click');
+				}));
 				$('#' + this.appDiv.id + 'selectParcels').on('click', lang.hitch(this,function(c){
+					this.config.selectParcels = "yes";
 					var q = new Query();
 					q.where = this.config.layerDefs[7];
 					this.parcelStep = "one";
 					this.parcelsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+					$('#' + this.appDiv.id + 'selectParcels').hide();
+					$('#' + this.appDiv.id + 'hideParcels').show();
+				}));
+				$('#' + this.appDiv.id + 'hideParcels').on('click', lang.hitch(this,function(c){
+					this.config.selectParcels = "no";
+					this.parcelsFL.clear();
+					$('#' + this.appDiv.id + 'selectParcels').show();
+					$('#' + this.appDiv.id + 'hideParcels').hide();
 				}));
 				// Create and handle transparency slider
 				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
@@ -367,7 +410,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
@@ -377,12 +420,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
 							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-						}	
+						}
+						if (this.config.selectParcels == "yes"){
+							$('#' + this.appDiv.id + 'selectParcels').trigger('click');
+						}
 					}));
 					// Select Parcel Description filter
 					$('#' + this.appDiv.id + 'ch-OSP_DESC').chosen().change(lang.hitch(this,function(c, p){
@@ -391,7 +437,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
@@ -401,12 +447,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
 							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-						}	
+						}
+						if (this.config.selectParcels == "yes"){
+							$('#' + this.appDiv.id + 'selectParcels').trigger('click');
+						}						
 					}));
 					// Select greater than or less than	acres	
 					$('#' + this.appDiv.id + 'ch-PARCEL_AC').chosen().change(lang.hitch(this,function(c, p){
@@ -418,7 +467,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 								$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 									$.each(this.layersArray, lang.hitch(this,function(j,w){
 										if (w.name == v.value){
-											this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+											this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 										}	
 									}));
 								}));
@@ -435,12 +484,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
 							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-						}					
+							if (this.config.selectParcels == "yes"){
+								$('#' + this.appDiv.id + 'selectParcels').trigger('click');
+							}
+						}						
 					}));	
 				}));
 				// Parcel acres input change listener
@@ -460,7 +512,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){		
 								$.each(this.layersArray, lang.hitch(this,function(j,w){
 									if (w.name == v.value){
-										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+										this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 									}	
 								}));
 							}));
@@ -474,12 +526,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){	
 							$.each(this.layersArray, lang.hitch(this,function(j,w){
 								if (w.name == v.value){
-									this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef;
+									this.config.layerDefs[w.id] = this.config.crsDef + this.config.ownerDef + this.config.acresDef + this.config.descDef + this.config.excludeDef;
 								}	
 							}));
 						}));
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-					}	
+					}
+					if (this.config.selectParcels == "yes"){
+						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
+					}					
 				}));		
 				// Toggle summary and parcel section
 				$('.viewClick').on('click', lang.hitch(this,function(c){
@@ -519,7 +574,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					if (c.currentTarget.checked == true){
 						this.config.visibleLayers.push(this.pcbId)
 						this.config.crsDef = "CRS_NAME='" + this.config.crsSelected + "'";
-						this.config.layerDefs[this.pcbId] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef;
+						this.config.layerDefs[this.pcbId] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 						this.buildSmallLegends(this.config.parcelLyrId, this.config.parcelLayer)
 						$.each( ($('#' + this.appDiv.id + 'step3').find('.parcelsCB')), lang.hitch(this,function(i,v){
 							if (v.checked == true){
@@ -531,7 +586,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						if (this.config.parcelLyrId == this.appDiv.id + 'cb-lu' ){
 							if (this.config.crsSelected != "Southern Shores NC"){
 								$('#' + this.appDiv.id + 'step3').find('.nfos').slideDown();
-							}	
+							}								
 						}
 						// Show CEOS if Oceanside was selected
 						if (this.config.parcelLyrId == this.appDiv.id + 'cb-orsa' ){
@@ -661,7 +716,12 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				})); 	
 			},
 			clearItems: function(){
+				this.config.selectParcels = "no";
 				this.parcelsFL.clear();
+				this.config.excludeDef = "";
+				$('#' + this.appDiv.id + 'selectParcels').show();
+				$('#' + this.appDiv.id + 'hideParcels').hide();
+				$('#' + this.appDiv.id + 'undoRemove').hide();
 				$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step3 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
 				$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step3 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step3 .infoOpen, #' + 
 				this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();
