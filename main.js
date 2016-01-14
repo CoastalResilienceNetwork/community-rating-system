@@ -321,6 +321,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}));
 						this.config.excludeDef = " AND PIN NOT IN (" + this.dropPins + ")";
 						this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
+						this.config.layerDefs[6] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
+						console.log(this.config.layerDefs)
 						dijitPopup.close(this.dialog);
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
@@ -343,6 +345,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}));
 						this.config.excludeDef = " AND PIN NOT IN (" + this.dropPins + ")";
 					}	
+					this.config.layerDefs[6] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 					this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 					$('#' + this.appDiv.id + 'selectParcels').trigger('click');
@@ -350,7 +353,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				$('#' + this.appDiv.id + 'selectParcels').on('click', lang.hitch(this,function(c){
 					this.config.selectParcels = "yes";
 					var q = new Query();
-					q.where = this.config.layerDefs[7];
+					q.where = this.config.layerDefs[6,7];
 					this.parcelStep = "one";
 					this.parcelsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
 					$('#' + this.appDiv.id + 'selectParcels').hide();
