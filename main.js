@@ -88,8 +88,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 			// Called when the user hits the print icon
 			beforePrint: function(printDeferred, $printArea, mapObject) {
 				// Add hexagons
-				var layer = new ArcGISDynamicMapServiceLayer(this.url);
-				layer.setVisibleLayers([7])  
+				var layer = new ArcGISDynamicMapServiceLayer(this.url, {opacity:0.5});
+				layer.setVisibleLayers([7,10,11])  
+				this.config.layerDefs[10] = this.config.crsDef
+				this.config.layerDefs[11] = this.config.crsDef
 				layer.setLayerDefinitions(this.config.layerDefs);
 				mapObject.addLayer(layer);
 				// Add map graphics	
