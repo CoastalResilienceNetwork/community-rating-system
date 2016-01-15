@@ -317,7 +317,7 @@ label.checkBoxLabels input[type=checkbox]{
 }		
 .printTable {
 	font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size: 14pt !important; table-width:fixed; 
-	background-color: #fff; text-align: left; border-spacing: 0; border: #777 1px solid; width:1400px;
+	background-color: #fff; text-align: left; border-spacing: 0; border: #777 1px solid; width:1200px; margin-left:30px;
 }
 .printTable th,
 .printTable td {
