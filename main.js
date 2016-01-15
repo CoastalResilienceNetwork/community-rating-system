@@ -15,7 +15,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
 			toolbarName: "Community Rating System", showServiceLayersInLegend: false, allowIdentifyWhenActive: false, rendered: false, resizable: false,
-			hasCustomPrint: true, usePrintPreviewMap: true, previewMapSize: [600, 400],
+			hasCustomPrint: true, usePrintPreviewMap: true, previewMapSize: [1000, 550],
 			// First function called when the user clicks the pluging icon. 
 			initialize: function (frameworkParameters) {
 				// Access framework parameters
@@ -89,12 +89,19 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 			beforePrint: function(printDeferred, $printArea, mapObject) {
 				// Add hexagons
 				var layer = new ArcGISDynamicMapServiceLayer(this.url);
-				layer.setVisibleLayers([0])
+				layer.setVisibleLayers([7])  
+				layer.setLayerDefinitions(this.config.layerDefs);
 				mapObject.addLayer(layer);
-				// Add map graphics (selected hexagon) 
-				mapObject.graphics.add(new Graphic(this.fc.graphics[0].geometry, this.fc.graphics[0].symbol ));
+				// Add map graphics	
+				mapObject.graphics.add(new Graphic(this.crsFL.graphics[0].geometry, this.crsFL.graphics[0].symbol ));				
+				$.each(this.parcelsFL.graphics, lang.hitch(this,function(i,v){
+					mapObject.graphics.add(new Graphic(this.parcelsFL.graphics[i].geometry, this.parcelsFL.graphics[i].symbol ));	
+				}));
 				// Add content to printed page
-				$printArea.append("<div id='title'>NY Species Report</div>")
+				$printArea.append("<div id='title'>" + this.config.crsSelected + "</div>")
+				//$printArea.append("<div id='summary' class='printSummary'>" + $('#' + this.appDiv.id + 'printSummary').html() + "</div>")
+				$printArea.append("<div id='tableWrapper'><div id='tableTitle'>Selected Parcels</div><table id='table' class='printTable'>" + $('#' + this.appDiv.id + 'myPrintTable').html() + "</table></div>");
+			
                 printDeferred.resolve();
             },	
 			// Resizes the plugin after a manual or programmatic plugin resize so the button pane on the bottom stays on the bottom.
@@ -141,8 +148,12 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					}
 				}));
 				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
-				this.crsFl = new FeatureLayer(this.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
-				this.crsFl.on('selection-complete', lang.hitch(this,function(evt){
+				this.crsFL = new FeatureLayer(this.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				var selSymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
+					SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([255,255,255,0])
+				);
+				this.crsFL.setSelectionSymbol(selSymbol);
+				this.crsFL.on('selection-complete', lang.hitch(this,function(evt){
 					// Get and zoom to extent of selected feature
 					var crsExtent = evt.features[0].geometry.getExtent();				
 					this.map.setExtent(crsExtent, true); 
@@ -194,7 +205,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						$('#' + this.appDiv.id + 'bar2L').html(potPnts);
 					}
 				}));	
-				this.map.addLayer(this.crsFl);
+				this.map.addLayer(this.crsFL);
 				this.resize();
 				// Setup hover window for 20 largest parcels (as points)
 				this.map.infoWindow.resize(225,125);
@@ -235,6 +246,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						this.features.sort(function(a,b){
 							return b.attributes.OSP_LU_cac - a.attributes.OSP_LU_cac; 
 						})
+						this.updatePrintTable(this.features);
 						$.each(this.features, lang.hitch(this,function(i,v){
 							var num = i + 1;
 							var symbol = new PictureMarkerSymbol('plugins/community-rating-system/images/numbers/point' + num + '_.png', 20, 20);
@@ -322,7 +334,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						this.config.excludeDef = " AND PIN NOT IN (" + this.dropPins + ")";
 						this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 						this.config.layerDefs[6] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
-						console.log(this.config.layerDefs)
 						dijitPopup.close(this.dialog);
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
@@ -358,12 +369,14 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					this.parcelsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
 					$('#' + this.appDiv.id + 'selectParcels').hide();
 					$('#' + this.appDiv.id + 'hideParcels').show();
+					$(this.printButton).show();
 				}));
 				$('#' + this.appDiv.id + 'hideParcels').on('click', lang.hitch(this,function(c){
 					this.config.selectParcels = "no";
 					this.parcelsFL.clear();
 					$('#' + this.appDiv.id + 'selectParcels').show();
 					$('#' + this.appDiv.id + 'hideParcels').hide();
+					$(this.printButton).hide();
 				}));
 				// Create and handle transparency slider
 				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
@@ -394,13 +407,13 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							this.config.crsSelected = c.currentTarget.value;
 							var q = new Query();
 							q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
-							this.crsFl.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							this.crsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
 							this.excludeFromCrs(this.config.crsSelected);
 						}
 						// selection was cleared
 						else{	
-							this.crsFl.clear();
+							this.crsFL.clear();
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 							$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
 							$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();
@@ -656,6 +669,55 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 				}));	
 				this.rendered = true;				
+			},	
+			updatePrintTable: function (items){
+				$('#' + this.appDiv.id + 'myPrintTable tbody tr').remove()
+				this.osp_lu_cac = 0;
+				this.osp_lu_cpt = 0;
+				this.nfos_cac = 0;
+				this.nfos_cpts = 0;
+				$.each(items, lang.hitch(this,function(i,v){
+					this.printNum = i + 1;
+					// Update print table
+					var newPrintRow ="<tr>" + 
+						"<td>" + this.printNum + "</td>" + 
+						"<td>" + v.attributes.PIN + "</td>" +
+						"<td>" + v.attributes.DEED_BK_PG + "</td>" +
+						"<td>" + Math.round(v.attributes.OSP_LU_cac) + "</td>" +
+						"<td>" + Math.round(v.attributes.OSP_LU_cpt) + "</td>" +
+						"<td>" + Math.round(v.attributes.NFOS_cac) + "</td>" +
+						"<td>" + Math.round(v.attributes.NFOS_cpts) + "</td>" +
+						"<td>" + v.attributes.NFOS_DESC + "</td>" +
+					"</tr>"
+					$('#' + this.appDiv.id + 'myPrintTable tbody').append(newPrintRow)
+					// Get totals for select fields
+					this.osp_lu_cac = this.osp_lu_cac + v.attributes.OSP_LU_cac;
+					this.osp_lu_cpt = this.osp_lu_cpt + v.attributes.OSP_LU_cpt;
+					this.nfos_cac = this.nfos_cac + v.attributes.NFOS_cac;
+					this.nfos_cpts = this.nfos_cpts + v.attributes.NFOS_cpts;
+				}));
+				var otherParcelsRow ="<tr>" + 
+					"<td class='printCell'></td>" + 
+					"<td>All Other Parcels</td>" +
+					"<td>  What</td>" +
+					"<td>  do</td>" +
+					"<td>  we</td>" +
+					"<td>  mean</td>" +
+					"<td>  by</td>" +
+					"<td>  all other parcels?</td>" +
+				"</tr>"
+				$('#' + this.appDiv.id + 'myPrintTable tbody').append(otherParcelsRow)
+				var totalsRow ="<tr>" + 
+					"<td class='printCell'></td>" + 
+					"<td class='printCell'></td>" +
+					"<td><b>TOTALS</b></td>" +
+					"<td><b>" + Math.round(this.osp_lu_cac) + "</b></td>" +
+					"<td><b>" + Math.round(this.osp_lu_cpt) + "</b></td>" +
+					"<td><b>" + Math.round(this.nfos_cac) + "</b></td>" +
+					"<td><b>" + Math.round(this.nfos_cpts) + "</b></td>" +
+					"<td class='printCell'></td>" +
+				"</tr>"
+				$('#' + this.appDiv.id + 'myPrintTable tbody').append(totalsRow)
 			},	
 			excludeFromCrs: function (crsName) {
 				// Show all of class parcelRow

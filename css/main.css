@@ -310,4 +310,63 @@ label.checkBoxLabels input[type=checkbox]{
 }	
 .puHr{
 	margin-bottom:3px !important; margin-top:3px !important;
+}
+/* Hidden Print Table Styles */
+.pt {
+	display:none; 		
+}		
+.printTable {
+	font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size: 14pt !important; table-width:fixed; 
+	background-color: #fff; text-align: left; border-spacing: 0; border: #777 1px solid; width:1400px;
+}
+.printTable th,
+.printTable td {
+	font-family: 'Archivo Narrow', 'Arial Narrow', Arial, Helvetica, sans-serif !important; font-size: 14pt !important; border: #777 1px solid; padding: 2px 3px;
+}
+.printTable .filtered {
+	display: none !important; 
+}
+.printTable .filtered2 {
+	display: none !important; 
+}		
+.psHead{
+	font-weight:bold;	
+}	
+.psIn{
+	margin-left:10px;
+} 	
+.psTop{
+	text-decoration:underline;
+}	
+.summary{
+	font-size:18pt !important;
+}	
+#tableWrapper {
+	position: absolute; top:640px; width:100%; visibility: visible;
+}
+#tableTitle{
+	text-align:center; width:1400px; margin-bottom:5px; font-size:24pt !important; visibility: visible;
+}
+#summary {
+	margin-left:640px; margin-top:40px; visibility: visible;
+}	
+#title {
+	text-align:center; width:1400px; font-size:24pt !important; visibility: visible;
+}
+.popover-header{
+	height:40px !important; padding:12px !important;
+}
+#print-preview-print{
+	position:absolute; right:23px; top:60px; z-index:100; 
+}	
+.instructions{
+	position:absolute; width:410px; margin-left:-205px; left:50%; top:60px; z-index:100; font-weight:bold; font-size: 16px; color: #ffffff; 
+	text-transform: uppercase; background:rgba(38,100,142,0.7); line-height:1;	
+	-webkit-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); -moz-box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7); box-shadow:1px 1px 2px 0px rgba(102,102,102,0.7);
+}	
+.print-preview-container{
+	padding:0px !important; 
+}	
+.tbox{
+	top:100px !important;	
 }	
