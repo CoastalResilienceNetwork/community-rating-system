@@ -374,11 +374,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					$(this.printButton).show();
 				}));
 				$('#' + this.appDiv.id + 'hideParcels').on('click', lang.hitch(this,function(c){
-					this.config.selectParcels = "no";
-					this.parcelsFL.clear();
-					$('#' + this.appDiv.id + 'selectParcels').show();
-					$('#' + this.appDiv.id + 'hideParcels').hide();
-					$(this.printButton).hide();
+					this.hideParcelLabels();
 				}));
 				// Create and handle transparency slider
 				$('.smallLegends').css('opacity', 1 - this.config.sliderVal/10);
@@ -626,6 +622,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							if ($('#' + this.appDiv.id + 'cb-nfos').prop('checked') == true){
 								$('#' + this.appDiv.id + 'cb-nfos').trigger('click');
 							}
+							this.hideParcelLabels();
 						}
 						// Hide CEOS if Oceanside was deselected			
 						if (this.config.parcelLyrId == this.appDiv.id + 'cb-orsa' ){
@@ -671,6 +668,13 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 				}));	
 				this.rendered = true;				
+			},
+			hideParcelLabels: function (){
+				this.config.selectParcels = "no";
+				this.parcelsFL.clear();
+				$('#' + this.appDiv.id + 'selectParcels').show();
+				$('#' + this.appDiv.id + 'hideParcels').hide();
+				$(this.printButton).hide();
 			},	
 			updatePrintTable: function (items){
 				$('#' + this.appDiv.id + 'myPrintTable tbody tr').remove()
