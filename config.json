@@ -1,7 +1,9 @@
 {
     "visibleLayers": [],
+	"dlOspLayers": [6,9],
 	"taxDistrictLayer": "",
 	"crsSelected": "",
+	"crsSelUnderscore": "",
 	"extent": "",
 	"sliderVal": 3,
 	"taxDist": "",

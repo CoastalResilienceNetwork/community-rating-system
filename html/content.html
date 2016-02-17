@@ -21,119 +21,146 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 	</tbody> 
 </table>
 <!--Opening view of the app. Give a little background and instructions to get started-->
-<div class='topWrapper'> 
-	<div class='selectDivs'>
-		<!--The value of each option refers to the layer name and the text is what is used for the layers definition query-->
-		<select id='ch-CRS' data-placeholder="Choose a Community" class="chosen-select" tabindex="16">
-			<option value=""></option>
-			<option value="Dare County NC">Dare County NC</option>
-			<option value="Duck NC">Duck NC</option>
-			<option value="Kill Devil Hills NC">Kill Devil Hills NC</option>
-			<option value="Kitty Hawk NC">Kitty Hawk NC</option>
-			<option value="Manteo NC">Manteo NC</option>
-			<option value="Nags Head NC">Nags Head NC</option>
-			<option value="Southern Shores NC">Southern Shores NC</option>
-		</select>
-	</div>
-	<div class='step0' id='step0'>
-		<div class='borderDiv'></div>
-		<div class='sectionHeaderUR'><span id='s0-NFIP_IN' class='s0Atts'></span>% in &#38; <span id='s0-NFIP_OUT' class='s0Atts'></span>% out of FP NFIP Discount<br>Class <span id='s0-CRS_CLASS' class='s0Atts'></span> (<span id='s0-CRS_POINTS' class='s0Atts'></span> Points)</div> 
-	</div>
+<div class='home' id='home'>
+	<div class='homeHeader'>What would you like to do?</div>
+	<div class='startButton ready' id='ospAppBtn'>Download data for all eligible OSP areas for my CRS application</div>
+	<div class='startButton comingSoon' id='parcelByIdBtn'>Find and Print a Parcel by PIN (Coming soon!)</div>
+	<div class='startButton comingSoon' id='exploreDataBtn'>Explore Data (Coming Soon!)</div>
+</div>
+<div class='topWrapper' id='topWrapper'> 
+	<div class='topHeader'>Download data for all eligible OSP areas<br>for my CRS application</div>
+	<div class='startButton ready readyHome' id='homeBtn'>Home</div>
+	<div class='borderDiv'></div>	
 </div>	
-<div class='step1'  id='step1'>
-	<div class='sectionHeader'>
-		Green Infrastructure 420 Activities <span class='sumText'>Summary</span><span class='parText'>Parcels</span> - <div class='viewClick'><span class='parView'>View Eligible Areas</span><span class='sumView'>View Summary</span></div>
-	</div>
-</div>	
-<div class='step2 topPad' id='step2'>	
-	<!--Summary Section-->
-	<div class='topLabel'>
-		<img src='plugins/community-rating-system/images/topLabel1.png' alt='class labels'>
-	</div>
-	<div class='barWrapper'>
-		<span class='bars spanBar bar3' id='bar3'>
-			<span class='bars emBar bar2' id='bar2'><span id='bar2L' class='barLabel'></span></span>
-			<span class='bars emBar bar1' id='bar1'><span id='bar1L' class='barLabel'></span></span>
-		</span>
-	</div>
-	<div class='bottomLabel'>
-		<img src='plugins/community-rating-system/images/bottomLabel.png' alt='class labels'>
-	</div>
-	<div class='grLgDiv'>
-		<div class='bar1 graphLegend'></div><div class='graphLegLbl'>Current Points</div>
-		<div class='bar2 bar2a graphLegend'></div><div class='graphLegLbl'>Potential Points</div>
-	</div>
-	<hr class='sumHr'>
-		<div class='checkBoxLabels firstIndent'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-		</div>
-		<div class='sumHeader'> Current Class: 
-			<span id='s2-CRS_CLASS' class='s2Atts'></span> (<span id='s2-CRS_POINTS' class='s2Atts'></span> Points)
-		</div>
-		<div class='infoOpen secondIndent'>
-			Number is based on the 2007 CRS manual and subject to change with the new 2013 manual.
-		</div>
-	</div>
-	<div class='firstIndent checkBoxLabels'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-		</div>
-		<div class='sumHeader'>Current NFIP Discounts: <span id='s2-NFIP_IN' class='s2Atts'></span>% for policy holders in floodplain<br>&#38; <span id='s2-NFIP_OUT' class='s2Atts'></span>% outside of floodplain 
-		</div>
-		<div class='infoOpen secondIndent'>
-			Nice explaination of NFIP discounts 
-		</div>
+<div class='dlOspWrapper' id='dlOspWrapper'>
+	<div class='dlSelectWrapper'>
+		<div class='selectHeader'>Select a Community</div>
+		<div class='selectDivs'>
+			<!--The value of each option refers to the layer name and the text is what is used for the layers definition query-->
+			<select id='ch-CRS' data-placeholder="Choose a Community" class="chosen-select" tabindex="16">
+				<option value=""></option>
+				<option value="Dare County NC">Dare County NC</option>
+				<option value="Duck NC">Duck NC</option>
+				<option value="Kill Devil Hills NC">Kill Devil Hills NC</option>
+				<option value="Kitty Hawk NC">Kitty Hawk NC</option>
+				<option value="Manteo NC">Manteo NC</option>
+				<option value="Nags Head NC">Nags Head NC</option>
+				<option value="Southern Shores NC">Southern Shores NC</option>
+			</select>
+		</div>	
 	</div>	
-	<div class='firstIndent checkBoxLabels'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+	<div class='step2 topPad' id='step2'>	
+		<div class='dlAccord' id='dlAccord'>	
+			<h3 class='bottomRightSm'>Summary Graph Title</h3>
+			<div class='bottomRightSm graphWrapper'>
+				<div class='topLabel'>
+					<img src='plugins/community-rating-system/images/topLabel1.png' alt='class labels'>
+				</div>
+				<div class='barWrapper'>
+					<span class='bars spanBar bar3' id='bar3'>
+						<span class='bars emBar bar2' id='bar2'></span>
+						<span class='bars emBar bar1' id='bar1'></span></span>
+					</span>
+				</div>
+				<div class='bottomLabel'>
+					<img src='plugins/community-rating-system/images/bottomLabel.png' alt='class labels'>
+				</div>
+				<div class='grLgDiv'>
+					<div class='bar1 graphLegend'><span id='bar1L' class='barLabel'></span></div><div class='graphLegLbl'>Current Points</div>
+					<div class='bar2 bar2a graphLegend'><span id='bar2L' class='barLabel'></span></div><div class='graphLegLbl'>Potential Points</div>
+				</div>
+			</div>	
 		</div>
-		<div class='sumHeader'> Open Space Preservation (422a): 
-			<span id='s2-SUM_OSP_ONLY_cac' class='s2Atts'></span> acres &#38; 
-			<span id='s2-SUM_OSP_ONLY_cpts' class='s2Atts'></span> points
-		</div>
-		<div class='infoOpen secondIndent'>
-			Parcels that are eligible for Open Space Parcel credit based on their current land use or because they contribute to the public trust Ocean Beach area, the regulatory oceanside setback, or the regulatory estuarine setback.
-		</div>
-	</div>
-	<div class='checkBoxLabels firstIndent'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-		</div>
-		<div class='sumHeader'> Natural Functioning Open Space (422c): 
-			<span id='s2-SUM_NFOS_cac' class='s2Atts'></span> acres &#38; 
-			<span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> points
-		</div>
-		<div class='infoOpen secondIndent'>
-			Natural Functioning Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND the area is preserved in or restored to its natural state AND has been designated as ecologically valuable. Natural Heritage data were used to determine OSP areas that overlapped known occurances of specides designated by the state as endangered, threatened, or of special concern. Restoration and conservation projects on OSP eligible land were also credited for Natural Functioning Open Space.
-		</div>
-	</div>
-	<div class='checkBoxLabels firstIndent'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-		</div>
-		<div class='sumHeader'> Coastal Erosion Open Space (422c): 
-			<span id='s2-SUM_CEOS_cac' class='s2Atts'></span> acres &#38; 
-			<span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> points
-		</div>
-		<div class='infoOpen secondIndent'>
-			Coastal Erosion Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND are within the designated Coastal Erosion Hazard area. In Dare County, NC, this area overlaps the oceanfront setback factor buffer. All existing impervious surfaces are removed from eligibility.  
-		</div>
-	</div>	
-	<div class='checkBoxLabels firstIndent'>
-		<div class='expCol'>
-			<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
-			<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
-		</div>
-		<div class='sumHeader'> Natural Shoreline Protection (422g): <b>12</b> points in entire CRS</div>
-		<div class='infoOpen secondIndent'>
-			Natural Shoreline protection is elegible for 12 points across the entire CRS and does not apply to individual tax districts.
+		<div class='dlAccord1' id='dlAccord1'>
+			<h3 class='bottomRightSm'>Green Infrastructure 420 Activities Summary</h3>
+			<div class='bottomRightSm'>
+				<div class='checkBoxLabels firstIndent'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'> Current Class: 
+						<span id='s2-CRS_CLASS' class='s2Atts'></span> (<span id='s2-CRS_POINTS' class='s2Atts'></span> Points)
+					</div>
+					<div class='infoOpen secondIndent'>
+						Number is based on the 2007 CRS manual and subject to change with the new 2013 manual.
+					</div>
+				</div>
+				<div class='firstIndent checkBoxLabels'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'>Current NFIP Discounts: <span id='s2-NFIP_IN' class='s2Atts'></span>% for policy holders in floodplain<br>&#38; <span id='s2-NFIP_OUT' class='s2Atts'></span>% outside of floodplain 
+					</div>
+					<div class='infoOpen secondIndent'>
+						Nice explaination of NFIP discounts 
+					</div>
+				</div>	
+				<div class='firstIndent checkBoxLabels'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'> Open Space Preservation (422a): 
+						<span id='s2-SUM_OSP_ONLY_cac' class='s2Atts'></span> acres &#38; 
+						<span id='s2-SUM_OSP_ONLY_cpts' class='s2Atts'></span> points
+					</div>
+					<div class='infoOpen secondIndent'>
+						Parcels that are eligible for Open Space Parcel credit based on their current land use or because they contribute to the public trust Ocean Beach area, the regulatory oceanside setback, or the regulatory estuarine setback.
+					</div>
+				</div>
+				<div class='checkBoxLabels firstIndent'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'> Natural Functioning Open Space (422c): 
+						<span id='s2-SUM_NFOS_cac' class='s2Atts'></span> acres &#38;<br> 
+						<span id='s2-SUM_NFOS_cpts' class='s2Atts'></span> points
+					</div>
+					<div class='infoOpen secondIndent'>
+						Natural Functioning Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND the area is preserved in or restored to its natural state AND has been designated as ecologically valuable. Natural Heritage data were used to determine OSP areas that overlapped known occurances of specides designated by the state as endangered, threatened, or of special concern. Restoration and conservation projects on OSP eligible land were also credited for Natural Functioning Open Space.
+					</div>
+				</div>
+				<div class='checkBoxLabels firstIndent'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'> Coastal Erosion Open Space (422c): 
+						<span id='s2-SUM_CEOS_cac' class='s2Atts'></span> acres &#38; 
+						<span id='s2-SUM_CEOS_cpts' class='s2Atts'></span> points
+					</div>
+					<div class='infoOpen secondIndent'>
+						Coastal Erosion Open Space provides additional credit for parcels that are already eligible for Open Space Parcel credit AND are within the designated Coastal Erosion Hazard area. In Dare County, NC, this area overlaps the oceanfront setback factor buffer. All existing impervious surfaces are removed from eligibility.  
+					</div>
+				</div>	
+				<div class='checkBoxLabels firstIndent'>
+					<div class='expCol'>
+						<img src='plugins/community-rating-system/images/info.png' alt='expand group' class='gExp'>
+						<img src='plugins/community-rating-system/images/collapse1.png' alt='expand group' class='gCol'>
+					</div>
+					<div class='sumHeader'> Natural Shoreline Protection (422g): <b>12</b> points in entire CRS</div>
+					<div class='infoOpen secondIndent'>
+						Natural Shoreline protection is elegible for 12 points across the entire CRS and does not apply to individual tax districts.
+					</div>
+				</div>
+			</div>	
+			<!--<hr class='sum2Hr'>-->
+			<h3 class='bottomRightSm'>Download Data</h3>
+			<div class='bottomRightSm'>
+				<div class='downloadDiv' id='downloadDiv'>
+					<div class='bulHead'>The download package contains:</div>
+					<div class='bulList'>&#8226; Map(s) of all OSP eligible parcels (<a id='allParcelPreview' target='_blank'>preview</a>)</div>
+					<div class='bulList'>&#8226; Map(s) of the 20 largest OSP eligible parcels (<a id='largeParcelPreview' target='_blank'>preview</a>)</div>
+					<div class='bulList'>&#8226; CSV file of OSP eligible parcel attributes</div>
+					<div class='startButton ready readyDL' id='dlBtn'>Download</div>
+				</div>
+				<div class='noDownloadDiv' id='noDownloadDiv'>
+					There is no download available this community because it has no OSP eligible parcels. 
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
