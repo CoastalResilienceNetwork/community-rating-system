@@ -430,13 +430,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						if (p) {
 							this.config.crsSelected = c.currentTarget.value;
 							this.config.crsSelUnderscore = this.config.crsSelected.replace(/ /g,"_");
-							console.log(this.config.crsSelected)
 							if (this.config.crsSelected == "Duck NC"){
-								console.log("yes")
 								$('#' + this.appDiv.id + 'noDownloadDiv').slideDown();
 								$('#' + this.appDiv.id + 'downloadDiv').slideUp();
 							}else{
-								console.log("no")
 								$('#' + this.appDiv.id + 'noDownloadDiv').slideUp();
 								$('#' + this.appDiv.id + 'downloadDiv').slideDown();
 							}	
