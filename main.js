@@ -180,7 +180,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				var selSymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
 					SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([255,255,255,0])
 				);
-				this.crsFL.setSelectionSymbol(selSymbol);
+				//this.crsFL.setSelectionSymbol(selSymbol);
 				this.crsFL.on('selection-complete', lang.hitch(this,function(evt){
 					// Get and zoom to extent of selected feature
 					var crsExtent = evt.features[0].geometry.getExtent();				
