@@ -562,7 +562,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				}));
 				// Data download click
 				$('#' + this.appDiv.id + 'dlBtn').on('click', lang.hitch(this,function(){
-					alert("Downloads for " + this.config.crsSelected + " coming soon.");
+					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + ".zip", "_blank");
 				}));
 				// Parcel acres input change listener
 				$('#' + this.appDiv.id + 'parcelAcres').on('keyup', lang.hitch(this,function(c){
