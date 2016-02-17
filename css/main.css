@@ -73,11 +73,14 @@
 .ui-accordion .ui-accordion-header{
 	/*background-color:#eff5f7;
 	color:#21658c;*/
-	background-color:#7FB0F0;
-	color:#fff;
+	background-color:#7FB0F0; color:#fff;
 	background-image:none;
 	text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:bold; font-size:12pt; padding:5px 30px;
 }
+.ui-accordion .ui-accordion-header:hover{
+	background-color:#29658C;
+	background-image:none;
+}	
 .ui-accordion .ui-accordion-header .ui-state-focus{
 	color:red;
 }
