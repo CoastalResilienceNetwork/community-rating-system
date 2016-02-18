@@ -134,12 +134,19 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					active: 0,
 					heightStyle: "content"
 				});
-				
 				// Handle clicks on home screen
 				$('#' + this.appDiv.id + 'ospAppBtn').on('click',lang.hitch(this,function(){
+					this.config.section = "dl";
+					$('#' + this.appDiv.id + 'topHeader').html($('#' + this.appDiv.id + 'ospAppBtn').html());
 					$('#' + this.appDiv.id + 'home').slideUp();
 					$('#' + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper').slideDown();
-				}));	
+				}));
+				$('#' + this.appDiv.id + 'parcelByIdBtn').on('click',lang.hitch(this,function(){
+					this.config.section = "pin";
+					$('#' + this.appDiv.id + 'topHeader').html($('#' + this.appDiv.id + 'parcelByIdBtn').html());
+					$('#' + this.appDiv.id + 'home').slideUp();
+					$('#' + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper').slideDown();
+				}));				
 				// Home button clicks
 				$('#' + this.appDiv.id + 'homeBtn').on('click',lang.hitch(this,function(){
 					this.map.setExtent(this.dynamicLayer.initialExtent, true); 
@@ -208,14 +215,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						$('#' + v.id).html(val)
 					}));
 					// Update bar graphs values - get cur and potential points
-					this.n = [this.atts.OSP_PTS_2013, this.atts.OSP_PTS_pot]
+					this.n = [this.atts.OSP_PTS_2013, this.atts.SUM_ALL_cpts]
+					console.log(this.atts.SUM_ALL_cpts)
 					// find the remaining value so bar numbers can be calculated as percentages
-					var m = 1450 - (this.n[0] + this.n[1])
+					var m = 2020 - (this.n[0] + this.n[1])
 					this.n.push(m)
 					// Create empty array and populate it with percentages of current, potential, and remaining
 					var p = [];
 					$.each(this.n, lang.hitch(function(i,v){
-						x = Math.round(v/1450*100);
+						x = Math.round(v/2020*100);
 						p.push(x);
 					}));
 					// Update bar values with percentages array
@@ -227,8 +235,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						curPnts = commaSeparateNumber(curPnts);
 						$('#' + this.appDiv.id + 'bar1L').html(curPnts)
 					}	
-					if (isNaN(this.atts.OSP_PTS_pot) == false){
-						var potPnts = Math.round(this.atts.OSP_PTS_pot);
+					if (isNaN(this.atts.SUM_ALL_cpts) == false){
+						var potPnts = Math.round(this.atts.SUM_ALL_cpts);
 						potPnts = commaSeparateNumber(potPnts);
 						$('#' + this.appDiv.id + 'bar2L').html(potPnts);
 					}

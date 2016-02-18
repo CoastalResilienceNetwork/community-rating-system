@@ -24,11 +24,11 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 <div class='home' id='home'>
 	<div class='homeHeader'>What would you like to do?</div>
 	<div class='startButton ready' id='ospAppBtn'>Download data for all eligible OSP areas for my CRS application</div>
-	<div class='startButton comingSoon' id='parcelByIdBtn'>Find and Print a Parcel by PIN (Coming Soon!)</div>
+	<div class='startButton comingSoon' id='parcelByIdBtn'>Find and Print a Parcel by PIN</div>
 	<div class='startButton comingSoon' id='exploreDataBtn'>Explore Data (Coming Soon!)</div>
 </div>
 <div class='topWrapper' id='topWrapper'> 
-	<div class='topHeader'>Download data for all eligible OSP areas<br>for my CRS application</div>
+	<div class='topHeader' id='topHeader'></div>
 	<div class='startButton ready readyHome' id='homeBtn'>Home</div>
 	<div class='borderDiv'></div>	
 </div>	
@@ -152,8 +152,8 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 			<div class='bottomRightSm'>
 				<div class='downloadDiv' id='downloadDiv'>
 					<div class='bulHead'>The download package contains:</div>
-					<div class='bulList'>&#8226; Map(s) of all OSP eligible parcels (<a id='allParcelPreview' target='_blank'>preview</a>)</div>
-					<div class='bulList'>&#8226; Map(s) of the 20 largest OSP eligible parcels (<a id='largeParcelPreview' target='_blank'>preview</a>)</div>
+					<div class='bulList'>&#8226; Map(s) of all OSP and NFOS eligible parcels (<a id='allParcelPreview' target='_blank'>preview</a>)</div>
+					<div class='bulList'>&#8226; Map(s) of the 10 largest OSP eligible parcels (<a id='largeParcelPreview' target='_blank'>preview</a>)</div>
 					<div class='bulList'>&#8226; CSV file of OSP eligible parcel attributes</div>
 					<div class='startButton ready readyDL' id='dlBtn'>Download</div>
 				</div>
