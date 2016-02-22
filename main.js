@@ -5,13 +5,13 @@ require({
 // Bring in dojo and javascript api classes as well as config.json and content.html
 define([
 	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
-	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang",
+	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang", "esri/tasks/Geoprocessor",
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui'
 ],
 function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, PictureMarkerSymbol, TooltipDialog, dijitPopup,
-	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, SimpleMarkerSymbol, Graphic, Color,
+	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
 			toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -155,7 +155,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					$('.legend').addClass("hideLegend");					
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
 					$('#' + this.appDiv.id + 'ch-CRS').trigger('change');
-					$('#'  + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper, #' + this.appDiv.id + 'step2').slideUp();
+					$('#'  + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'printWrapper').slideUp();
 					$('#' + this.appDiv.id + 'home').slideDown();
 				}));	
 				// Add dynamic map service
@@ -194,52 +194,54 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					this.map.setExtent(crsExtent, true); 
 					// Get attributes of selected feature
 					this.atts = evt.features[0].attributes;
-					// Loop through all elements with class s0Atts in the step0 div and use their IDs to show selected features attributes
-					$('#' + this.appDiv.id + 'step0 .s0Atts').each(lang.hitch(this,function (i,v){
-						var field = v.id.split("-").pop()
-						var val = this.atts[field]
-						if ( isNaN(this.atts[field]) == false ){
-							val = Math.round(val);
-							val = commaSeparateNumber(val);
+					// User clicked download section on home page
+					if (this.config.section == "dl"){
+						// Loop through all elements with class s0Atts in the step0 div and use their IDs to show selected features attributes
+						$('#' + this.appDiv.id + 'step0 .s0Atts').each(lang.hitch(this,function (i,v){
+							var field = v.id.split("-").pop()
+							var val = this.atts[field]
+							if ( isNaN(this.atts[field]) == false ){
+								val = Math.round(val);
+								val = commaSeparateNumber(val);
+							}	
+							$('#' + v.id).html(val)
+						}));
+						// Loop through all elements with class s2Atts in the step1 div and use their IDs to show selected features attributes
+						$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
+							var field = v.id.split("-").pop()
+							var val = this.atts[field]
+							if ( isNaN(this.atts[field]) == false ){
+								val = Math.round(val);
+								val = commaSeparateNumber(val);
+							}	
+							$('#' + v.id).html(val)
+						}));
+						// Update bar graphs values - get cur and potential points
+						this.n = [this.atts.OSP_PTS_2013, this.atts.SUM_ALL_cpts]
+						// find the remaining value so bar numbers can be calculated as percentages
+						var m = 2020 - (this.n[0] + this.n[1])
+						this.n.push(m)
+						// Create empty array and populate it with percentages of current, potential, and remaining
+						var p = [];
+						$.each(this.n, lang.hitch(function(i,v){
+							x = Math.round(v/2020*100);
+							p.push(x);
+						}));
+						// Update bar values with percentages array
+						$('#' + this.appDiv.id + 'bar2').animate({left : p[0]+"%", width: p[1]+"%"});
+						$('#' + this.appDiv.id + 'bar1').animate({left : "0%", width: p[0]+"%"});
+						// Add labels to current and potential bars (round decimals and add commas as necessary)
+						if (isNaN(this.atts.OSP_PTS_2013) == false){
+							var curPnts = Math.round(this.atts.OSP_PTS_2013);
+							curPnts = commaSeparateNumber(curPnts);
+							$('#' + this.appDiv.id + 'bar1L').html(curPnts)
 						}	
-						$('#' + v.id).html(val)
-					}));
-					// Loop through all elements with class s2Atts in the step1 div and use their IDs to show selected features attributes
-					$('#' + this.appDiv.id + 'step2 .s2Atts').each(lang.hitch(this,function (i,v){
-						var field = v.id.split("-").pop()
-						var val = this.atts[field]
-						if ( isNaN(this.atts[field]) == false ){
-							val = Math.round(val);
-							val = commaSeparateNumber(val);
-						}	
-						$('#' + v.id).html(val)
-					}));
-					// Update bar graphs values - get cur and potential points
-					this.n = [this.atts.OSP_PTS_2013, this.atts.SUM_ALL_cpts]
-					console.log(this.atts.SUM_ALL_cpts)
-					// find the remaining value so bar numbers can be calculated as percentages
-					var m = 2020 - (this.n[0] + this.n[1])
-					this.n.push(m)
-					// Create empty array and populate it with percentages of current, potential, and remaining
-					var p = [];
-					$.each(this.n, lang.hitch(function(i,v){
-						x = Math.round(v/2020*100);
-						p.push(x);
-					}));
-					// Update bar values with percentages array
-					$('#' + this.appDiv.id + 'bar2').animate({left : p[0]+"%", width: p[1]+"%"});
-					$('#' + this.appDiv.id + 'bar1').animate({left : "0%", width: p[0]+"%"});
-					// Add labels to current and potential bars (round decimals and add commas as necessary)
-					if (isNaN(this.atts.OSP_PTS_2013) == false){
-						var curPnts = Math.round(this.atts.OSP_PTS_2013);
-						curPnts = commaSeparateNumber(curPnts);
-						$('#' + this.appDiv.id + 'bar1L').html(curPnts)
+						if (isNaN(this.atts.SUM_ALL_cpts) == false){
+							var potPnts = Math.round(this.atts.SUM_ALL_cpts);
+							potPnts = commaSeparateNumber(potPnts);
+							$('#' + this.appDiv.id + 'bar2L').html(potPnts);
+						}
 					}	
-					if (isNaN(this.atts.SUM_ALL_cpts) == false){
-						var potPnts = Math.round(this.atts.SUM_ALL_cpts);
-						potPnts = commaSeparateNumber(potPnts);
-						$('#' + this.appDiv.id + 'bar2L').html(potPnts);
-					}
 				}));	
 				this.map.addLayer(this.crsFL);
 				this.resize();
@@ -437,26 +439,34 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						// something was selected
 						if (p) {
 							this.config.crsSelected = c.currentTarget.value;
-							this.config.crsSelUnderscore = this.config.crsSelected.replace(/ /g,"_");
-							if (this.config.crsSelected == "Duck NC"){
-								$('#' + this.appDiv.id + 'noDownloadDiv').slideDown();
-								$('#' + this.appDiv.id + 'downloadDiv').slideUp();
-							}else{
-								$('#' + this.appDiv.id + 'noDownloadDiv').slideUp();
-								$('#' + this.appDiv.id + 'downloadDiv').slideDown();
-							}	
+							// use selected community to query community layer 	
 							var q = new Query();
 							q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
 							this.crsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
-							$.each(this.config.dlOspLayers, lang.hitch(this,function(i,v){
-								this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
-							})); 							 
-							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
-							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
-							//this.excludeFromCrs(this.config.crsSelected);
-							this.config.visibleLayers = this.config.dlOspLayers;
-							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
-							$('.legend').removeClass("hideLegend");
+							// User clicked download section on home page
+							if (this.config.section == "dl"){
+								this.config.crsSelUnderscore = this.config.crsSelected.replace(/ /g,"_");
+								if (this.config.crsSelected == "Duck NC"){
+									$('#' + this.appDiv.id + 'noDownloadDiv').slideDown();
+									$('#' + this.appDiv.id + 'downloadDiv').slideUp();
+								}else{
+									$('#' + this.appDiv.id + 'noDownloadDiv').slideUp();
+									$('#' + this.appDiv.id + 'downloadDiv').slideDown();
+								}	
+								// Set layer defs on layers id's in dlSspLayers array
+								$.each(this.config.dlOspLayers, lang.hitch(this,function(i,v){
+									this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
+								})); 							 
+								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+								$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
+								//this.excludeFromCrs(this.config.crsSelected);
+								this.config.visibleLayers = this.config.dlOspLayers;
+								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+								$('.legend').removeClass("hideLegend");
+							}
+							if (this.config.section == "pin"){
+								$('#' + this.appDiv.id + 'printWrapper').slideDown();
+							}	
 						}
 						// selection was cleared
 						else{	
@@ -572,6 +582,27 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				$('#' + this.appDiv.id + 'dlBtn').on('click', lang.hitch(this,function(){
 					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + ".zip", "_parent");
 				}));
+				// Print by PIN
+				$('#' + this.appDiv.id + 'printBtn').on('click', lang.hitch(this,function(){
+					var gp = new Geoprocessor('http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/printByPIN/GPServer/Print%20By%20PIN')
+					var params = {
+						crsName: this.config.crsSelected,
+						pin: "988413044405" 			
+					}	
+					gp.submitJob(params, completeCallback, statusCallback);
+					$("body").css("cursor", "progress");
+					function statusCallback(jobInfo){
+						console.log(jobInfo.jobStatus);
+					}
+					function completeCallback(jobInfo) {
+						$("body").css("cursor", "default");
+						console.log(jobInfo.jobId)
+						gp.getResultData(jobInfo.jobId, "mymap", displayResult);
+					}
+					function displayResult(result, messages) {
+						console.log(result.value.url);
+					}
+				}));						
 				// Parcel acres input change listener
 				$('#' + this.appDiv.id + 'parcelAcres').on('keyup', lang.hitch(this,function(c){
 					this.config.acresValue = c.currentTarget.value;
