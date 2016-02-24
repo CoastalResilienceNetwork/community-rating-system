@@ -4,13 +4,14 @@ require({
 });
 // Bring in dojo and javascript api classes as well as config.json and content.html
 define([
-	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
+	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/tasks/QueryTask",
+	"esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
 	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang", "esri/tasks/Geoprocessor",
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui'
 ],
-function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, PictureMarkerSymbol, TooltipDialog, dijitPopup,
+function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
@@ -33,7 +34,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
 				// Define global config not needed by Save and Share
-				this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer"
+				this.config.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer"
 			},
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
@@ -88,7 +89,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 			// Called when the user hits the print icon
 			beforePrint: function(printDeferred, $printArea, mapObject) {
 				// Add hexagons
-				var layer = new ArcGISDynamicMapServiceLayer(this.url, {opacity:0.5});
+				var layer = new ArcGISDynamicMapServiceLayer(this.config.url, {opacity:0.5});
 				layer.setVisibleLayers([7,10,11])  
 				this.config.layerDefs[10] = this.config.crsDef
 				this.config.layerDefs[11] = this.config.crsDef
@@ -134,6 +135,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					active: 0,
 					heightStyle: "content"
 				});
+				$('#' + this.appDiv.id + 'parAccord').accordion({
+					collapsible: false,
+					active: 0,
+					heightStyle: "content"
+				});
 				// Handle clicks on home screen
 				$('#' + this.appDiv.id + 'ospAppBtn').on('click',lang.hitch(this,function(){
 					this.config.section = "dl";
@@ -159,7 +165,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					$('#' + this.appDiv.id + 'home').slideDown();
 				}));	
 				// Add dynamic map service
-				this.dynamicLayer = new ArcGISDynamicMapServiceLayer(this.url, {opacity: 1 - this.config.sliderVal/10});
+				this.dynamicLayer = new ArcGISDynamicMapServiceLayer(this.config.url, {opacity: 1 - this.config.sliderVal/10});
 				this.map.addLayer(this.dynamicLayer);
 				this.dynamicLayer.on("load", lang.hitch(this, function () {  
 					if (this.config.extent == ""){
@@ -182,11 +188,35 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						$('#' + this.appDiv.id + 'bottomDiv').hide();	
 					}
 				}));
-				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
-				this.crsFL = new FeatureLayer(this.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				// Create a QueryTask for PIN search
+				this.pinQt = new QueryTask(this.config.url + "/6");
+				// red selection symbol
 				var selSymbol = new SimpleFillSymbol( SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(
 					SimpleLineSymbol.STYLE_SOLID, new Color([255,0,0]), 2 ), new Color([255,255,255,0])
 				);
+				// Create a feature layer of parcel selected by PIN
+				this.pinFL = new FeatureLayer(this.config.url + "/6", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				this.pinFL.setSelectionSymbol(selSymbol);
+				this.pinFL.on('selection-complete', lang.hitch(this,function(evt){
+					if (this.pinTracker == "yes"){
+						this.pinTracker = "zcheck"
+						var pinExtent = evt.features[0].geometry.getExtent();
+						this.map.setExtent(pinExtent, true);
+					}
+				}));	
+				// Track extent changes for pin zooms
+				this.pinTracker = "no"
+				this.map.on('extent-change',lang.hitch(this,function(){
+					if (this.pinTracker == 'zcheck'){
+						this.pinTracker = "no"
+						var zoom = this.map.getZoom()
+						if (zoom > 19 ){
+							this.map.setZoom(19)
+						}	
+					}
+				}))			
+				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
+				this.crsFL = new FeatureLayer(this.config.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
 				//this.crsFL.setSelectionSymbol(selSymbol);
 				this.crsFL.on('selection-complete', lang.hitch(this,function(evt){
 					// Get and zoom to extent of selected feature
@@ -243,7 +273,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}
 					}	
 				}));	
-				this.map.addLayer(this.crsFL);
+				//this.map.addLayer(this.crsFL);
+				this.map.addLayer(this.pinFL);
 				this.resize();
 				// Setup hover window for 20 largest parcels (as points)
 				this.map.infoWindow.resize(225,125);
@@ -253,7 +284,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				});
 				this.dialog.startup();
 				// Create a feature layer to select the 20 largest parcels
-				this.parcelsFL = new FeatureLayer(this.url + "/14", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
+				this.parcelsFL = new FeatureLayer(this.config.url + "/14", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
 				this.parcelsFL.on('selection-complete', lang.hitch(this,function(evt){
 					this.labels = "stop";
 					// First selection based on user filters
@@ -422,14 +453,16 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				}));					
 				// Enable jquery plugin 'chosen'
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {
-					var config = { '.chosen-select'           : {allow_single_deselect:true, width:"200px", disable_search:true}}
-					var config1 = { '.chosen-select1'           : {allow_single_deselect:true, width:"190px", disable_search:true}}
-					var config2 = { '.chosen-select2'           : {allow_single_deselect:true, width:"190px", disable_search:true}}
-					var config3 = { '.chosen-select3'           : {allow_single_deselect:true, width:"260px", disable_search:true}}
-					for (var selector in config) { $(selector).chosen(config[selector]); }
+					var configCrs =  { '.chosen-crs' : {allow_single_deselect:true, width:"200px", disable_search:true}}
+					var configPin =  { '.chosen-pin' : {allow_single_deselect:true, width:"200px", search_contains:true}}
+					for (var selector in configCrs)  { $(selector).chosen(configCrs[selector]); }
+					for (var selector in configPin)  { $(selector).chosen(configPin[selector]); }
+				/*	var config1 = { '.chosen-select1': {allow_single_deselect:true, width:"190px", disable_search:true}}
+					var config2 = { '.chosen-select2': {allow_single_deselect:true, width:"190px", disable_search:true}}
+					var config3 = { '.chosen-select3': {allow_single_deselect:true, width:"260px", disable_search:true}}
 					for (var selector in config1) { $(selector).chosen(config1[selector]); }
 					for (var selector in config2) { $(selector).chosen(config2[selector]); }
-					for (var selector in config3) { $(selector).chosen(config3[selector]); }
+					for (var selector in config3) { $(selector).chosen(config3[selector]); } */
 				}));	
 				// Use selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(this,function($) {			
@@ -439,10 +472,24 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						// something was selected
 						if (p) {
 							this.config.crsSelected = c.currentTarget.value;
+							this.config.crsNoSpace = c.currentTarget.value.replace(/\s+/g, '');
+							if (this.config.crsSelected == "Duck NC"){
+								$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", true );
+								$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "No Parcels");
+								$('#' + this.appDiv.id + 'hasParcelsDiv').hide();
+								$('#' + this.appDiv.id + 'noParcelsDiv').show();
+							}else{
+								$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", false );
+								$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "Find Parcel by PIN");
+								$('#' + this.appDiv.id + 'hasParcelsDiv').show();
+								$('#' + this.appDiv.id + 'noParcelsDiv').hide();
+							}			
+							$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 							// use selected community to query community layer 	
 							var q = new Query();
 							q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
 							this.crsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							$('#' + this.appDiv.id + 'printAnchorDiv').empty();
 							// User clicked download section on home page
 							if (this.config.section == "dl"){
 								this.config.crsSelUnderscore = this.config.crsSelected.replace(/ /g,"_");
@@ -459,13 +506,36 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 								})); 							 
 								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
 								$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
-								//this.excludeFromCrs(this.config.crsSelected);
 								this.config.visibleLayers = this.config.dlOspLayers;
 								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 								$('.legend').removeClass("hideLegend");
 							}
 							if (this.config.section == "pin"){
-								$('#' + this.appDiv.id + 'printWrapper').slideDown();
+								//$('#' + this.appDiv.id + 'crsNameParcel').html(this.config.crsSelected)
+								// Set layer defs on layers id's in dlSspLayers array
+								$.each(this.config.pinLayers, lang.hitch(this,function(i,v){
+									this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
+								})); 							 
+								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+								this.config.visibleLayers = this.config.pinLayers;
+								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+								$('.legend').removeClass("hideLegend");
+								// select all parcels in tax district
+								var q = new Query();
+								q.returnGeometry = false;
+								q.outFields = ["PIN"];
+								q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
+								this.pinQt.execute(q, lang.hitch(this,function(evt){
+									$('#' + this.appDiv.id + 'ch-PIN').empty();
+									$('#' + this.appDiv.id + 'ch-PIN').append("<option value=''></option>");
+									this.f = evt.features;
+									$.each(this.f, lang.hitch(this,function(i,v){
+										var pin = v.attributes.PIN;
+										$('#' + this.appDiv.id + 'ch-PIN').append("<option value='"+pin+"'>"+pin+"</option>");
+									}));
+									$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
+									$('#' + this.appDiv.id + 'printWrapper').slideDown();
+								}));
 							}	
 						}
 						// selection was cleared
@@ -475,10 +545,48 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 							$('.legend').addClass("hideLegend");	
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
+							$('#' + this.appDiv.id + 'printWrapper').slideUp();
 							$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
 							$('#' + this.appDiv.id + 'step2 .gCol, #' + this.appDiv.id + 'step2 .infoOpen, #' + this.appDiv.id + 'step1 .parText, #' + this.appDiv.id + 'step1 .sumView').hide();
 						}
 					}));
+					$('#' + this.appDiv.id + 'ch-PIN').chosen().change(lang.hitch(this,function(c, p){
+						if (p){
+							this.pinSelected = c.currentTarget.value;
+							var q = new Query();
+							q.where = "CRS_NAME = '" + this.config.crsSelected + "' AND PIN = '" + this.pinSelected + "'";
+							this.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "Select More Parcels");
+							$("#" + this.appDiv.id + "ch-PIN option[value='" + this.pinSelected + "']").remove();
+							if ($('#' + this.appDiv.id + 'ch-PIN option').size() == 1){
+								$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "No More Parcels");
+								$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", true );
+							}	
+							$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
+							this.zoomSelectedClass()
+							$('#' + this.appDiv.id + 'printAnchorDiv').append(
+								"<div class='pinPDFdiv zoomSelected'>" +
+									this.pinSelected + ": " + 
+									"<a class='pinPDFLinks' id='" + this.appDiv.id + "m-" + this.pinSelected + "'>View Map</a>" +
+									" | " + 
+									"<a class='pinZoomLinks' id='" + this.appDiv.id + "z-" + this.pinSelected + "'>Zoom</a>" +
+								"</div>"
+							);	
+							$('.pinPDFLinks').on('click',lang.hitch(this,function(e){
+								this.zoomSelectedClass(e.currentTarget.parentElement)
+								var pin = e.currentTarget.id.split("-").pop()
+								window.open("plugins/community-rating-system/resources/pinMaps/" + this.config.crsNoSpace + "_" + pin + ".pdf", "_blank");
+							}));	
+							$('.pinZoomLinks').on('click',lang.hitch(this,function(e){
+								this.pinTracker = "yes"
+								var pin = e.currentTarget.id.split("-").pop()
+								var q = new Query();
+								q.where = "CRS_NAME = '" + this.config.crsSelected + "' AND PIN = '" + pin + "'";
+								this.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);	
+								this.zoomSelectedClass(e.currentTarget.parentElement)
+							}));
+						}
+					}));	
 					// Select Owner Type filter
 					$('#' + this.appDiv.id + 'ch-OWNER_TYPE').chosen().change(lang.hitch(this,function(c, p){
 						if (p) {
@@ -571,6 +679,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 						}						
 					}));	
 				}));
+					
 				// Preview download maps
 				$('#' + this.appDiv.id + 'allParcelPreview').on('click',lang.hitch(this,function(){
 					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + "_Parcels_All.pdf", "_blank");
@@ -583,26 +692,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + ".zip", "_parent");
 				}));
 				// Print by PIN
-				$('#' + this.appDiv.id + 'printBtn').on('click', lang.hitch(this,function(){
-					var gp = new Geoprocessor('http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/printByPIN/GPServer/Print%20By%20PIN')
-					var params = {
-						crsName: this.config.crsSelected,
-						pin: "988413044405" 			
-					}	
-					gp.submitJob(params, completeCallback, statusCallback);
-					$("body").css("cursor", "progress");
-					function statusCallback(jobInfo){
-						console.log(jobInfo.jobStatus);
-					}
-					function completeCallback(jobInfo) {
-						$("body").css("cursor", "default");
-						console.log(jobInfo.jobId)
-						gp.getResultData(jobInfo.jobId, "mymap", displayResult);
-					}
-					function displayResult(result, messages) {
-						console.log(result.value.url);
-					}
-				}));						
+										
 				// Parcel acres input change listener
 				$('#' + this.appDiv.id + 'parcelAcres').on('keyup', lang.hitch(this,function(c){
 					this.config.acresValue = c.currentTarget.value;
@@ -763,6 +853,13 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 				}));	
 				this.rendered = true;				
 			},
+			zoomSelectedClass: function(e){
+				var c = $('#' + this.appDiv.id + 'printAnchorDiv').children()
+				$.each(c,lang.hitch(this,function(i,v){
+					$(v).removeClass('zoomSelected');
+				}));
+				if (e){ $(e).addClass('zoomSelected') }	
+			},	
 			hideParcelLabels: function (){
 				this.config.selectParcels = "no";
 				this.parcelsFL.clear();
@@ -865,7 +962,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 			},	
 			buildSmallLegends: function(lyrId, lyrName){
 				$('#' + lyrId + '-img').html('');
-				$.getJSON( this.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
+				$.getJSON( this.config.url +  "/legend?f=pjson&callback=?", lang.hitch(this,function( json ) {
 					var legendArray = [];
 					//get legend pics
 					$.each(json.layers, lang.hitch(this,function(i, v){
@@ -883,6 +980,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Pictur
 			clearItems: function(){
 				this.config.selectParcels = "no";
 				this.parcelsFL.clear();
+				this.pinFL.clear();
 				this.config.excludeDef = "";
 				$('#' + this.appDiv.id + 'selectParcels').show();
 				$('#' + this.appDiv.id + 'hideParcels').hide();

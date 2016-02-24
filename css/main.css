@@ -36,23 +36,54 @@
 .topHeader{
 	font-size:14pt; width:290px; margin-top:3px; margin-left:10px; color:#21658c; font-weight:bold; 
 }
-.dlOspWrapper, .printWrapper{
+.dlOspWrapper{
 	display:none;
 }	
 .dlSelectWrapper{
 	position:relative; top:45px; width:385px; text-align:center;
 }	
-.selectHeader{
-	font-weight:bold; margin-top:5px; display:none;
+.printWrapper{
+	margin-top:20px; width:395px; text-align:center; display:none;
+}
+.printAnchorDiv{
+	width:230px; margin:auto; margin-top:10px; 
 }	
+.pinPDFdiv{
+	margin-top:0px; font-size:12pt; font-weight:bold; padding:5px; 
+}	
+.zoomSelected{
+	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border: 1px solid #bbb; background-color:#fff;
+}	
+.pinPDFLinks, .pinZoomLinks{
+	font-size:11pt; font-weight:bold; color:blue !important;
+} 	
+.pinPDFLinks:hover, .pinZoomLinks:hover{
+	color:#7FB0F0 !important; cursor:pointer;
+}
+.hasParcelsDiv{
+	font-weight:bold; margin-top:5px; margin-bottom:10px; text-align:center; font-size:12pt; color:#21658c; 
+}	
+.noParcelsDiv{
+	font-weight:bold; margin-top:5px; margin-bottom:10px; text-align:center; font-size:12pt; color:#8c2130; display:none;
+}
 .selectDivs{
 	margin-bottom:-5px; margin-left:5px; margin-top:5px; 
 }
+.fakeAccordHeader{
+	background-color:#7FB0F0; color:#fff; background-image:none; text-align:left; z-index:20; position:relative;
+	text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:bold; font-size:12pt; padding:5px 30px;
+}
+.selectDivs1{
+	margin-left:0px; margin-top:-1px; padding-bottom:10px; padding-top:10px; 
+}
+.accrodBg{
+	background-color:#fbfbfb !important;	
+}	
 .bottomRightSm{
 	border:1px solid #21658c; -webkit-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;	-moz-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 	box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 }
-.dlAccord{
+.dlAccord, .parAccord{
 	margin-top:0px;	
 }	
 .ui-accordion .ui-accordion-content{
@@ -61,7 +92,7 @@
 	background-image:none;
 }
 .dlAccord .ui-accordion-content{
-	padding:3px; background-color:#fff; background-image:none; border-left: 1px solid #09743E; border-top: none; border-right: 1px solid #09743E; border-bottom: 1px solid #09743E;
+	padding:3px; background-color:#fff; background-image:none; border-left: 1px solid #21658c; border-top: none; border-right: 1px solid #21658c; border-bottom: 1px solid #21658c;
 	-webkit-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;	-moz-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 	box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 }
@@ -70,11 +101,15 @@
 	-webkit-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;	-moz-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 	box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 }
+.parAccord .ui-accordion-content{
+	padding:3px; background-image:none; border-left: 1px solid #21658c; border-top: none; border-right: 1px solid #21658c; border-bottom: 1px solid #21658c;
+	-webkit-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;	-moz-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
+	box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
+}
 .ui-accordion .ui-accordion-header{
 	/*background-color:#eff5f7;
 	color:#21658c;*/
-	background-color:#7FB0F0; color:#fff;
-	background-image:none;
+	background-color:#7FB0F0; color:#fff; background-image:none;
 	text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:bold; font-size:12pt; padding:5px 30px;
 }
 .ui-accordion .ui-accordion-header:hover{
@@ -222,6 +257,12 @@ label.checkBoxLabels input[type=checkbox]{
 /* Info icons */
 .infoOpen{
 	cursor:pointer; margin-left:4px; margin-bottom:-3px; display:none; font-size:8pt;
+}
+.infoA{
+	color:blue !important;	font-weight:bold;
+}
+.infoA:hover{
+	color:#7FB0F0 !important; cursor:pointer; 
 }
 /* Parcel checkbox rows */
 .smallLegends{
