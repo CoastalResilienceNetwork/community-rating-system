@@ -485,9 +485,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$('#' + this.appDiv.id + 'larParLink').show();
 								$('#' + this.appDiv.id + 'ceosLink').show();
 								$('#' + this.appDiv.id + 'sbLink').show();
+								$('#' + this.appDiv.id + 'csvDesc').show();
 								if (this.config.crsSelected == "Duck NC"){
 									$('#' + this.appDiv.id + 'allParLink').hide();
 									$('#' + this.appDiv.id + 'larParLink').hide();
+									$('#' + this.appDiv.id + 'csvDesc').hide();
 								}
 								if (this.config.crsSelected == "Manteo NC"){
 									$('#' + this.appDiv.id + 'ceosLink').hide();
