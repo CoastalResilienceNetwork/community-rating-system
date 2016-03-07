@@ -1,3 +1,6 @@
+body.waiting * {
+    cursor: progress;
+}
 /* Opening buttons - what do you want to do? */
 .homeHeader{
 	font-size:16pt; font-weight:100; margin-left:5px; margin-bottom:5px;
@@ -121,15 +124,12 @@
 }
 .downloadDiv{
 	padding:5px;
-}	
-.noDownloadDiv{
-	font-size:10pt; padding:5px; color:#8c2130; font-weight:bold; text-align:center; display:none;
-}	
+}		
 .bulHead{
 	font-size:9pt; 
 }
 .bulList{
-	margin-left:5px; margin-top:5px; font-size:9pt; 
+	margin-left:2px; margin-top:5px; font-size:9pt; 
 }	
 .bulList a{
 	color:blue;	font-weight:bold;

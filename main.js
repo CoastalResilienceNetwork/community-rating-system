@@ -2,14 +2,14 @@
 require({ 
 	packages: [{ name: "jquery", location: "http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/", main: "jquery.min" }] 
 });
-// Bring in dojo and javascript api classes as well as config.json and content.html
+// Bring in dojo and javascript api classes as well as varObject.json and content.html
 define([
 	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/tasks/QueryTask",
 	"esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
 	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang", "esri/tasks/Geoprocessor",
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
-	"dojo/text!./config.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui'
+	"dojo/text!./varObject.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui'
 ],
 function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
@@ -31,7 +31,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					domStyle.set(this.con, "width", "425px");
 					domStyle.set(this.con, "height", "550px");
 				}	
-				// Define object to access global variables from JSON object. Only add variables to config.JSON that are needed by Save and Share. 
+				// Define object to access global variables from JSON object. Only add variables to varObject.json that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
 				// Define global config not needed by Save and Share
 				this.config.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer"
@@ -67,7 +67,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			deactivate: function () {
 			},	
 			// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
-			// Write anything to you config.json file you have tracked during user activity.		
+			// Write anything to you varObject.json file you have tracked during user activity.		
 			getState: function () {
 				this.config.extent = this.map.geographicExtent;
 				this.config.stateSet = "yes";
@@ -473,18 +473,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						if (p) {
 							this.config.crsSelected = c.currentTarget.value;
 							this.config.crsNoSpace = c.currentTarget.value.replace(/\s+/g, '');
-							if (this.config.crsSelected == "Duck NC"){
-								$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", true );
-								$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "No Parcels");
-								$('#' + this.appDiv.id + 'hasParcelsDiv').hide();
-								$('#' + this.appDiv.id + 'noParcelsDiv').show();
-							}else{
-								$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", false );
-								$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "Find Parcel by PIN");
-								$('#' + this.appDiv.id + 'hasParcelsDiv').show();
-								$('#' + this.appDiv.id + 'noParcelsDiv').hide();
-							}			
-							$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 							// use selected community to query community layer 	
 							var q = new Query();
 							q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
@@ -493,13 +481,18 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							// User clicked download section on home page
 							if (this.config.section == "dl"){
 								this.config.crsSelUnderscore = this.config.crsSelected.replace(/ /g,"_");
+								$('#' + this.appDiv.id + 'allParLink').show();
+								$('#' + this.appDiv.id + 'larParLink').show();
+								$('#' + this.appDiv.id + 'ceosLink').show();
+								$('#' + this.appDiv.id + 'sbLink').show();
 								if (this.config.crsSelected == "Duck NC"){
-									$('#' + this.appDiv.id + 'noDownloadDiv').slideDown();
-									$('#' + this.appDiv.id + 'downloadDiv').slideUp();
-								}else{
-									$('#' + this.appDiv.id + 'noDownloadDiv').slideUp();
-									$('#' + this.appDiv.id + 'downloadDiv').slideDown();
+									$('#' + this.appDiv.id + 'allParLink').hide();
+									$('#' + this.appDiv.id + 'larParLink').hide();
+								}
+								if (this.config.crsSelected == "Manteo NC"){
+									$('#' + this.appDiv.id + 'ceosLink').hide();
 								}	
+								$('#' + this.appDiv.id + 'downloadDiv').slideDown();
 								// Set layer defs on layers id's in dlSspLayers array
 								$.each(this.config.dlOspLayers, lang.hitch(this,function(i,v){
 									this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
@@ -511,6 +504,18 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$('.legend').removeClass("hideLegend");
 							}
 							if (this.config.section == "pin"){
+								if (this.config.crsSelected == "Duck NC"){
+									$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", true );
+									$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "No Parcels");
+									$('#' + this.appDiv.id + 'hasParcelsDiv').hide();
+									$('#' + this.appDiv.id + 'noParcelsDiv').show();
+								}else{
+									$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", false );
+									$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "Find Parcel by PIN");
+									$('#' + this.appDiv.id + 'hasParcelsDiv').show();
+									$('#' + this.appDiv.id + 'noParcelsDiv').hide();
+								}			
+								$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 								//$('#' + this.appDiv.id + 'crsNameParcel').html(this.config.crsSelected)
 								// Set layer defs on layers id's in dlSspLayers array
 								$.each(this.config.pinLayers, lang.hitch(this,function(i,v){
@@ -526,6 +531,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								q.outFields = ["PIN"];
 								q.where = "CRS_NAME = '" + this.config.crsSelected + "'";
 								this.pinQt.execute(q, lang.hitch(this,function(evt){
+									$('body').addClass('waiting');
 									$('#' + this.appDiv.id + 'ch-PIN').empty();
 									$('#' + this.appDiv.id + 'ch-PIN').append("<option value=''></option>");
 									this.f = evt.features;
@@ -535,6 +541,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 									}));
 									$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 									$('#' + this.appDiv.id + 'printWrapper').slideDown();
+									$('body').removeClass('waiting');
 								}));
 							}	
 						}
@@ -575,7 +582,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							$('.pinPDFLinks').on('click',lang.hitch(this,function(e){
 								this.zoomSelectedClass(e.currentTarget.parentElement)
 								var pin = e.currentTarget.id.split("-").pop()
-								window.open("plugins/community-rating-system/resources/pinMaps/" + this.config.crsNoSpace + "_" + pin + ".pdf", "_blank");
+								window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_" + pin + ".pdf", "_blank");
 							}));	
 							$('.pinZoomLinks').on('click',lang.hitch(this,function(e){
 								this.pinTracker = "yes"
@@ -682,14 +689,20 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					
 				// Preview download maps
 				$('#' + this.appDiv.id + 'allParcelPreview').on('click',lang.hitch(this,function(){
-					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + "_Parcels_All.pdf", "_blank");
+					window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_AllParcels.pdf", "_blank");
 				}));
 				$('#' + this.appDiv.id + 'largeParcelPreview').on('click', lang.hitch(this,function(){
-					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + "_Parcels_Large.pdf", "_blank");					
+					window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_Parcels_Large.pdf", "_blank");					
+				}));
+				$('#' + this.appDiv.id + 'setbackParcelPreview').on('click', lang.hitch(this,function(){
+					window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_Setbacks.pdf", "_blank");					
+				}));
+				$('#' + this.appDiv.id + 'ceosParcelPreview').on('click', lang.hitch(this,function(){
+					window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_CEOS.pdf", "_blank");					
 				}));
 				// Data download click
 				$('#' + this.appDiv.id + 'dlBtn').on('click', lang.hitch(this,function(){
-					window.open("plugins/community-rating-system/resources/" + this.config.crsSelUnderscore + ".zip", "_parent");
+					window.open("http://crs-maps.coastalresilience.org/" + this.config.crsNoSpace + "_Maps.zip", "_parent");
 				}));
 				// Print by PIN
 										
