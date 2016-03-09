@@ -39,6 +39,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
 				$('.legend').removeClass("hideLegend");
+				this.map.__proto__._params.maxZoom = 23;
 				if (this.appDiv != undefined){
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
 					$('#' + this.appDiv.id + 'ch-CRS').trigger('change');
@@ -48,6 +49,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			activate: function () {
 				// Hide framework default legend
 				$('.legend').addClass("hideLegend");
+				this.map.__proto__._params.maxZoom = 19;
 				if (this.rendered == false) {
 					this.rendered = true;							
 					this.render();
@@ -205,16 +207,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					}
 				}));	
 				// Track extent changes for pin zooms
-				this.pinTracker = "no"
-				this.map.on('extent-change',lang.hitch(this,function(){
-					if (this.pinTracker == 'zcheck'){
-						this.pinTracker = "no"
-						var zoom = this.map.getZoom()
-						if (zoom > 19 ){
-							this.map.setZoom(19)
-						}	
-					}
-				}))			
+				this.pinTracker = "no"			
 				// Create a feature layer of the selected layer and add mouseover, mouseout, and click listeners
 				this.crsFL = new FeatureLayer(this.config.url + "/0", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
 				//this.crsFL.setSelectionSymbol(selSymbol);
