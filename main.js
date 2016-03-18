@@ -159,15 +159,25 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				$('#' + this.appDiv.id + 'homeBtn').on('click',lang.hitch(this,function(){
 					this.map.setExtent(this.dynamicLayer.initialExtent, true); 
 					this.config.visibleLayers = [];
+					this.config.visibleLayers1 = [];
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+					this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 					$('.legend').addClass("hideLegend");					
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
 					$('#' + this.appDiv.id + 'ch-CRS').trigger('change');
 					$('#'  + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'printWrapper').slideUp();
 					$('#' + this.appDiv.id + 'home').slideDown();
-				}));	
+				}));
+				// Copy of dynamic layer for transparency slider
+				this.dynamicLayer1 = new ArcGISDynamicMapServiceLayer(this.config.url, {opacity: 1 - this.config.sliderVal/10});
+				this.map.addLayer(this.dynamicLayer1);
+				this.dynamicLayer1.on("load", lang.hitch(this, function () {  
+					if (this.config.visibleLayers1.length > 0){	
+						this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
+					}
+				}));				
 				// Add dynamic map service
-				this.dynamicLayer = new ArcGISDynamicMapServiceLayer(this.config.url, {opacity: 1 - this.config.sliderVal/10});
+				this.dynamicLayer = new ArcGISDynamicMapServiceLayer(this.config.url);
 				this.map.addLayer(this.dynamicLayer);
 				this.dynamicLayer.on("load", lang.hitch(this, function () {  
 					if (this.config.extent == ""){
@@ -398,6 +408,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						this.config.layerDefs[6] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 						dijitPopup.close(this.dialog);
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
 					}));	
 				}));
@@ -421,6 +432,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					this.config.layerDefs[6] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 					this.config.layerDefs[7] = this.config.crsDef + this.config.ownerDef + this.config.acresDef  + this.config.descDef + this.config.excludeDef;
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 					$('#' + this.appDiv.id + 'selectParcels').trigger('click');
 				}));
 				$('#' + this.appDiv.id + 'selectParcels').on('click', lang.hitch(this,function(c){
@@ -441,7 +453,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				$('#' + this.appDiv.id + 'slider').slider({ min: 0,	max: 10, value: this.config.sliderVal });
 				$('#' + this.appDiv.id + 'slider').on( "slidechange", lang.hitch(this,function( e, ui ) {
 					this.config.sliderVal = ui.value;
-					this.dynamicLayer.setOpacity(1 - ui.value/10);
+					this.dynamicLayer1.setOpacity(1 - ui.value/10);
 					$('.smallLegends').css('opacity', 1 - ui.value/10);
 				}));					
 				// Enable jquery plugin 'chosen'
@@ -489,13 +501,16 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								}	
 								$('#' + this.appDiv.id + 'downloadDiv').slideDown();
 								// Set layer defs on layers id's in dlSspLayers array
-								$.each(this.config.dlOspLayers, lang.hitch(this,function(i,v){
+								$.each(this.config.dlOspLayers1, lang.hitch(this,function(i,v){
 									this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
 								})); 							 
 								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+								this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 								$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2').slideDown();
 								this.config.visibleLayers = this.config.dlOspLayers;
+								this.config.visibleLayers1 = this.config.transLayer;
 								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+								this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 								$('.legend').removeClass("hideLegend");
 							}
 							if (this.config.section == "pin"){
@@ -513,12 +528,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$('#' + this.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 								//$('#' + this.appDiv.id + 'crsNameParcel').html(this.config.crsSelected)
 								// Set layer defs on layers id's in dlSspLayers array
-								$.each(this.config.pinLayers, lang.hitch(this,function(i,v){
+								$.each(this.config.pinLayers1, lang.hitch(this,function(i,v){
 									this.config.layerDefs[v] = "CRS_NAME = '" + this.config.crsSelected + "'"
 								})); 							 
 								this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+								this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 								this.config.visibleLayers = this.config.pinLayers;
+								this.config.visibleLayers1 = this.config.transLayer;
 								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+								this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 								$('.legend').removeClass("hideLegend");
 								// select all parcels in tax district
 								var q = new Query();
@@ -544,7 +562,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						else{	
 							this.crsFL.clear();
 							this.config.visibleLayers = [];
+							this.config.visibleLayers1 = [];
 							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+							this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 							$('.legend').addClass("hideLegend");	
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 							$('#' + this.appDiv.id + 'printWrapper').slideUp();
@@ -723,6 +743,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								}));
 							}));
 							this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+							this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 						}
 					// nothing entered in input - reset definition 
 					}else{
@@ -737,6 +758,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							}));
 						}));
 						this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+						this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 					}
 					if (this.config.selectParcels == "yes"){
 						$('#' + this.appDiv.id + 'selectParcels').trigger('click');
@@ -828,7 +850,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						}						
 					}
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+					this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 				}));
 				// Suplemental data checkboxes
 				$('.supCB').on('click', lang.hitch(this,function(c){
@@ -857,7 +881,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						$(c.currentTarget).parent().parent().find('.longLegDiv').slideUp();
 					}
 					this.dynamicLayer.setLayerDefinitions(this.config.layerDefs);
+					this.dynamicLayer1.setLayerDefinitions(this.config.layerDefs);
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
+					this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
 				}));	
 				this.rendered = true;				
 			},
