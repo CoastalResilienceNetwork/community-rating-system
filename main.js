@@ -40,7 +40,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			},
 			// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 			hibernate: function () {
-				$('.legend').removeClass("hideLegend");
+				//$('.legend').removeClass("hideLegend");
 				this.map.__proto__._params.maxZoom = 23;
 				if (this.appDiv != undefined){
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
@@ -50,7 +50,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 			activate: function () {
 				// Hide framework default legend
-				$('.legend').addClass("hideLegend");
+				//$('.legend').addClass("hideLegend");
 				this.map.__proto__._params.maxZoom = 19;
 				if (this.rendered == false) {
 					this.rendered = true;							
@@ -69,7 +69,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			},
 			// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 			deactivate: function () {
-				$('.legend').removeClass("hideLegend");
+				//$('.legend').removeClass("hideLegend");
 			},	
 			// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 			// Write anything to you varObject.json file you have tracked during user activity.		
@@ -165,7 +165,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					this.config.visibleLayers1 = [];
 					this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 					this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
-					$('.legend').addClass("hideLegend");					
+					//$('.legend').addClass("hideLegend");					
 					$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
 					$('#' + this.appDiv.id + 'ch-CRS').trigger('change');
 					$('#'  + this.appDiv.id + 'topWrapper, #' + this.appDiv.id + 'dlOspWrapper, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'printWrapper').slideUp();
@@ -514,7 +514,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								this.config.visibleLayers1 = this.config.transLayer;
 								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 								this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
-								$('.legend').removeClass("hideLegend");
+								//$('.legend').removeClass("hideLegend");
 							}
 							if (this.config.section == "pin"){
 								if (this.config.crsSelected == "Duck NC"){
@@ -540,7 +540,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								this.config.visibleLayers1 = this.config.transLayer;
 								this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 								this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
-								$('.legend').removeClass("hideLegend");
+								//$('.legend').removeClass("hideLegend");
 								// select all parcels in tax district
 								var q = new Query();
 								q.returnGeometry = false;
@@ -568,7 +568,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							this.config.visibleLayers1 = [];
 							this.dynamicLayer.setVisibleLayers(this.config.visibleLayers);
 							this.dynamicLayer1.setVisibleLayers(this.config.visibleLayers1);
-							$('.legend').addClass("hideLegend");	
+							//$('.legend').addClass("hideLegend");	
 							$('#' + this.appDiv.id + 'step0, #' + this.appDiv.id + 'step1, #' + this.appDiv.id + 'step2, #' + this.appDiv.id + 'step3').slideUp();
 							$('#' + this.appDiv.id + 'printWrapper').slideUp();
 							$('#' + this.appDiv.id + 'step2 .gExp, #' + this.appDiv.id + 'step1 .sumText, #' + this.appDiv.id + 'step1 .parView').show();
