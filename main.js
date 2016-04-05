@@ -15,6 +15,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
+			// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 			toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
 			hasCustomPrint: true, usePrintPreviewMap: true, previewMapSize: [1000, 550], height:"570", width:"425",
 			infoGraphic: "plugins/community-rating-system/images/infoGraphic.jpg",
@@ -68,6 +69,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			},
 			// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 			deactivate: function () {
+				$('.legend').removeClass("hideLegend");
 			},	
 			// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 			// Write anything to you varObject.json file you have tracked during user activity.		
