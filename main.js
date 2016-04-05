@@ -16,7 +16,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, legendContent, content, ui ) {
 		return declare(PluginBase, {
 			toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
-			hasCustomPrint: true, usePrintPreviewMap: true, previewMapSize: [1000, 550],
+			hasCustomPrint: true, usePrintPreviewMap: true, previewMapSize: [1000, 550], height:"570", width:"425",
+			infoGraphic: "plugins/community-rating-system/images/infoGraphic.jpg",
 			// First function called when the user clicks the pluging icon. 
 			initialize: function (frameworkParameters) {
 				// Access framework parameters
@@ -29,7 +30,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					domStyle.set(this.con1, "height", "570px");
 				}else{
 					domStyle.set(this.con, "width", "425px");
-					domStyle.set(this.con, "height", "550px");
+					domStyle.set(this.con, "height", "570px");
 				}	
 				// Define object to access global variables from JSON object. Only add variables to varObject.json that are needed by Save and Share. 
 				this.config = dojo.eval("[" + config + "]")[0];	
