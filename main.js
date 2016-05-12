@@ -517,7 +517,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								//$('.legend').removeClass("hideLegend");
 							}
 							if (this.config.section == "pin"){
-								if (this.config.crsSelected == "Duck NC"){
+								// placeholder for Community with no OSP parcels (used to be Duck)
+								if (this.config.crsSelected == "NP Community"){
 									$('#' + this.appDiv.id + 'ch-PIN').prop( "disabled", true );
 									$('#' + this.appDiv.id + 'ch-PIN').attr("data-placeholder", "No Parcels");
 									$('#' + this.appDiv.id + 'hasParcelsDiv').hide();
