@@ -1,5 +1,5 @@
 {
-    "url": "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS1/MapServer",
+    "url": "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer",
 	"visibleLayers": [],
 	"visibleLayers1": [],
 	"dlOspLayers": [0,9],
