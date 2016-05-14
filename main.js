@@ -495,7 +495,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$('#' + this.appDiv.id + 'ceosLink').show();
 								$('#' + this.appDiv.id + 'sbLink').show();
 								$('#' + this.appDiv.id + 'csvDesc').show();
-								if (this.config.crsSelected == "Duck NC"){
+								if (this.config.crsSelected == "Duck NC1"){
 									$('#' + this.appDiv.id + 'allParLink').hide();
 									$('#' + this.appDiv.id + 'larParLink').hide();
 									$('#' + this.appDiv.id + 'csvDesc').hide();
