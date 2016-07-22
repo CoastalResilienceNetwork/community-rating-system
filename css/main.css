@@ -9,7 +9,7 @@ body.waiting * {
 	padding:5px 10px; text-decoration:none; -moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5); box-shadow: 0 1px 3px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; position:relative; 
 	font-size: 16pt; margin:5px; 
- }
+}
 .ready{
 	background-color: #7FB0F0; color: #FFF; text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:100; 
 }
@@ -43,10 +43,162 @@ body.waiting * {
 	display:none;
 }	
 .dlSelectWrapper{
-	position:relative; top:45px; width:385px; text-align:center;
+	position:relative; top:43px; width:385px; text-align:center;
 }	
 .printWrapper{
 	margin-top:20px; width:395px; text-align:center; display:none;
+}
+.futureWrapper{
+	margin-top:50px; width:100%; text-align:left; display:none;
+}
+.futureCbs, .futureRads{
+	margin-left:18px;
+}
+.navWrapper{
+	width:100%; text-align:center; margin-top:-5px;
+}
+.ztpWrapper{
+	width:100%; margin-top:0px; margin-bottom:0px; display:inline-block; text-align:center;
+}
+.searchPinButton{
+	padding:5px; text-decoration:none; -moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5); box-shadow: 0 1px 3px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; display:inline-block; 
+	font-size: 12pt; margin:5px 0px 0px 5px; 
+}
+.queryParcels{
+	padding:5px; text-decoration:none; -moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5); box-shadow: 0 1px 3px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; display:inline-block; 
+	font-size: 12pt; margin:5px 0px 0px 15px; font-weight:bold; width:50px; text-align:center;
+}
+.searchPinNone{
+	display:none; font-size:12pt; color:#8c2130; margin-top:0px; margin-bottom:10px; font-weight:bold;	 
+}	
+.queryParNone{
+	display:none; font-size:12pt; color:#8c2130; margin-top:0px; margin-bottom:10px; font-weight:bold; text-align:center;	 
+}	
+.ffSelInstr{ 
+	margin-bottom:6px;	
+}	
+.qpWrapper{
+	width:100%; margin:5px 10px 10px 0px; display:inline-block; display:none; 
+}
+.infoTextBig{
+	font-size:14pt; color:#21658c; font-weight:bold; 
+}
+.infoTextBigger{
+	font-size:16pt; color:#21658c; font-weight:bold; margin-bottom:4px; 
+}
+.infoTextInline{
+	font-size:11pt; color:#21658c; display:inline-block;
+}
+.infoTextHeader{
+	font-size:12pt; color:#21658c; font-weight:bold; 
+}
+.queryHeader1{
+	font-size:12pt; color:#21658c; font-weight:bold; height:40px; text-align:center;
+}
+.queryHeader2{
+	font-size:12pt; color:#21658c; font-weight:bold; text-align:center; margin-left: 57px;
+}
+.infoText{
+	font-size:11pt; color:#21658c; margin-top:3px; overflow:hidden; padding:1px;
+}
+.infoTextIn{
+	font-size:11pt; color:#21658c; margin-top:3px; overflow:hidden; padding:1px; margin-left:8px; height:35px;
+}	
+.parcelInfo{
+	margin:0px 46px 10px 46px; padding:10px 10px 6px 10px; display:none;
+}	
+.pInfoField{
+	float:right; clear:both; font-size:11pt; color:#21658c; max-width:170px; text-align:right;
+}	
+.pifb{
+	font-size:18pt; color:#21658c; font-weight:bold;
+}	
+.fParSelWrapper{
+	display:none;	
+}	
+.futDataWrapper label{
+	font-size:11pt; color:#21658c; display:inline-block;
+}
+.toggleQuery{
+	color:blue; margin: 0 auto; margin-top:-2px; margin-bottom:5px; font-weight:bold; width:100px;
+}	
+.toggleFutSort{
+	color:blue; font-weight:bold; display:inline-block; position:relative; margin-top:6px; margin-left:5px; top:2px;
+}	
+.toggleQuery:hover, .toggleFutSort:hover{
+	cursor:pointer; color:#7FB0F0; 	
+}	
+.toggleQuery:active, .toggleFutSort:active{
+	color:blue;	
+}	
+.inputText label{
+	display:inline-block; 
+}	
+.inputText input[type="text"]{
+	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border:1px solid #bbb; background-color:#fff; width:100px; 
+	height:28px; margin-left:5px; display:inline-block;
+}
+.inputTextQ input[type="text"]{
+	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border:1px solid #bbb; background-color:#fff; width:70px; 
+	height:28px; margin-left:5px; display:inline-block;
+}
+.hrLine{
+	background-color: #4a96de; 	height:1px; border:0; margin:0px 5px 10px 5px;
+	background-image: -webkit-linear-gradient(left, #ccc, #4a96de, #ccc); background-image: -moz-linear-gradient(left, #ccc, #4a96de, #ccc);
+	background-image: -ms-linear-gradient(left, #ccc, #4a96de, #ccc); background-image: -o-linear-gradient(left, #ccc, #4a96de, #ccc);
+}
+.hrLineSm{
+	background-color: #4a96de; 	height:1px; border:0; margin:5px 0px ;
+	background-image: -webkit-linear-gradient(left, #ccc, #4a96de, #ccc); background-image: -moz-linear-gradient(left, #ccc, #4a96de, #ccc);
+	background-image: -ms-linear-gradient(left, #ccc, #4a96de, #ccc); background-image: -o-linear-gradient(left, #ccc, #4a96de, #ccc);
+}	
+.navBtn{
+	padding:5px 5px; text-decoration:none; -moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.5); box-shadow: 0 1px 2px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; position:relative; 
+	font-size: 12pt; margin:5px; background-color: #7FB0F0; color: #FFF; text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:100; text-align:center;
+}
+.navBtnSel{
+	-moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; position:relative; 
+	margin:5px; background-color:#c3daf8; color: #555; text-shadow:0 1px 1px rgba(0,0,0,0.25); font-weight:100; text-align:center;
+	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5); 
+}
+.navBtn:hover{
+	background-color: #29658C; cursor:pointer; color: #FFF;
+}
+.navBtn:active{
+	box-shadow: 1px 0px 3px rgba(0,0,0,0.5); text-shadow: 0 1px 1px rgba(0,0,0,0.25); background-color: #c3daf8;
+}
+.navBtnSel:hover{
+	background-color:#c3daf8; cursor:default; color:#555;
+}
+.bbar{
+	width:156px; display:inline-block;
+}
+.bbarGrLsTh{
+	width:20px; display:inline-block;
+}
+.bbarAndOr{
+	width:36px; display:inline-block;
+}
+.bbarAcrTax{
+	width:50px; display:inline-block; padding-top:3px; padding-bottom:3px;
+}
+.bbarAcDe{
+	width:74px; display:inline-block; padding-top:3px; padding-bottom:3px;
+}	
+.bbarL{
+	border-right: 1px solid gray; border-left: 1px solid gray; 
+}
+.bbarR{
+	margin-left:-10px; border-left: 1px solid gray; border-right: 1px solid gray;
+}
+.futQueryWrapper{
+	display:inline-block;	
+}	
+.futSortWrapper{
+	display:none; margin-bottom:8px; margin-top:3px;	
 }
 .printAnchorDiv{
 	width:230px; margin:auto; margin-top:10px; 
@@ -56,7 +208,8 @@ body.waiting * {
 }	
 .zoomSelected{
 	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border: 1px solid #bbb; background-color:#fff;
-}	
+}
+	
 .pinPDFLinks, .pinZoomLinks{
 	font-size:11pt; font-weight:bold; color:blue !important;
 } 	
@@ -77,10 +230,13 @@ body.waiting * {
 	text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:bold; font-size:12pt; padding:5px 30px;
 }
 .selectDivs1{
-	margin-left:0px; margin-top:-1px; padding-bottom:10px; padding-top:10px; 
+	margin-left:0px; margin-top:-1px; padding-bottom:5px; padding-top:10px; 
 }
 .accrodBg{
 	background-color:#fbfbfb !important;	
+}
+.accrodBg.waiting * {
+    cursor: progress;
 }	
 .bottomRightSm{
 	border:1px solid #21658c; -webkit-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;	-moz-box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
@@ -110,9 +266,7 @@ body.waiting * {
 	box-shadow:1px 1px 5px 0px rgba(102,102,102,0.7) !important;
 }
 .ui-accordion .ui-accordion-header{
-	/*background-color:#eff5f7;
-	color:#21658c;*/
-	background-color:#7FB0F0; color:#fff; background-image:none;
+	background-color:#7FB0F0; color:#fff; background-image:none; margin-top:5px;
 	text-shadow:0 -1px 1px rgba(0,0,0,0.25); font-weight:bold; font-size:12pt; padding:5px 30px;
 }
 .ui-accordion .ui-accordion-header:hover{
@@ -131,10 +285,10 @@ body.waiting * {
 .bulList{
 	margin-left:2px; margin-top:5px; font-size:9pt; 
 }	
-.bulList a{
+.bulList a, .infoText a{
 	color:blue;	font-weight:bold;
 }
-.bulList a:hover{
+.bulList a:hover, .infoText a:hover{
 	color:#7FB0F0; cursor:pointer; 
 }	
 .sumHr{
@@ -241,6 +395,9 @@ body.waiting * {
 .active-result{
 	font-size:12pt; 
 }	
+/*.chosen-container .chosen-results {
+    max-height:100px !important;
+}*/
 abbr.search-choice-close {
   cursor: pointer;
 }
@@ -390,11 +547,14 @@ label.checkBoxLabels input[type=checkbox]{
 	border-top:1px solid #424542; border-right:1px solid #424542;
 }
 .barLabel{
-	position:relative; z-index:2; left:3px; top:-1px; font-size:8pt; 
+	position:relative; z-index:2; left:2px; top:-1px; font-size:8pt; 
 }
 .bar3{
 	background: repeating-linear-gradient(45deg, #ecefde, #ecefde 5px, #ccc 5px, #ccc 10px);
 }
+.barf{
+	background-color:#408cb4;
+}	
 .bar2{
 	background-color:#8fb440;
 }
@@ -402,7 +562,7 @@ label.checkBoxLabels input[type=checkbox]{
 	background-color:#c8841d;
 }
 .topPad{
-	margin-top:15px;
+	margin-top:11px;
 }	
 .topLabel{
 	margin-left:5px; margin-bottom:-5px; 
@@ -411,16 +571,22 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-left:2px; display:none;
 }
 .graphWrapper{
-	padding-bottom:10px !important; padding-top:10px !important;	
+	padding-bottom:5px !important; padding-top:10px !important; 	
+}	
+.barNumWarpper{
+	height:48px !important;
 }	
 .graphHeader{
 	font-weight: bold; margin-top: 5px; margin-bottom:5px;
 }	
 .graphLegLbl{
-	float:left;	margin-top:3px; margin-left:3px; font-size:8pt;
+	display:inline-block; margin-top:3px; margin-left:3px; font-size:8pt;
 }
+.futureGraph{
+	display:none; height: 17px;
+}	
 .graphLegend{
-	height: 17px; width:28px; float:left;
+	height: 17px; width:28px; display:inline-block;
 	-moz-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
 	-webkit-box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
 	box-shadow: inset 1px 2px 2px rgba(255, 255, 255, .4), inset -1px -1px 2px rgba(0, 0, 0, .4);
@@ -428,8 +594,11 @@ label.checkBoxLabels input[type=checkbox]{
 .bar2a{
 	margin-left:7px;
 }
+.barfa{
+	margin-left:7px;
+}	
 .grLgDiv{
-	height:20px; width:242px; position:relative; top:2px; left:50px;
+	height:20px; width:100%; display:inline-block; text-align:center;
 }	
 .longLegDiv{
 	margin-bottom:2px; display:none;
@@ -517,3 +686,4 @@ label.checkBoxLabels input[type=checkbox]{
 .tbox{
 	top:100px !important;	
 }	
+	
