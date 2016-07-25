@@ -26,13 +26,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				t.dynamicLayer = new ArcGISDynamicMapServiceLayer(t.config.url);
 				t.map.addLayer(t.dynamicLayer);
 				t.dynamicLayer.on("load", lang.hitch(t, function () {  
-					if (t.config.extent == ""){
-						//t.map.setExtent(t.dynamicLayer.initialExtent, true);	
-					}else{
-						var extent = new Extent(t.config.extent.xmin, t.config.extent.ymin, t.config.extent.xmax, t.config.extent.ymax, new SpatialReference({ wkid:4326 }))
-						t.map.setExtent(extent, true);
-						t.config.extent = ""; 	
-					}
+					
 					if (t.config.visibleLayers.length > 0){	
 						t.dynamicLayer.setVisibleLayers(t.config.visibleLayers);
 						t.spid = t.config.visibleLayers[0];	
@@ -119,7 +113,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						
 						// Create empty array and populate it with percentages of current, potential, and remaining
 						var p = [];
-						$.each(t.n, lang.hitch(function(i,v){
+						$.each(t.n, lang.hitch(t, function(i,v){
 							var x = Math.round(v/2020*100);
 							p.push(x);
 						}));
@@ -185,7 +179,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						if (evt.features.length > 0) {
 							t.config.totalFuturePoints = 0;
 							t.futDDoptions = [];
-							$.each(evt.features, lang.hitch(function(i,v){
+							$.each(evt.features, lang.hitch(t, function(i,v){
 								t.config.totalFuturePoints = t.config.totalFuturePoints + v.attributes.OSP_fpts;
 								t.futDDoptions.push({acres: v.attributes.OSP_fac, tax: v.attributes.TAX_VALUE, obid: v.attributes.OBJECTID})
 							}));
@@ -200,7 +194,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							
 							// Create empty array and populate it with percentages of current, potential, and remaining
 							var p = [];
-							$.each(t.n, lang.hitch(function(i,v){
+							$.each(t.n, lang.hitch(t, function(i,v){
 								var x = Math.round(v/2020*100);
 								p.push(x);
 							}));
@@ -258,11 +252,17 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				t.crsFL.on('selection-complete', lang.hitch(t,function(evt){
 					// Get and zoom to extent of selected feature
 					var crsExtent = evt.features[0].geometry.getExtent();				
-					t.map.setExtent(crsExtent, true); 
+					if ( t.config.stateSet == "yes" ){	
+						var extent = new Extent(t.config.extent.xmin, t.config.extent.ymin, t.config.extent.xmax, t.config.extent.ymax, new SpatialReference({ wkid:4326 }))
+						t.map.setExtent(extent, true);
+						t.config.extent = "";
+					}else{
+						t.map.setExtent(crsExtent, true); 
+					}
 					// Get attributes of selected feature
 					t.atts = evt.features[0].attributes;
 					// User clicked download section on home page
-					if (t.config.section == "dl" || t.config.section == "fut"){
+					if (t.config.section == "ospAppBtn" || t.config.section == "futureOSPBtn"){
 						// Loop through all elements with class s2Atts in the step1 div and use their IDs to show selected features attributes
 						$('#' + t.appDiv.id + 'step2 .s2Atts').each(lang.hitch(t,function (i,v){
 							var field = v.id.split("-").pop()
@@ -280,7 +280,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						t.n.push(m)
 						// Create empty array and populate it with percentages of current, potential, and remaining
 						var p = [];
-						$.each(t.n, lang.hitch(function(i,v){
+						$.each(t.n, lang.hitch(t, function(i,v){
 							var x = Math.round(v/2020*100);
 							p.push(x);
 						}));

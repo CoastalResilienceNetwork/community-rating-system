@@ -16,7 +16,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			navListeners: function(t){
 				// Download data for all eligible OSP areas for my CRS application click
 				$('#' + t.appDiv.id + 'ospAppBtn').on('click',lang.hitch(t,function(){
-					t.config.section = "dl";
+					t.config.section = "ospAppBtn";
 					$('#' + t.appDiv.id + 'topHeader').html($('#' + t.appDiv.id + 'ospAppBtn').html());
 					$('#' + t.appDiv.id + 'home').slideUp();
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
@@ -28,7 +28,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				}));
 				// Find and Print a Parcel by PIN click
 				$('#' + t.appDiv.id + 'parcelByIdBtn').on('click',lang.hitch(t,function(){
-					t.config.section = "pin";
+					t.config.section = "parcelByIdBtn";
 					$('#' + t.appDiv.id + 'topHeader').html($('#' + t.appDiv.id + 'parcelByIdBtn').html());
 					$('#' + t.appDiv.id + 'home').slideUp();
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
@@ -40,7 +40,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				}));	
 				// Future OSP Button click
 				$('#' + t.appDiv.id + 'futureOSPBtn').on('click',lang.hitch(t,function(){
-					t.config.section = "fut";
+					t.config.section = "futureOSPBtn";
 					$('#' + t.appDiv.id + 'topHeader').html($('#' + t.appDiv.id + 'futureOSPBtn').html());
 					$('#' + t.appDiv.id + 'home').slideUp();
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
@@ -52,6 +52,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				}));	
 				// Home button click
 				$('#' + t.appDiv.id + 'homeBtn').on('click',lang.hitch(t,function(){
+					t.config.section = "homeBtn";
 					t.map.setExtent(t.dynamicLayer.initialExtent, true);
 					t.config.dlOspLayers = [0,9];
 					t.config.transLayer = [10];
@@ -105,12 +106,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				$('#' + t.appDiv.id + 'pinSearch').val('');
 				$('#' + t.appDiv.id + 'parcelInfo, #' + t.appDiv.id + 'fParSelWrapper, #' + t.appDiv.id + 'searchPinNone').slideUp();
 				if (t.config.subSection == 'zoomPar'){
-					console.log('zoom')
 					$('#' + t.appDiv.id + 'qpWrapper').slideUp(); 
 					$('#' + t.appDiv.id + 'zptWrapper').slideDown(); 	
 				}
 				if (t.config.subSection == 'queryPar'){
-					console.log('query')
 					$('#' + t.appDiv.id + 'zptWrapper').slideUp(); 
 					$('#' + t.appDiv.id + 'qpWrapper').slideDown(); 
 					$('#' + t.appDiv.id + 'toggleQueryWrap').slideDown();

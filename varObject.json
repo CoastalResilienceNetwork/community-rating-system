@@ -10,7 +10,7 @@
 	"pinArray": [],
 	"crsSelected": "",
 	"crsNoSpace": "",
-	"section": "",
+	"section": "homeBtm",
 	"subSection": "zoomPar",
 	"crsSelUnderscore": "",
 	"extent": "",
@@ -24,5 +24,10 @@
 	"futSortOn": "acres",
 	"futSortOrder": "acen",
 	"totalFuturePoints": 0,
+	"activeAcIndex": 0,
+	"activeAc1Index": 0,
+	"ospElementsVis": [],
+	"pinSelArray": [],
+	"pinHighlighted": -1,
 	"stateSet": "no"
 }

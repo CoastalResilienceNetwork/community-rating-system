@@ -10,12 +10,12 @@ define([
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
 	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
 	"dojo/text!./varObject.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui', 
-	'plugins/community-rating-system/js/navigation', 'plugins/community-rating-system/js/esriapi', 'plugins/community-rating-system/js/clicks'
+	'plugins/community-rating-system/js/navigation', 'plugins/community-rating-system/js/esriapi', 'plugins/community-rating-system/js/clicks', 'plugins/community-rating-system/js/stateCh'
 ],
 function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, 
-	legendContent, content, ui, navigation, esriapi, clicks ) {
+	legendContent, content, ui, navigation, esriapi, clicks, stateCh ) {
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 		toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -78,8 +78,15 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 		// Write anything to you varObject.json file you have tracked during user activity.		
 		getState: function () {
 			this.config.extent = this.map.geographicExtent;
-			this.config.stateSet = "yes";
-				
+			this.config.activeAcIndex = $('#' + this.appDiv.id + 'dlAccord').accordion( "option", "active" );
+			this.config.activeAc1Index = $('#' + this.appDiv.id + 'dlAccord1').accordion( "option", "active" );
+			var c = $('#' + this.appDiv.id + 'printAnchorDiv').children()
+			$.each(c,lang.hitch(this,function(i,v){
+				if ( $(v).hasClass('zoomSelected') ){
+					this.config.pinHighlighted = i;	
+				}	
+			}));
+			this.config.stateSet = "yes";	
 			var state = new Object();
 			state = this.config;
 			return state;
@@ -88,6 +95,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 		//It's overwrites the default JSON definfed in initialize with the saved stae JSON.
 		setState: function (state) {
 			this.config = state;
+			this.pinSelArray = this.config.pinSelArray;
 		},
 		// Called when the user hits the print icon
 		beforePrint: function(printDeferred, $printArea, mapObject) {
@@ -97,7 +105,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 		// Tweak the numbers subtracted in the if and else statements to alter the size if it's not looking good.
 		resize1: function(w, h) {
 			cdg = domGeom.position(this.container);
-			console.log(this.con)
 			if (cdg.h == 0) { this.sph = this.height - 80; }
 			else { this.sph = cdg.h - 62; }
 			domStyle.set(this.appDiv.domNode, "height", this.sph + "px"); 
@@ -108,6 +115,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			this.navigation = new navigation();
 			this.esriapi = new esriapi();
 			this.clicks = new clicks();
+			this.stateCh = new stateCh();
 			// ADD HTML TO APP
 			// Define Content Pane as HTML parent		
 			this.appDiv = new ContentPane({style:'padding:8px 8px 8px 8px'});
@@ -118,7 +126,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			$('#' + this.appDiv.id).html(idUpdate);
 			// CREATE ACCORDIANS
 			$('#' + this.appDiv.id + 'dlAccord').accordion({ collapsible: true, active: 0, heightStyle: "content" });
-			$('#' + this.appDiv.id + 'dlAccord1').accordion({ collapsible: true, active: 0, heightStyle: "content"});
+			$('#' + this.appDiv.id + 'dlAccord1').accordion({ collapsible: true, active: 0, heightStyle: "content" });
 			// CALL NAVIGATION BUTTON EVENT LISTENERS 
 			this.navigation.navListeners(this);
 			// CREATE ESRI OBJECTS AND EVENT LISTENERS	
@@ -129,7 +137,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			this.clicks.mapPreviewDownload(this);	
 			// EXPAND AND COLLAPSE INFO IN ELEMENTS SUMMARY
 			this.clicks.toggleInfoSum(this);
-				
+			// UPDATE STATE IF SET STATE WAS CALLED
+			this.stateCh.checkState(this);
 			this.rendered = true;				
 		},
 		zoomSelectedClass: function(e){
@@ -137,7 +146,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			$.each(c,lang.hitch(this,function(i,v){
 				$(v).removeClass('zoomSelected');
 			}));
-			if (e){ $(e).addClass('zoomSelected') }	
+			if (e){ 
+				$(e).addClass('zoomSelected') 
+			}	
 		}
 	});
 });	

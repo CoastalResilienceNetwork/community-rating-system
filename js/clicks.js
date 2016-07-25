@@ -29,9 +29,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(t,function(c, p){
 						//Clear Items
 						t.pinFL.clear();
-						$('#' + t.appDiv.id + 'step2 .gExp').show();
-						$('#' + t.appDiv.id + 'step2 .gCol, #' + t.appDiv.id + 'step2 .infoOpen').hide();
+						//$('#' + t.appDiv.id + 'step2 .gExp').show();
+						//$('#' + t.appDiv.id + 'step2 .gCol').hide();
+						//$('#' + t.appDiv.id + 'step2 .infoOpen').hide();
 						t.map.graphics.clear();
+						t.config.pinSelArray = [];
 						// something was selected
 						if (p) {
 							t.config.crsSelected = c.currentTarget.value;
@@ -42,7 +44,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							t.crsFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
 							$('#' + t.appDiv.id + 'printAnchorDiv').empty();
 							// User clicked download section on home page
-							if (t.config.section == "dl"){
+							if (t.config.section == "ospAppBtn"){
 								t.config.crsSelUnderscore = t.config.crsSelected.replace(/ /g,"_");
 								$('#' + t.appDiv.id + 'allParLink').show();
 								$('#' + t.appDiv.id + 'larParLink').show();
@@ -73,7 +75,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								//$('.legend').removeClass("hideLegend");
 							}
 							// user clicked on PIN button
-							if (t.config.section == "pin"){
+							if (t.config.section == "parcelByIdBtn"){
 								// placeholder for Community with no OSP parcels (used to be Duck)
 								if (t.config.crsSelected == "NP Community"){
 									$('#' + t.appDiv.id + 'ch-PIN').prop( "disabled", true );
@@ -116,10 +118,19 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 									$('#' + t.appDiv.id + 'ch-PIN').trigger("chosen:updated");
 									$('#' + t.appDiv.id + 'printWrapper').slideDown();
 									$('body').removeClass('waiting');
+									if ( t.config.stateSet == "yes" ){
+										var len = t.pinSelArray.length - 1
+										t.pinReady = "no";
+										$.each(t.pinSelArray, lang.hitch(t,function(i,v){
+											if (i == len){ t.pinReady = "yes" }
+											var p = "r"
+											$('#' + t.appDiv.id + 'ch-PIN').val(v).trigger('chosen:updated').trigger('change', p)	
+										}));
+									}	
 								}));
 							}
 							// User clicked on Future OSP button							
-							if (t.config.section == "fut"){
+							if (t.config.section == "futureOSPBtn"){
 								// Set layer defs on layers id's in dlSspLayers array
 								$.each(t.config.dlOspLayers1, lang.hitch(t,function(i,v){
 									t.config.layerDefs[v] = "CRS_NAME = '" + t.config.crsSelected + "'"
@@ -138,6 +149,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						}
 						// selection was cleared
 						else{
+							t.config.crsSelected = "";
 							t.crsFL.clear();
 							t.config.visibleLayers = [];
 							t.config.visibleLayers1 = [];
@@ -151,16 +163,20 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							$('#' + t.appDiv.id + 'pinSearch').val('');
 							$('#' + t.appDiv.id + 'barf').animate({left : "0%", width: "0%"});
 							t.fPinFL.clear();
-							$('#' + t.appDiv.id + 'step2 .gExp').show();
-							$('#' + t.appDiv.id + 'step2 .gCol, #' + t.appDiv.id + 'step2 .infoOpen').hide();
-						}
+							//$('#' + t.appDiv.id + 'step2 .gExp').show();
+							//$('#' + t.appDiv.id + 'step2 .gCol').hide();
+							//$('#' + t.appDiv.id + 'step2 .infoOpen').hide();
+						}	
 					}));
 					$('#' + t.appDiv.id + 'ch-PIN').chosen().change(lang.hitch(t,function(c, p){
 						if (p){
 							t.pinSelected = c.currentTarget.value;
-							var q = new Query();
-							q.where = "CRS_NAME = '" + t.config.crsSelected + "' AND PIN = '" + t.pinSelected + "'";
-							t.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							t.config.pinSelArray.push(t.pinSelected)
+							if ( t.config.stateSet == "no" ){
+								var q = new Query();
+								q.where = "CRS_NAME = '" + t.config.crsSelected + "' AND PIN = '" + t.pinSelected + "'";
+								t.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
+							}
 							$('#' + t.appDiv.id + 'ch-PIN').attr("data-placeholder", "Select More Parcels");
 							$("#" + t.appDiv.id + "ch-PIN option[value='" + t.pinSelected + "']").remove();
 							if ($('#' + t.appDiv.id + 'ch-PIN option').size() == 1){
@@ -176,7 +192,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 									" | " + 
 									"<a class='pinZoomLinks' id='" + t.appDiv.id + "z-" + t.pinSelected + "'>Zoom</a>" +
 								"</div>"
-							);	
+							);
 							$('.pinPDFLinks').on('click',lang.hitch(t,function(e){
 								t.zoomSelectedClass(e.currentTarget.parentElement)
 								var pin = e.currentTarget.id.split("-").pop()
@@ -190,6 +206,22 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								t.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);	
 								t.zoomSelectedClass(e.currentTarget.parentElement)
 							}));
+							if ( t.config.stateSet == "yes" ){
+								if (t.pinReady == "yes" ) {
+									var c = $('#' + t.appDiv.id + 'printAnchorDiv').children()
+									$.each(c,lang.hitch(t,function(j,w){
+										if ( t.config.pinHighlighted == j ){
+											var d = $(w).children()
+											$.each(d,lang.hitch(t,function(i,v){
+												if ( $(v).hasClass('pinZoomLinks') ){
+													$( '#' + $(v)[0].id ).trigger('click')
+												}
+												//$(w).addClass('zoomSelected')	
+											}));
+										}												
+									}));
+								}	
+							}
 						}
 					}));
 					$('#' + t.appDiv.id + 'ch-FUT').chosen().change(lang.hitch(t,function(c, p){
@@ -338,7 +370,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						$('#' + t.appDiv.id + 'futSortWrapper').slideUp();
 						$('#' + t.appDiv.id + 'toggleFutSort').html('Sort');
 					}					
-				}));	
+				}));
 			},
 			mapPreviewDownload: function(t){
 				$('#' + t.appDiv.id + 'allParcelPreview').on('click',lang.hitch(t,function(){
@@ -361,7 +393,16 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			toggleInfoSum:function(t){
 				$('.expCol').on('click', lang.hitch(t,function(c){
 					$(c.currentTarget).children().toggle();
-					$(c.currentTarget).parent().find('.infoOpen').slideToggle();
+					$(c.currentTarget).parent().find('.infoOpen').slideToggle(250, lang.hitch(function(){
+						// track which elements are expanded to use in save and share
+						t.config.ospElementsVis = [];
+						$('#' + t.appDiv.id + 'elementsWrapper .firstIndent').each(lang.hitch(t,function(i, v){
+							var io = $(v).find('.infoOpen');
+							if (io[0].style.display == 'block'){
+								t.config.ospElementsVis.push(i);
+							}	
+						}));
+					}));
 				}));
 			}
         });
