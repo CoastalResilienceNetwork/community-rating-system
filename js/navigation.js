@@ -77,6 +77,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'qpWrapper').slideUp( 250,lang.hitch(t,function() {
 						$('#' + t.appDiv.id + 'ztpWrapper').slideDown(250);
 					}));
+					$('#' + t.appDiv.id + 'barf').animate({left : "0%", width: "0%"});
+					$('#' + t.appDiv.id + 'futureGraph').css('display', 'none');
 				}));	
 				$('#' + t.appDiv.id + 'queryParNavBtn').on('click',lang.hitch(t,function(){
 					t.config.subSection = 'queryPar';
@@ -90,7 +92,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							$('#' + t.appDiv.id + 'toggleQuery').html('Hide Query');
 						}
 					}));
-					
+					$('#' + t.appDiv.id + 'barf').animate({left : "0%", width: "0%"});
+					$('#' + t.appDiv.id + 'futureGraph').css('display', 'none');
 				}));
 			},
 			clearFuture: function(t){

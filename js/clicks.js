@@ -124,6 +124,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$.each(t.config.dlOspLayers1, lang.hitch(t,function(i,v){
 									t.config.layerDefs[v] = "CRS_NAME = '" + t.config.crsSelected + "'"
 								})); 							 
+								this.navigation.clearFuture(t);
 								t.dynamicLayer.setLayerDefinitions(t.config.layerDefs);
 								t.dynamicLayer1.setLayerDefinitions(t.config.layerDefs);								
 								$('#' + t.appDiv.id + 'dlAccord1').hide();
@@ -146,6 +147,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							$('#' + t.appDiv.id + 'step2').slideUp();
 							$('#' + t.appDiv.id + 'printWrapper').slideUp();
 							$('#' + t.appDiv.id + 'futureWrapper, #' + t.appDiv.id + 'parcelInfo, #' + t.appDiv.id + 'futureGraph').hide();
+							this.navigation.clearFuture(t);
 							$('#' + t.appDiv.id + 'pinSearch').val('');
 							$('#' + t.appDiv.id + 'barf').animate({left : "0%", width: "0%"});
 							t.fPinFL.clear();

@@ -90,18 +90,24 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								val = d;
 							}else{
 								if ( isNaN(t.patts[field]) == false ){
-									val = Math.round(val);
-									val = commaSeparateNumber(val);
-									if (field == 'TAX_VALUE'){
-										val = '$' + val;	
-									}	
+									if (field != 'PIN'){
+											
+									
+										val = Math.round(val);
+										val = commaSeparateNumber(val);
+										if (field == 'TAX_VALUE'){
+											val = '$' + val;	
+										}
+									}					
 								}	
 							}	
 							$('#' + v.id).html(val)
 							$('#' + t.appDiv.id + 'searchPinNone').slideUp();
 							$('#' + t.appDiv.id + 'parcelInfo').slideDown();
-							var pinExtent = evt.features[0].geometry.getExtent();
-							t.map.setExtent(pinExtent, true);
+							t.pinExtent = evt.features[0].geometry.getExtent();
+							if (t.config.subSection == 'zoomPar'){
+								t.map.setExtent(t.pinExtent, true);
+							}	
 						}));
 						
 						
@@ -145,6 +151,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						$('#' + t.appDiv.id + 'searchPinNone').slideDown();	
 					}	
 					$('.accrodBg').removeClass('waiting');
+				}));
+				$('#' + t.appDiv.id + 'futureZoom').on('click',lang.hitch(t,function(){
+					t.map.setExtent(t.pinExtent, true);
 				}));
 				// Create a feature layer of future parcels selected by PIN
 				t.fManyPinFL = new FeatureLayer(t.config.url + "/16", { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
