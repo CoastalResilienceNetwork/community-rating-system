@@ -29,8 +29,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			this.con = dom.byId('plugins/community-rating-system-0');
 			this.con1 = dom.byId('plugins/community-rating-system-1');
 			if (this.con1 != undefined){
-				domStyle.set(this.con1, "width", "216px");
-				domStyle.set(this.con1, "height", "370px");
+				domStyle.set(this.con1, "width", "425px");
+				domStyle.set(this.con1, "height", "216px");
 			}else{
 				domStyle.set(this.con, "width", "425px");
 				domStyle.set(this.con, "height", "216px");
@@ -95,8 +95,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 		},	
 		// Resizes the plugin after a manual or programmatic plugin resize so the button pane on the bottom stays on the bottom.
 		// Tweak the numbers subtracted in the if and else statements to alter the size if it's not looking good.
-		resize: function(w, h) {
+		resize1: function(w, h) {
 			cdg = domGeom.position(this.container);
+			console.log(this.con)
 			if (cdg.h == 0) { this.sph = this.height - 80; }
 			else { this.sph = cdg.h - 62; }
 			domStyle.set(this.appDiv.domNode, "height", this.sph + "px"); 

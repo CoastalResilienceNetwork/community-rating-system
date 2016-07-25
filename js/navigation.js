@@ -22,7 +22,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
 					$(t.con).animate({ height: '578px', width: '425px' }, 250,
 						lang.hitch(t,function(){
-							t.resize();
+							t.resize1();
 						})
 					);
 				}));
@@ -34,7 +34,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
 					$(t.con).animate({ height: '540px', width: '425px' }, 250,
 						lang.hitch(t,function(){
-							t.resize();
+							t.resize1();
 						})
 					);
 				}));	
@@ -46,7 +46,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'topWrapper, #' + t.appDiv.id + 'dlOspWrapper').slideDown();
 					$(t.con).animate({ height: '660px', width: '415px' }, 250,
 						lang.hitch(t,function(){
-							t.resize();
+							t.resize1();
 						})
 					);
 				}));	
