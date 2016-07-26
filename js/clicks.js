@@ -184,7 +184,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								$('#' + t.appDiv.id + 'ch-PIN').prop( "disabled", true );
 							}	
 							$('#' + t.appDiv.id + 'ch-PIN').trigger("chosen:updated");
-							t.zoomSelectedClass()
+							t.clicks.zoomSelectedClass(t)
 							$('#' + t.appDiv.id + 'printAnchorDiv').append(
 								"<div class='pinPDFdiv zoomSelected'>" +
 									t.pinSelected + ": " + 
@@ -194,7 +194,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								"</div>"
 							);
 							$('.pinPDFLinks').on('click',lang.hitch(t,function(e){
-								t.zoomSelectedClass(e.currentTarget.parentElement)
+								t.clicks.zoomSelectedClass(t, e.currentTarget.parentElement)
 								var pin = e.currentTarget.id.split("-").pop()
 								window.open("http://crs-maps.coastalresilience.org/" + t.config.crsNoSpace + "_" + pin + ".pdf", "_blank");
 							}));	
@@ -204,7 +204,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 								var q = new Query();
 								q.where = "CRS_NAME = '" + t.config.crsSelected + "' AND PIN = '" + pin + "'";
 								t.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);	
-								t.zoomSelectedClass(e.currentTarget.parentElement)
+								t.clicks.zoomSelectedClass(t, e.currentTarget.parentElement)
 							}));
 							if ( t.config.stateSet == "yes" ){
 								if (t.pinReady == "yes" ) {
@@ -242,15 +242,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					$('#' + t.appDiv.id + 'ch-FUT').on('chosen:hiding_dropdown',lang.hitch(t,function(evt, params){
 						$('.chosen-container .chosen-results').css('max-height', '240px');
 					})); 
-					
-				// KEEP FOR SAVE AND SHARE	
-					/*
-					if (this.config.stateSet == "yes"){
-						$('#' + t.appDiv.id + 'ospAppBtn').trigger('click')
-						var p = "r"
-						$('#' + t.appDiv.id + 'ch-CRS').val('Duck NC').trigger('chosen:updated').trigger('change', p)
-					}
-					*/
 				}));
 				$('#' + t.appDiv.id + 'searchPin').on('click',lang.hitch(t,function(){
 					$('.accrodBg').addClass('waiting');
@@ -404,7 +395,16 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 						}));
 					}));
 				}));
-			}
+			},
+			zoomSelectedClass: function(t, e){
+				var c = $('#' + t.appDiv.id + 'printAnchorDiv').children()
+				$.each(c,lang.hitch(t,function(i,v){
+					$(v).removeClass('zoomSelected');
+				}));
+				if (e){ 
+					$(e).addClass('zoomSelected') 
+				}	
+			}			
         });
     }
 );

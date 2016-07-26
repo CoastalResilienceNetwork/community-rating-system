@@ -4,7 +4,7 @@ require({
 });
 // Bring in dojo and javascript api classes as well as varObject.json and content.html
 define([
-	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/tasks/QueryTask",
+	"esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/tasks/QueryTask",
 	"esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
 	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang", "esri/tasks/Geoprocessor",
 	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
@@ -12,7 +12,7 @@ define([
 	"dojo/text!./varObject.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui', 
 	'plugins/community-rating-system/js/navigation', 'plugins/community-rating-system/js/esriapi', 'plugins/community-rating-system/js/clicks', 'plugins/community-rating-system/js/stateCh'
 ],
-function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
+function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
 	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
 	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, 
 	legendContent, content, ui, navigation, esriapi, clicks, stateCh ) {
@@ -37,13 +37,9 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			}	
 			// Define object to access global variables from JSON object. Only add variables to varObject.json that are needed by Save and Share. 
 			this.config = dojo.eval("[" + config + "]")[0];	
-			// Define global config not needed by Save and Share
-			//this.config.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer"
-
 		},
 		// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 		hibernate: function () {
-			//$('.legend').removeClass("hideLegend");
 			this.map.__proto__._params.maxZoom = 23;
 			if (this.appDiv != undefined){
 				$('#' + this.appDiv.id + 'ch-CRS').val('').trigger('chosen:updated');
@@ -52,8 +48,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function () {
-			// Hide framework default legend
-			//$('.legend').addClass("hideLegend");
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {
 				this.rendered = true;							
@@ -61,18 +55,10 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				// Hide the print button until a hex has been selected
 				$(this.printButton).hide();
 				this.dynamicLayer.setVisibility(true);
-			} else {
-				if (this.dynamicLayer != undefined)  {
-					this.dynamicLayer.setVisibility(true);	
-					if ( this.map.getZoom() > 12 ){
-						this.map.setLevel(12)	
-					}	
-				}
-			}
+			} 
 		},
 		// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 		deactivate: function () {
-			//$('.legend').removeClass("hideLegend");
 		},	
 		// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 		// Write anything to you varObject.json file you have tracked during user activity.		
@@ -109,6 +95,17 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			else { this.sph = cdg.h - 62; }
 			domStyle.set(this.appDiv.domNode, "height", this.sph + "px"); 
 		},
+		resize2: function(w, h) {
+			cdg = domGeom.position(this.container);
+			if (cdg.h == 0) { 
+				console.log("if")
+				this.sph = this.height; 
+			}else{ 
+				console.log("else")
+				this.sph = cdg.h - 35; 
+			}
+			domStyle.set(this.appDiv.domNode, "height", "100%"); 
+		},
 		// Called by activate and builds the plugins elements and functions
 		render: function() {
 			// BRING IN OTHER JS FILES
@@ -140,15 +137,6 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 			// UPDATE STATE IF SET STATE WAS CALLED
 			this.stateCh.checkState(this);
 			this.rendered = true;				
-		},
-		zoomSelectedClass: function(e){
-			var c = $('#' + this.appDiv.id + 'printAnchorDiv').children()
-			$.each(c,lang.hitch(this,function(i,v){
-				$(v).removeClass('zoomSelected');
-			}));
-			if (e){ 
-				$(e).addClass('zoomSelected') 
-			}	
 		}
 	});
 });	

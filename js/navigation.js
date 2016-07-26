@@ -66,7 +66,11 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 					t.fPinFL.clear();
 					this.navigation.clearFuture(t);
 					$('#' + t.appDiv.id + 'home').slideDown();
-					$(t.con).animate({ height: '216px', width: '425px' }, 250);
+					$(t.con).animate({ height: '216px', width: '425px' }, 250,
+						lang.hitch(t,function(){
+							domStyle.set(t.appDiv.domNode, "height", "100%"); 
+						})
+					);
 				}));
 				$('#' + t.appDiv.id + 'zoomParNavBtn').on('click',lang.hitch(t,function(){
 					t.config.subSection = 'zoomPar';
