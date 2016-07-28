@@ -86,6 +86,7 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, QueryTask, d
 						}	
 						
 						t.patts = evt.features[0].attributes;
+						t.pin = t.patts.PIN;
 						$('#' + t.appDiv.id + 'parcelInfo .pInfoField').each(lang.hitch(t,function (i,v){
 							var field = v.id.split("-").pop()
 							var val = t.patts[field];
