@@ -2,20 +2,13 @@
 require({ 
 	packages: [{ name: "jquery", location: "http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/", main: "jquery.min" }] 
 });
-// Bring in dojo and javascript api classes as well as varObject.json and content.html
+// Bring in dojo and javascript api classes as well as varObject.json, js files, and content.html
 define([
-	"esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query", "esri/tasks/QueryTask",
-	"esri/symbols/PictureMarkerSymbol", "dijit/TooltipDialog", "dijit/popup",
-	"dojo/_base/declare", "framework/PluginBase", "esri/layers/FeatureLayer", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/lang", "esri/tasks/Geoprocessor",
-	"esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", 	"dijit/layout/ContentPane", "dijit/form/HorizontalSlider", "dojo/dom", 
-	"dojo/dom-class", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-geometry", "dojo/_base/lang", "dojo/on", "dojo/parser", 'plugins/community-rating-system/js/ConstrainedMoveable',
-	"dojo/text!./varObject.json", "jquery", "dojo/text!./html/legend.html", "dojo/text!./html/content.html", 'plugins/community-rating-system/js/jquery-ui-1.11.2/jquery-ui', 
-	'plugins/community-rating-system/js/navigation', 'plugins/community-rating-system/js/esriapi', 'plugins/community-rating-system/js/clicks', 'plugins/community-rating-system/js/stateCh'
+	"dojo/_base/declare", "framework/PluginBase", "dijit/layout/ContentPane", "dojo/dom", "dojo/dom-style", "dojo/dom-geometry", "dojo/_base/lang", "dojo/text!./obj.json", 
+	"jquery", "dojo/text!./html/content.html", './js/jquery-ui-1.11.2/jquery-ui', './js/navigation', './js/esriapi', './js/clicks', './js/stateCh'
 ],
-function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, TooltipDialog, dijitPopup,
-	declare, PluginBase, FeatureLayer, SimpleLineSymbol, SimpleFillSymbol, esriLang, Geoprocessor, SimpleMarkerSymbol, Graphic, Color,
-	ContentPane, HorizontalSlider, dom, domClass, domStyle, domConstruct, domGeom, lang, on, parser, ConstrainedMoveable, config, $, 
-	legendContent, content, ui, navigation, esriapi, clicks, stateCh ) {
+function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, lang, obj, 
+			$, content, ui, navigation, esriapi, clicks, stateCh ) {
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 		toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -36,7 +29,9 @@ function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, Tool
 				domStyle.set(this.con, "height", "216px");
 			}	
 			// Define object to access global variables from JSON object. Only add variables to varObject.json that are needed by Save and Share. 
-			this.config = dojo.eval("[" + config + "]")[0];	
+			this.obj = dojo.eval("[" + obj + "]")[0];	
+			this.url = "http://dev.services2.coastalresilience.org:6080/arcgis/rest/services/North_Carolina/NC_CRS/MapServer";
+			this.layerDefs = [];
 		},
 		// Called after initialize at plugin startup (why all the tests for undefined). Also called after deactivate when user closes app by clicking X. 
 		hibernate: function () {
@@ -63,25 +58,29 @@ function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, Tool
 		// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 		// Write anything to you varObject.json file you have tracked during user activity.		
 		getState: function () {
-			this.config.extent = this.map.geographicExtent;
-			this.config.activeAcIndex = $('#' + this.appDiv.id + 'dlAccord').accordion( "option", "active" );
-			this.config.activeAc1Index = $('#' + this.appDiv.id + 'dlAccord1').accordion( "option", "active" );
+			this.obj.extent = this.map.geographicExtent;
+			this.obj.activeAcIndex = $('#' + this.appDiv.id + 'dlAccord').accordion( "option", "active" );
+			this.obj.activeAc1Index = $('#' + this.appDiv.id + 'dlAccord1').accordion( "option", "active" );
 			var c = $('#' + this.appDiv.id + 'printAnchorDiv').children()
 			$.each(c,lang.hitch(this,function(i,v){
 				if ( $(v).hasClass('zoomSelected') ){
-					this.config.pinHighlighted = i;	
+					this.obj.pinHighlighted = i;	
 				}	
 			}));
-			this.config.stateSet = "yes";	
+			this.obj.stateSet = "yes";	
 			var state = new Object();
-			state = this.config;
-			return state;
+			state = this.obj;
+			return state;	
 		},
 		// Called before activate only when plugin is started from a getState url. 
 		//It's overwrites the default JSON definfed in initialize with the saved stae JSON.
 		setState: function (state) {
-			this.config = state;
-			this.pinSelArray = this.config.pinSelArray;
+			this.obj = state;
+			this.pinSelArray = this.obj.pinSelArray;
+			this.searchedPin = this.obj.searchedPin;
+			this.futObid = this.obj.futObid;
+			this.queryVis = this.obj.queryVis;
+			this.stateSet = this.obj.stateSet;
 		},
 		// Called when the user hits the print icon
 		beforePrint: function(printDeferred, $printArea, mapObject) {
@@ -95,17 +94,6 @@ function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, Tool
 			else { this.sph = cdg.h - 62; }
 			domStyle.set(this.appDiv.domNode, "height", this.sph + "px"); 
 		},
-		resize2: function(w, h) {
-			cdg = domGeom.position(this.container);
-			if (cdg.h == 0) { 
-				console.log("if")
-				this.sph = this.height; 
-			}else{ 
-				console.log("else")
-				this.sph = cdg.h - 35; 
-			}
-			domStyle.set(this.appDiv.domNode, "height", "100%"); 
-		},
 		// Called by activate and builds the plugins elements and functions
 		render: function() {
 			// BRING IN OTHER JS FILES
@@ -116,7 +104,6 @@ function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, Tool
 			// ADD HTML TO APP
 			// Define Content Pane as HTML parent		
 			this.appDiv = new ContentPane({style:'padding:8px 8px 8px 8px'});
-			parser.parse();
 			dom.byId(this.container).appendChild(this.appDiv.domNode);					
 			// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
 			var idUpdate = content.replace(/id='/g, "id='" + this.appDiv.id);	
@@ -136,20 +123,7 @@ function ( Extent, SpatialReference, Query, QueryTask, PictureMarkerSymbol, Tool
 			this.clicks.toggleInfoSum(this);
 			// UPDATE STATE IF SET STATE WAS CALLED
 			this.stateCh.checkState(this);
-			this.rendered = true;				
+			this.rendered = true;	
 		}
 	});
-});	
-function commaSeparateNumber(val){
-    while (/(\d+)(\d{3})/.test(val.toString())){
-		val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
-	}
-	return val;
-}
-function dateFinder(date){
-	var month = date.getMonth() + 1;
-	var day = date.getDate();
-	var year = date.getFullYear();
-	var d = month + "/" + day + "/" + year;
-	return d;
-}	
+});
