@@ -354,9 +354,26 @@ function ( Query, declare, FeatureLayer, lang, on, $, ui ) {
 					t.fPinFL.clear();
 					$('#' + t.appDiv.id + 'fParSelWrapper').slideUp();
 					$('#' + t.appDiv.id + 'queryParMany').slideUp();
-					$('#' + t.appDiv.id + 'queryParNone').slideUp();			
-					t.obj.futAcreVal = $('#' + t.appDiv.id + 'futAcreVal').val();
-					t.obj.futTaxVal = $('#' + t.appDiv.id + 'futTaxVal').val();
+					$('#' + t.appDiv.id + 'queryParNone').slideUp();	
+					var fav = $('#' + t.appDiv.id + 'futAcreVal').val().replace(/\,/g,'')
+					if (fav == ""){
+						t.obj.futAcreVal = 0;	
+						$('#' + t.appDiv.id + 'futAcreVal').val("0")
+					}else{	
+						t.obj.futAcreVal = fav;
+						var rep = t.clicks.numberWithCommas(fav)
+						$('#' + t.appDiv.id + 'futAcreVal').val(rep)
+					}
+					var ftv = $('#' + t.appDiv.id + 'futTaxVal').val().replace(/\,/g,'');
+					ftv = ftv.replace(/\$/g,'')
+					if (ftv == ""){
+						t.obj.futTaxVal = 0;
+						$('#' + t.appDiv.id + 'futTaxVal').val("0");						
+					}else{
+						t.obj.futTaxVal = ftv;
+						var rep = t.clicks.numberWithCommas(ftv)
+						$('#' + t.appDiv.id + 'futTaxVal').val(rep)
+					}					
 					var q = new Query();
 					q.returnGeometry = true;
 					q.outFields = ['PIN', 'OSP_fpts', 'OSP_fac', 'TAX_VALUE', 'OWNER_TYPE', 'LAND_USE', 'DEED_BK_PG', 'DEED_DATE'];
@@ -364,7 +381,15 @@ function ( Query, declare, FeatureLayer, lang, on, $, ui ) {
 						t.obj.futQuAndOr + " TAX_VALUE " + t.obj.taxGrLs + " " + t.obj.futTaxVal + " )";
 					t.fManyPinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);
 					t.obj.parQueryClicked = "yes";
-				}));	
+				}));
+				$('#' + t.appDiv.id + 'clearQuery').on('click',lang.hitch(t,function(){	
+					t.obj.futAcreVal = 0;	
+					$('#' + t.appDiv.id + 'futAcreVal').val("0");
+					t.obj.futTaxVal = 0;
+					$('#' + t.appDiv.id + 'futTaxVal').val("0"); 
+					var p = 'r';
+					$('#' + this.appDiv.id + 'ch-CRS').val(t.obj.crsSelected).trigger('chosen:updated').trigger('change', p)
+				}));
 				$('#' + t.appDiv.id + 'toggleFutSort').on('click',lang.hitch(t,function(){
 					if ( $('#' + t.appDiv.id + 'toggleFutSort').html() == 'Sort' ){ 
 						t.obj.sortVis = "yes";
@@ -421,7 +446,10 @@ function ( Query, declare, FeatureLayer, lang, on, $, ui ) {
 				if (e){ 
 					$(e).addClass('zoomSelected') 
 				}	
-			}			
+			},
+			numberWithCommas: function(x){
+				return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
         });
     }
 );

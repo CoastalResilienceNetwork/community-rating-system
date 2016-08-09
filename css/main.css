@@ -58,7 +58,7 @@ body.waiting * {
 	width:100%; text-align:center; margin-top:-5px;
 }
 .ztpWrapper{
-	width:100%; margin-top:0px; margin-bottom:0px; display:inline-block; text-align:center;
+	width:100%; margin-top:0px; margin-bottom:0px; display:none; text-align:center;
 }
 .searchPinButton{
 	padding:5px; text-decoration:none; -moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -125,7 +125,10 @@ body.waiting * {
 	font-size:11pt; color:#21658c; display:inline-block;
 }
 .toggleQuery{
-	color:blue; margin: 0 auto; margin-top:-2px; margin-bottom:5px; font-weight:bold; width:100px;
+	color:blue; font-weight:bold; width:100px;
+}	
+.togClearQuery{
+	margin: 0 auto; margin-top:-2px; margin-bottom:5px;
 }	
 .toggleFutSort{
 	color:blue; font-weight:bold; display:inline-block; position:relative; margin-top:6px; margin-left:5px; top:2px;
@@ -164,7 +167,7 @@ body.waiting * {
 }
 .navBtnSel{
 	-moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; border-bottom: 1px solid rgba(0,0,0,0.25); outline:none; position:relative; 
-	margin:5px; background-color:#c3daf8; color: #555; text-shadow:0 1px 1px rgba(0,0,0,0.25); font-weight:100; text-align:center;
+	margin:5px; background-color:#e1ecfb; color: #000; text-shadow:0 1px 1px rgba(0,0,0,0.25); font-weight:100; text-align:center;
 	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5); 
 }
 .navBtn:hover{
@@ -174,7 +177,7 @@ body.waiting * {
 	box-shadow: 1px 0px 3px rgba(0,0,0,0.5); text-shadow: 0 1px 1px rgba(0,0,0,0.25); background-color: #c3daf8;
 }
 .navBtnSel:hover{
-	background-color:#c3daf8; cursor:default; color:#555;
+	background-color:#e1ecfb; cursor:default; color:#000;
 }
 .bbar{
 	width:156px; display:inline-block;
