@@ -1,7 +1,7 @@
 define([
-	"esri/tasks/query", "dojo/_base/declare", "esri/layers/FeatureLayer", "dojo/_base/lang", "dojo/on", "jquery", './jquery-ui-1.11.2/jquery-ui'
+	"esri/tasks/query", "esri/tasks/QueryTask", "dojo/_base/declare", "esri/layers/FeatureLayer", "dojo/_base/lang", "dojo/on", "jquery", './jquery-ui-1.11.2/jquery-ui'
 ],
-function ( Query, declare, FeatureLayer, lang, on, $, ui ) {
+function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
         "use strict";
 
         return declare(null, {
@@ -17,6 +17,23 @@ function ( Query, declare, FeatureLayer, lang, on, $, ui ) {
 				}));
 				// User selections on chosen menus 
 				require(["jquery", "plugins/community-rating-system/js/chosen.jquery"],lang.hitch(t,function($) {			
+					// Create a QueryTask for Dropdown menu
+					var cq = new Query();
+					var cqt = new QueryTask(t.url + "/0");
+					cq.where = "OBJECTID > 0";
+					cq.returnGeometry = false;
+					cq.outFields = ["CRS_NAME"];
+					var ca = [];
+					cqt.execute(cq, lang.hitch(t,function(e){
+						$.each(e.features, lang.hitch(t,function(i,v){
+							ca.push(v.attributes.CRS_NAME)
+						}))
+						var a = ca.sort();
+						$.each(a, lang.hitch(t,function(j,w){
+							$('#' + t.appDiv.id + 'ch-CRS').append('<option value="' + w + '">' + w + '</option>')
+						}))
+						$('#' + t.appDiv.id + 'ch-CRS').trigger("chosen:updated");
+					}));
 					//Select CRS 
 					$('#' + t.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(t,function(c, p){
 						//Clear Items
