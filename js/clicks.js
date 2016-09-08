@@ -217,7 +217,9 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 							}));	
 							$('.pinZoomLinks').on('click',lang.hitch(t,function(e){
 								t.pinTracker = "yes"
-								var pin = e.currentTarget.id.split("-").pop()
+								//var pin = e.currentTarget.id.split("-").pop()
+								var pin = e.currentTarget.id.substring(e.currentTarget.id.indexOf('-')+1);
+								console.log(pin)
 								var q = new Query();
 								q.where = "CRS_NAME = '" + t.obj.crsSelected + "' AND PIN = '" + pin + "'";
 								t.pinFL.selectFeatures(q,FeatureLayer.SELECTION_NEW);	
