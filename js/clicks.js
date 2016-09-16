@@ -28,11 +28,16 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 						$.each(e.features, lang.hitch(t,function(i,v){
 							ca.push(v.attributes.CRS_NAME)
 						}))
-						var a = ca.sort();
-						$.each(a, lang.hitch(t,function(j,w){
-							$('#' + t.appDiv.id + 'ch-CRS').append('<option value="' + w + '">' + w + '</option>')
+						t.allCom = ca.sort();
+						var allCom1 = [];
+						$.each(t.allCom, lang.hitch(t,function(j,w){
+							allCom1.push(w)
 						}))
-						$('#' + t.appDiv.id + 'ch-CRS').trigger("chosen:updated");
+						var index = allCom1.indexOf("Hyde County NC");
+						if (index > -1) {
+							allCom1.splice(index, 1);
+						}
+						t.futureCom = allCom1;
 					}));
 					//Select CRS 
 					$('#' + t.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(t,function(c, p){

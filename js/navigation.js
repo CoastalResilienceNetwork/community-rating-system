@@ -17,6 +17,8 @@ function ( declare, domStyle, lang, on, $, ui ) {
 							t.resize1();
 						})
 					);
+					console.log(t.allCom)
+					t.navigation.updateDD(t.allCom, t);
 				}));
 				// Find and Print a Parcel by PIN click
 				$('#' + t.appDiv.id + 'parcelByIdBtn').on('click',lang.hitch(t,function(){
@@ -29,6 +31,7 @@ function ( declare, domStyle, lang, on, $, ui ) {
 							t.resize1();
 						})
 					);
+					t.navigation.updateDD(t.allCom, t)
 				}));	
 				// Future OSP Button click
 				$('#' + t.appDiv.id + 'futureOSPBtn').on('click',lang.hitch(t,function(){
@@ -43,7 +46,8 @@ function ( declare, domStyle, lang, on, $, ui ) {
 					);
 					if (t.stateSet == "yes"){
 						$('#' + t.appDiv.id + t.obj.subSection).trigger('click');
-					}	
+					}
+					t.navigation.updateDD(t.futureCom, t)					
 				}));	
 				// Home button click
 				$('#' + t.appDiv.id + 'homeBtn').on('click',lang.hitch(t,function(){
@@ -97,6 +101,14 @@ function ( declare, domStyle, lang, on, $, ui ) {
 					$('#' + t.appDiv.id + 'futureGraph').css('display', 'none');
 				}));
 			},
+			updateDD: function(a, t){
+				$('#' + t.appDiv.id + 'ch-CRS').empty();
+				$('#' + t.appDiv.id + 'ch-CRS').append('<option value=""></option>')
+				$.each(a, lang.hitch(t,function(j,w){
+					$('#' + t.appDiv.id + 'ch-CRS').append('<option value="' + w + '">' + w + '</option>')
+				}))
+				$('#' + t.appDiv.id + 'ch-CRS').trigger("chosen:updated");	
+			},	
 			clearFuture: function(t){
 				t.fPinFL.clear();
 				t.fManyPinFL.clear();
