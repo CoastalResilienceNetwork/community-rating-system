@@ -217,7 +217,8 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 							);
 							$('.pinPDFLinks').on('click',lang.hitch(t,function(e){
 								t.clicks.zoomSelectedClass(t, e.currentTarget.parentElement)
-								var pin = e.currentTarget.id.split("-").pop()
+								//var pin = e.currentTarget.id.split("-").pop()
+								var pin = e.currentTarget.id.substring(e.currentTarget.id.indexOf('-')+1)
 								window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_" + pin + ".pdf", "_blank");
 							}));	
 							$('.pinZoomLinks').on('click',lang.hitch(t,function(e){
