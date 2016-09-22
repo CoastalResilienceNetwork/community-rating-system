@@ -69,7 +69,7 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 									$('#' + t.appDiv.id + 'larParLink').hide();
 									$('#' + t.appDiv.id + 'csvDesc').hide();
 								}
-								if (t.obj.crsSelected == "Manteo NC"){
+								if (t.obj.crsSelected == "Manteo NC" || t.obj.crsSelected == "Hyde County NC"){
 									$('#' + t.appDiv.id + 'ceosLink').hide();
 								}	
 								$('#' + t.appDiv.id + 'downloadDiv').slideDown();
