@@ -28,11 +28,16 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 						$.each(e.features, lang.hitch(t,function(i,v){
 							ca.push(v.attributes.CRS_NAME)
 						}))
-						var a = ca.sort();
-						$.each(a, lang.hitch(t,function(j,w){
-							$('#' + t.appDiv.id + 'ch-CRS').append('<option value="' + w + '">' + w + '</option>')
+						t.allCom = ca.sort();
+						var allCom1 = [];
+						$.each(t.allCom, lang.hitch(t,function(j,w){
+							allCom1.push(w)
 						}))
-						$('#' + t.appDiv.id + 'ch-CRS').trigger("chosen:updated");
+						var index = allCom1.indexOf("Hyde County NC");
+						if (index > -1) {
+							allCom1.splice(index, 1);
+						}
+						t.futureCom = allCom1;
 					}));
 					//Select CRS 
 					$('#' + t.appDiv.id + 'ch-CRS').chosen().change(lang.hitch(t,function(c, p){
@@ -64,7 +69,7 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 									$('#' + t.appDiv.id + 'larParLink').hide();
 									$('#' + t.appDiv.id + 'csvDesc').hide();
 								}
-								if (t.obj.crsSelected == "Manteo NC"){
+								if (t.obj.crsSelected == "Manteo NC" || t.obj.crsSelected == "Hyde County NC"){
 									$('#' + t.appDiv.id + 'ceosLink').hide();
 								}	
 								$('#' + t.appDiv.id + 'downloadDiv').slideDown();
@@ -212,7 +217,8 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 							);
 							$('.pinPDFLinks').on('click',lang.hitch(t,function(e){
 								t.clicks.zoomSelectedClass(t, e.currentTarget.parentElement)
-								var pin = e.currentTarget.id.split("-").pop()
+								//var pin = e.currentTarget.id.split("-").pop()
+								var pin = e.currentTarget.id.substring(e.currentTarget.id.indexOf('-')+1)
 								window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_" + pin + ".pdf", "_blank");
 							}));	
 							$('.pinZoomLinks').on('click',lang.hitch(t,function(e){
@@ -435,6 +441,9 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 				}));
 				$('#' + t.appDiv.id + 'futurePDF').on('click', lang.hitch(t,function(){
 					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
+				}));
+				$('#' + t.appDiv.id + 'futureTop50').on('click', lang.hitch(t,function(){
+					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
 				}));
 				// Data download click
 				$('#' + t.appDiv.id + 'dlBtn').on('click', lang.hitch(t,function(){
