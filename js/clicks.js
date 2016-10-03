@@ -442,6 +442,9 @@ function ( Query, QueryTask, declare, FeatureLayer, lang, on, $, ui ) {
 				$('#' + t.appDiv.id + 'futurePDF').on('click', lang.hitch(t,function(){
 					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
 				}));
+				$('#' + t.appDiv.id + 'futureTop50').on('click', lang.hitch(t,function(){
+					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
+				}));
 				// Data download click
 				$('#' + t.appDiv.id + 'dlBtn').on('click', lang.hitch(t,function(){
 					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Maps.zip", "_parent");
