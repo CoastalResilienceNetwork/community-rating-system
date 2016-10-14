@@ -45,12 +45,15 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, lang, obj,
 		activate: function () {
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {
+				ga('send', 'event', this.toolbarName, 'Opened app');
 				this.rendered = true;							
 				this.render();
 				// Hide the print button until a hex has been selected
 				$(this.printButton).hide();
 				this.dynamicLayer.setVisibility(true);
-			} 
+			}else{
+				ga('send', 'event', this.toolbarName, 'Re-opened app');
+			}	
 		},
 		// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 		deactivate: function () {
