@@ -32,6 +32,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function (showHelpOnStart) {
+			$('.sidebar-nav .nav-title').css("margin-left", "25px");
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {
 			//	if (showHelpOnStart){
@@ -57,6 +58,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		// Called when user hits the minimize '_' icon on the pluging. Also called before hibernate when users closes app by clicking 'X'.
 		deactivate: function () {
 			this.open = "no";	
+			$('.sidebar-nav .nav-title').css("margin-left", "0px");
 		},	
 		// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 		// Write anything to you varObject.json file you have tracked during user activity.		
@@ -89,6 +91,16 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.esriapi = new esriapi();
 			this.clicks = new clicks();
 			// ADD HTML TO APP
+			$(this.container).parent().append('<button id="viewCrsInfoGraphicIcon" class="button button-default ig-icon"><img src="plugins/community-rating-system/images/info.png" alt="show overview graphic"></button>')
+			$(this.container).parent().find("#viewCrsInfoGraphicIcon").on('click',function(c){
+				TINY.box.show({
+					animate: true,
+					url: 'plugins/community-rating-system/html/info-graphic.html',
+					fixed: true,
+					width: 660,
+					height: 570
+				});
+			})
 			// Define Content Pane as HTML parent		
 			this.appDiv = new ContentPane({style:'padding:0; color:#000; flex:1; display:flex; flex-direction:column;}'});
 			this.id = this.appDiv.id

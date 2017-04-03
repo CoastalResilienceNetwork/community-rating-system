@@ -73,7 +73,7 @@ function ( declare, Query, FeatureLayer ) {
 				})
 				$("#" + t.id + "viewInfoGraphic").on('click',function(c){
 					TINY.box.show({
-						animate: false,
+						animate: true,
 						url: 'plugins/community-rating-system/html/info-graphic.html',
 						fixed: true,
 						width: 660,

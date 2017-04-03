@@ -228,3 +228,11 @@ label.checkBoxLabels input[type=checkbox]{
 .tinner .tclose {
 	color:#5E94B6 !important;
 }
+.ig-icon{
+	padding:4px !important;
+    height:26px;
+    position:absolute;
+    top:6px;
+    margin-left:6px;
+    z-index:2600;
+}
