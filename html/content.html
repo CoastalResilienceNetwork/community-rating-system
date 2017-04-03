@@ -47,8 +47,37 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 	</section>	
 	<section>
 		<h3>OSP 420 Elements Summary</h3>
-		<div class="bottomRightSm accrodBg" id="elementsWrapper">
-			<p>	<img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-ccInfo">
+		<div class="bottomRightSm accrodBg elementsWrapper" id="elementsWrapper">
+			<div class="crs-sum-wrap">
+					<span class="elm-title">Current Class</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-ccInfo"><br>
+					<span id="s2-CRS_CLASS" class="s2Atts"></span> (OSP contributes <span id="s2-OSP_PTS_2013" class="s2Atts"></span> out of <span id="s2-CRS_POINTS" class="s2Atts"></span> total CRS points)
+			</div>
+			<div class="crs-sum-wrap">
+					<span class="elm-title">Current NFIP Discounts</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-cndInfo"><br>
+					<span id="s2-NFIP_IN" class="s2Atts"></span>% for policy holders in floodplain &#38; <span id="s2-NFIP_OUT" class="s2Atts"></span>% outside of floodplain
+			</div><br>
+			<div class="crs-sum-wrap">
+				<span class="elm-title">Impact Adjusted Special Flood Hazard Area</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-iasInfo"><br>
+				<span id="s2-SUM_IASFHA_AC" class="s2Atts"></span> acres
+			</div>
+			<div class="crs-sum-wrap">	
+				<span class="elm-title">Open Space Preservation (422a)</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-ospInfo"><br>
+				<span id="s2-SUM_OSP_ONLY_cac" class="s2Atts"></span> acres &#38; <span id="s2-SUM_OSP_ONLY_cpts" class="s2Atts"></span> points
+			</div>
+			<div class="crs-sum-wrap">	
+				<span class="elm-title">Natural Functioning Open Space (422c)</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-nfosInfo"><br>
+				<span id="s2-SUM_NFOS_cac" class="s2Atts"></span> acres &#38; <span id="s2-SUM_NFOS_cpts" class="s2Atts"></span> points
+			</div>
+			<div class="crs-sum-wrap">
+				<span class="elm-title">Coastal Erosion Open Space (422c)</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-ceosInfo"><br>
+				<span id="s2-SUM_CEOS_cac" class="s2Atts"></span> acres &#38; <span id="s2-SUM_CEOS_cpts" class="s2Atts"></span> points
+			</div>
+			<div class="crs-sum-wrap">
+				<span class="elm-title">Natural Shoreline Protection (422g)</span><img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-nspInfo"><br>
+				<b>12</b> points in entire CRS
+				</p>
+			</div>	
+			<!-- <p>	<img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-ccInfo">
 				<span class="under">Current Class</span>: <span id="s2-CRS_CLASS" class="s2Atts"></span> (OSP contributes <span id="s2-OSP_PTS_2013" class="s2Atts"></span> out of <span id="s2-CRS_POINTS" class="s2Atts"></span> total<br>CRS points)
 			</p>
 			<p>	<img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-cndInfo">
@@ -67,7 +96,7 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 			</p>
 			<p>	<img src="plugins/community-rating-system/images/info.png" alt="show more info in documentation" class="infoIcon" id="-nspInfo">
 				<span class="under">Natural Shoreline Protection (422g)</span>: <b>12</b> points in entire CRS
-			</p>	
+			</p> -->	
 		</div>	
 	</section>
 	<section>
@@ -184,16 +213,10 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 </div>
 <div id="showInfo" class="crs-sections hide">
 	<section>
-		<div class="crs-shosu">
-			<h2>Documentation</h2>
-			<!-- <label class="form-component" for="-shosu">
-				<input type="checkbox" id="-shosu" name="-shosu"><span class="check"></span>
-				<span class="form-text">Don&#39;t show at startup</span>
-			</label> -->
-		</div>	
+		<h2>Documentation</h2>
 		<h3 class="infoDoc">Overview</h3>
 		<div class="explainWrap">
-			<p>A quick intro to what the app does.</p> 
+			<button id="viewInfoGraphic" class="button button-default">View Overview Graphic</button> 
 		</div>	
 	</section>
 	<section>	

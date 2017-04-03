@@ -71,6 +71,15 @@ function ( declare, Query, FeatureLayer ) {
 						}
 					}		
 				})
+				$("#" + t.id + "viewInfoGraphic").on('click',function(c){
+					TINY.box.show({
+						animate: false,
+						url: 'plugins/community-rating-system/html/info-graphic.html',
+						fixed: true,
+						width: 660,
+						height: 570
+					});		
+				})
 				// Click tab based on active attribute from json obj
 				console.log("event listener");
 				$.each($("#" + t.id + "tabBtns input"),function(i,v){

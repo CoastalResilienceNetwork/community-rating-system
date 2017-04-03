@@ -55,7 +55,7 @@
 	margin-top:11px;
 }	
 .topLabel{
-	margin-left:5px; margin-bottom:-5px; 
+	margin-left:5px; margin-bottom:-6px; 
 }
 .bottomLabel{
 	margin-left:2px; display:none;
@@ -215,4 +215,16 @@ label.checkBoxLabels input[type=checkbox]{
 }
 .crs-sections h2{
 	font-size:20px;
+}
+.elementsWrapper{
+	display:flex; flex-wrap:wrap;
+}
+.crs-sum-wrap{
+	width:200px; margin:4px; border:1pt solid #cdd5d5; padding:5px; box-shadow:0 1px 1px rgba(16,22,26,.2);
+}
+.elm-title{
+	color:#5E94B6;; font-size:14px; font-weight:bold;
+}
+.tinner .tclose {
+	color:#5E94B6 !important;
 }
