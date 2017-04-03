@@ -91,7 +91,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.esriapi = new esriapi();
 			this.clicks = new clicks();
 			// ADD HTML TO APP
-			$(this.container).parent().append('<button id="viewCrsInfoGraphicIcon" class="button button-default ig-icon"><img src="plugins/community-rating-system/images/info.png" alt="show overview graphic"></button>')
+			$(this.container).parent().append('<button id="viewCrsInfoGraphicIcon" class="button button-default ig-icon"><img src="plugins/community-rating-system/images/InfographicIcon_v1_23x23.png" alt="show overview graphic"></button>')
 			$(this.container).parent().find("#viewCrsInfoGraphicIcon").on('click',function(c){
 				TINY.box.show({
 					animate: true,
@@ -121,6 +121,9 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.esriapi.esriApiFunctions(this);
 			this.esriapi.featureLayerListeners(this);
 			this.rendered = true;	
+			$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"rgba(0,150,214,0.5)"}, 1250, function(){
+				$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"#ffffff"}, 1250);
+			});
 		},
 	});
 });
