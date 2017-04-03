@@ -34,16 +34,16 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		activate: function (showHelpOnStart) {
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {
-				if (showHelpOnStart){
-					if (this.obj.stateSet == "no"){
-						this.obj.active = "showInfo";
-					}
-				}	
+			//	if (showHelpOnStart){
+			//		if (this.obj.stateSet == "no"){
+			//			this.obj.active = "showInfo";
+			//		}
+			//	}	
 				this.rendered = true;							
 				this.render();
-				if(showHelpOnStart == false){
-					$('#' + this.id + '-shosu').attr('checked', true);
-				}
+			//	if(showHelpOnStart == false){
+		//			$('#' + this.id + '-shosu').attr('checked', true);
+	//			}
 				$(this.printButton).hide();
 			}else{
 				this.dynamicLayer.setVisibleLayers(this.obj.visibleLayers);
