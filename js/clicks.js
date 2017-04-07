@@ -43,7 +43,7 @@ function ( declare, Query, FeatureLayer ) {
 					$("#" + t.id + "dfe4").trigger('click');
 				});
 				// tab button listener
-				$( "#" + t.id + "tabBtns input").on('change',function(c){
+				$( "#" + t.id + "tabBtns input").on('click',function(c){
 					t.obj.active = c.target.value;
 					$.each($("#" + t.id + " .crs-sections"),function(i,v){
 						if (v.id != t.id + t.obj.active){
