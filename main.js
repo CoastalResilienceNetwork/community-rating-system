@@ -28,6 +28,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.map.__proto__._params.maxZoom = 23;
 			if (this.appDiv != undefined){
 				this.dynamicLayer.setVisibleLayers([-1])
+				this.dynamicLayer1.setVisibleLayers([-1])
 			}
 			this.open = "no";
 		},
@@ -43,6 +44,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			}else{
 				if (this.dynamicLayer){
 					this.dynamicLayer.setVisibleLayers(this.obj.visibleLayers);
+					this.dynamicLayer1.setVisibleLayers(this.obj.visibleLayers1);
 				}
 				$('#' + this.id).parent().parent().css('display', 'flex');
 			}
