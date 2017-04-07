@@ -1,7 +1,7 @@
 {
 	"visibleLayers": [-1],
 	"visibleLayers1": [-1],
-	"active": "downloadData",
+	"active": "exploreFuture",
 	"pinSelArray": [],
 	"accordVisible": "",
 	"accordHidden": "",
@@ -9,7 +9,18 @@
 	"buttonText": "",
 	"extent": "",
 	"stateSet": "no",
-	"crsSelected": "",
+	"crsSelected": "Manteo NC",
 	"crsNoSpace": "",
-	"sliderVal": 5
+	"sliderVal": 5,
+	"searchedPin": "",
+	"curElOsp" : false,
+	"ImpactAd" : true,
+	"futAcreVal": 0,
+	"totalFuturePoints": 0,
+	"taxGrLs": ">",
+	"futQuAndOr": "AND",
+	"acreGrLs" : ">",
+	"futSortOn": "acres",
+	"futSortOrder": "ascen",
+	"futureToggle": "qpWrapper"
 }

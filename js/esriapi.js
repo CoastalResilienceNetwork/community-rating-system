@@ -12,24 +12,36 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 				t.dynamicLayer1 = new ArcGISDynamicMapServiceLayer(t.url, {opacity: 1 - t.obj.sliderVal/10});
 				t.map.addLayer(t.dynamicLayer1);
 				t.dynamicLayer1.setVisibleLayers(t.obj.visibleLayers1);
-				//load second dynamic map service
-				t.dynamicLayer = new ArcGISDynamicMapServiceLayer(t.url, {opacity:0.8});
-				t.map.addLayer(t.dynamicLayer);
-				t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
-				t.spid = t.obj.visibleLayers[0];
-				t.dynamicLayer.on("load", function () { 			
-					t.layersArray = t.dynamicLayer.layerInfos;
-					if (t.obj.stateSet == "no"){
-						t.map.setExtent(t.dynamicLayer.fullExtent.expand(1), true)
-					}
-					// Save and Share Handler					
-					if (t.obj.stateSet == "yes"){
-						//extent
-						var extent = new Extent(t.obj.extent.xmin, t.obj.extent.ymin, t.obj.extent.xmax, t.obj.extent.ymax, new SpatialReference({ wkid:4326 }))
-						t.map.setExtent(extent, true);	
-						t.obj.stateSet = "no";
-					}	
-					t.map.setMapCursor("pointer");
+				t.dynamicLayer1.on("load", function () {
+					//load second dynamic map service
+					t.dynamicLayer = new ArcGISDynamicMapServiceLayer(t.url, {opacity:0.8});
+					t.map.addLayer(t.dynamicLayer);
+					t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
+					t.spid = t.obj.visibleLayers[0];
+					t.dynamicLayer.on("load", function () { 			
+						t.layersArray = t.dynamicLayer.layerInfos;
+						// Click tab based on active attribute from json obj
+						$.each($("#" + t.id + "tabBtns input"),function(i,v){
+							if (v.value == t.obj.active){
+								$("#" + v.id).trigger('click');
+								if (t.obj.crsSelected.length > 0){
+									$("#" + t.id + "chooseComDl").val(t.obj.crsSelected).trigger("chosen:updated");
+									$('#' + t.id + "chooseComDl").trigger('change');
+								}
+							}
+						})	
+						if (t.obj.stateSet == "no"){
+							t.map.setExtent(t.dynamicLayer.fullExtent.expand(1), true)
+						}
+						// Save and Share Handler					
+						if (t.obj.stateSet == "yes"){
+							//extent
+							var extent = new Extent(t.obj.extent.xmin, t.obj.extent.ymin, t.obj.extent.xmax, t.obj.extent.ymax, new SpatialReference({ wkid:4326 }))
+							t.map.setExtent(extent, true);	
+							t.obj.stateSet = "no";
+						}	
+						t.map.setMapCursor("pointer");
+					});	
 				});	
 				// Create a QueryTask to populate Dropdown menus
 				var cq = new Query();
@@ -109,6 +121,7 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 						$('#' + t.id + 'bar2La').html(potPnts);
 					}
 				});
+				// OSP eligible by pin
 				t.pinFL = new FeatureLayer(t.url + "/" + t.SelectedOSPEligibleParcel, { mode: FeatureLayer.MODE_SELECTION, outFields: ["*"] });
 				t.pinFL.on('selection-complete', function(evt){
 					if (t.pinTracker == "yes"){
@@ -118,7 +131,6 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 						var obid = evt.features[0].attributes.OBJECTID;
 						t.layerDefs[t.SelectedOSPEligibleParcel] = "OBJECTID = " + obid;
 						t.dynamicLayer.setLayerDefinitions(t.layerDefs);
-						console.log("made it");
 						var ind = t.obj.visibleLayers.indexOf(t.SelectedOSPEligibleParcel)
 						if (ind == -1){
 							t.obj.visibleLayers.push(t.SelectedOSPEligibleParcel);
@@ -132,6 +144,13 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 					val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
 				}
 				return val;
+			},
+			dateFinder: function(date){
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+				var year = date.getFullYear();
+				var d = month + "/" + day + "/" + year;
+				return d;
 			}
 		});
     }

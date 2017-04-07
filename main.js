@@ -5,9 +5,9 @@ require({
 // Bring in dojo and javascript api classes as well as varObject.json, js files, and content.html
 define([
 	"dojo/_base/declare", "framework/PluginBase", "dijit/layout/ContentPane", "dojo/dom", "dojo/dom-style", "dojo/dom-geometry", "dojo/text!./obj.json", 
-	"dojo/text!./html/content.html", './js/jquery-ui-1.11.2/jquery-ui', './js/esriapi', './js/clicks', 'dojo/_base/lang'	
+	"dojo/text!./html/content.html", './js/jquery-ui-1.11.2/jquery-ui', './js/esriapi', './js/clicks', './js/future', './js/parcels', 'dojo/_base/lang'	
 ],
-function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, content, ui, esriapi, clicks, lang ) {
+function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, content, ui, esriapi, clicks, future, parcels, lang ) {
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 		toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -34,20 +34,14 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		activate: function (showHelpOnStart) {
 			$('.sidebar-nav .nav-title').css("margin-left", "25px");
 			this.map.__proto__._params.maxZoom = 19;
-			if (this.rendered == false) {
-			//	if (showHelpOnStart){
-			//		if (this.obj.stateSet == "no"){
-			//			this.obj.active = "showInfo";
-			//		}
-			//	}	
+			if (this.rendered == false) {	
 				this.rendered = true;							
 				this.render();
-			//	if(showHelpOnStart == false){
-		//			$('#' + this.id + '-shosu').attr('checked', true);
-	//			}
 				$(this.printButton).hide();
 			}else{
-				this.dynamicLayer.setVisibleLayers(this.obj.visibleLayers);
+				if (this.dynamicLayer){
+					this.dynamicLayer.setVisibleLayers(this.obj.visibleLayers);
+				}
 				$('#' + this.id).parent().parent().css('display', 'flex');
 			}
 			this.open = "yes";
@@ -90,6 +84,8 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			// BRING IN OTHER JS FILES
 			this.esriapi = new esriapi();
 			this.clicks = new clicks();
+			this.future = new future();
+			this.parcels = new parcels();
 			// ADD HTML TO APP
 			$(this.container).parent().append('<button id="viewCrsInfoGraphicIcon" class="button button-default ig-icon"><img src="plugins/community-rating-system/images/InfographicIcon_v1_23x23.png" alt="show overview graphic"></button>')
 			$(this.container).parent().find("#viewCrsInfoGraphicIcon").on('click',function(c){
@@ -102,11 +98,10 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 				});
 			})
 			// Define Content Pane as HTML parent		
-			this.appDiv = new ContentPane({style:'padding:0; color:#000; flex:1; display:flex; flex-direction:column;}'});
+			this.appDiv = new ContentPane({style:'padding:0; flex:1; display:flex; flex-direction:column;}'});
 			this.id = this.appDiv.id
 			dom.byId(this.container).appendChild(this.appDiv.domNode);	
 			$('#' + this.id).parent().addClass('flexColumn')
-			$('#' + this.id).addClass('accord')
 			if (this.obj.stateSet == "no"){
 				$('#' + this.id).parent().parent().css('display', 'flex')
 			}		
@@ -117,12 +112,19 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			// Set up app and listeners
 			this.clicks.appSetup(this);
 			this.clicks.eventListeners(this);
+			this.future.eventListeners(this);
+			this.parcels.eventListeners(this);
 			// Create ESRI objects and event listeners	
 			this.esriapi.esriApiFunctions(this);
 			this.esriapi.featureLayerListeners(this);
+			this.future.featureLayerListeners(this);
 			this.rendered = true;	
-			$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"rgba(0,150,214,0.5)"}, 1250, function(){
-				$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"#ffffff"}, 1250);
+			$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"rgba(243,243,21,0.3)"}, 1050, function(){
+				$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"#ffffff"}, 1050, function(){
+					$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"rgba(243,243,21,0.3)"}, 1050, function(){
+						$("#viewCrsInfoGraphicIcon").animate({backgroundColor:"#ffffff"}, 1000)
+					});
+				});
 			});
 		},
 	});

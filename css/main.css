@@ -1,5 +1,5 @@
 .infoIcon{
-	margin-bottom:-2px; margin-left:3px; cursor:pointer;
+	cursor:pointer; position:absolute; right:3px; bottom:3px;
 }
 .flex1{
 	flex:1;
@@ -61,7 +61,7 @@
 	margin-left:2px; display:none;
 }
 .graphWrapper{
-	padding-bottom:5px !important; padding-top:10px !important; 	
+	padding-bottom:5px !important; 	
 }	
 .barNumWarpper{
 	height:48px !important; margin-left:20px;
@@ -73,7 +73,7 @@
 	display:inline-block; margin-top:3px; margin-left:3px; 
 }
 .futureGraph{
-	height: 17px; display:inline-block;
+	height: 17px; display:none;
 }	
 .graphLegend{
 	height: 18px; width:32px; display:inline-block; margin-bottom:-5px;
@@ -127,7 +127,7 @@ label.checkBoxLabels input[type=checkbox]{
 }	
 /* chosen selected item bold */
 .crs-app{
-	background:#fff; position:absolute; z-index:1000; 
+	background:#fff; position:absolute; z-index:1000; width:430px;
 }
 .crs-app .chosen-wrap .chosen-container-single span{
 	font-weight:bold;
@@ -145,7 +145,7 @@ label.checkBoxLabels input[type=checkbox]{
 }
 
 .printAnchorDiv{
-	width:250px; margin-top:10px; 
+	width:260px; margin-top:10px; 
 }	
 .pinPDFdiv{
 	margin-top:0px; padding:5px 10px; 
@@ -174,10 +174,10 @@ label.checkBoxLabels input[type=checkbox]{
 }
 .inputText input[type="text"]{
 	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border:1px solid #bbb; background-color:#fff; width:130px; 
-	height:28px;
+	height:28px; padding-left:5px;
 }
 .inputTextQ input[type="text"]{
-	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border:1px solid #bbb; background-color:#fff; width:70px; 
+	box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.6) inset; border:1px solid #bbb; background-color:#fff; width:90px; 
 	height:28px; padding-left:5px;
 }
 .ztpWrapper{
@@ -189,8 +189,8 @@ label.checkBoxLabels input[type=checkbox]{
 .ztpWrapper button{
 	margin-bottom:4px !important;
 }
-.searchPinNone{
-	display:none; color:#8c2130; margin-top:5px; margin-bottom:10px; text-align:center; 
+.searchPinNone, .queryParNone{
+	display:none; color:#8c2130; margin-top:8px; font-weight:bold; text-align:center; 
 }
 .fut-at-query{
 	display:flex; align-items:center;
@@ -199,7 +199,7 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-bottom:0px !important;
 }
 .fut-at-query .button{
-	margin-bottom:0px !important; margin-left:20px;
+	margin-bottom:0px !important; 
 }
 .tabBtns label:first-of-type, .tabBtns label:last-of-type{
 	border-radius:0 !important;
@@ -211,7 +211,16 @@ label.checkBoxLabels input[type=checkbox]{
 	margin-right:-6px; margin-bottom:0 !important; background:#f3f3f3; border-bottom: 1px solid #cdd5d5 !important; border-top: 1px solid #cdd5d5 !important;
 }
 .crs-sections{
-	padding-left:8px; position:relative; top:100px;
+	position:relative; top:100px;
+}
+.crs-sections > *{
+	padding-left:6px; padding-right:6px;
+}
+.crs-fut-sections{
+	margin:10px -6px;
+}
+.crs-fut-sections > *{
+	padding-left:6px; padding-right:6px;
 }
 .crs-sections h2{
 	font-size:20px;
@@ -220,19 +229,71 @@ label.checkBoxLabels input[type=checkbox]{
 	display:flex; flex-wrap:wrap;
 }
 .crs-sum-wrap{
-	width:200px; margin:4px; border:1pt solid #cdd5d5; padding:5px; box-shadow:0 1px 1px rgba(16,22,26,.2);
+	width:194px; margin:3px; border:1pt solid #cdd5d5; padding:5px; box-shadow:0 1px 1px rgba(16,22,26,.2); position:relative;
 }
 .elm-title{
-	color:#5E94B6;; font-size:14px; font-weight:bold;
+	color:#5E94B6; 
+}
+.elm-results{
+ 	font-weight:bold; margin-right:13px;
 }
 .tinner .tclose {
 	color:#5E94B6 !important;
 }
 .ig-icon{
-	padding:2px !important;
-    height:28px;
-    position:absolute;
-    top:6px;
-    margin-left:4px;
-    z-index:2600;
+	padding:2px !important; height:28px; position:absolute; top:6px; margin-left:4px; z-index:2600;
+}
+.parcelInfo{
+	margin:0 auto; padding:0px; display:none;
+}
+.it-wrap{
+	display:flex; flex-wrap:wrap;
+}
+.infoText{
+	color:#5E94B6; border:1pt solid #cdd5d5; padding:5px; box-shadow:0 1px 1px rgba(16,22,26,.2); position:relative; width:190px; margin:3px;
+}
+.pInfoField{
+	color:#5d6165; font-weight:bold;
+}
+.infoTextBig{
+    color:#2F6384; font-size:20px; font-weight:bold; margin-left:4px; 
+}
+.pifb{
+	color:#2F6384;
+}
+.futureZoom{
+	text-align:right;
+}
+.futureZoom, .futurePDF{
+	color:blue; font-weight:bold; cursor:pointer; flex:1; 
+}
+.fut-link-wrap{
+	display:flex; margin:5px 34px 0 8px;
+}
+.fut-toggle label:first-of-type, .fut-toggle label:last-of-type {
+    border-radius:0 !important;
+}
+.fut-toggle label {
+    margin: 8px 5px 0px -6px !important; flex:none !important; padding:5px 10px !important; border-bottom:none !important;
+} 
+.fut-toggle {
+    margin-right:-6px; margin-left:-6px; margin-bottom:0 !important; background:#f3f3f3; border-bottom:1px solid #cdd5d5 !important; border-top:1px solid #cdd5d5 !important;
+}
+.toggleFutSort{
+	margin-left:4px; margin-bottom:0 !important;
+}
+.hideFutSort{
+	margin-left:4px; margin-bottom:0 !important; height:31px; margin-top:5px;
+}
+.futSortWrapper{
+	display:flex; margin-top:6px; 
+}
+.fsWrapper{
+	display:none;
+}
+.futureTop50{
+	margin-bottom:0 !important; width:92px; padding:6px 2px !important; margin-left:4px;
+}
+.fParSelWrapper{
+	display:none; 
 }
