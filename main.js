@@ -15,6 +15,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		
 		// First function called when the user clicks the pluging icon. 
 		initialize: function (frameworkParameters) {
+			$(".nav-apps").hide();
 			// Access framework parameters
 			declare.safeMixin(this, frameworkParameters);
 			// Define object to access global variables from JSON object. Only add variables to varObject.json that are needed by Save and Share. 
@@ -32,6 +33,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function (showHelpOnStart) {
+			$(".nav-apps").show();
 			$('.sidebar-nav .nav-title').css("margin-left", "25px");
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {	
