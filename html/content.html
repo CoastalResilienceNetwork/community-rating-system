@@ -10,20 +10,19 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 			<select data-placeholder="Click to Select" id="chooseComDl" class="chosen"></select>
 		</div>
 	</div>
-	<div id="tabBtns" class="toggle-btn tabBtns" style="width:430px;">
-		<input type="radio" id="dfe1" name="crs-dfe" value="downloadData"/>
-		<label for="dfe1">Download Data</label>
-		<input type="radio" id="dfe2" name="crs-dfe" value="printParcels"/>
-		<label for="dfe2">Print Parcels</label>
-		<input type="radio" id="dfe3" name="crs-dfe" value="exploreFuture"/>
-		<label for="dfe3">Future OSP</label>
-		<input type="radio" id="dfe4" name="crs-dfe" value="showInfo"/>
-		<label for="dfe4">Info</label>
-	</div>
+	<div id="tab-wrap" class="hide">
+		<div id="tabBtns" class="toggle-btn tabBtns" style="width:430px;">
+			<input type="radio" id="dfe1" name="crs-dfe" value="downloadData"/>
+			<label for="dfe1">Download Data</label>
+			<input type="radio" id="dfe2" name="crs-dfe" value="printParcels"/>
+			<label for="dfe2">Print Parcels</label>
+			<input type="radio" id="dfe3" name="crs-dfe" value="exploreFuture"/>
+			<label for="dfe3">Future OSP</label>
+			<input type="radio" id="dfe4" name="crs-dfe" value="showInfo"/>
+			<label for="dfe4">Info</label>
+		</div>
+	</div>	
 </div>	
-<section id="selComReminder" style="margin-top:98px;">
-	<h3 style="margin-left:8px;">Select Community Above</h3>
-</section>
 <div id="downloadData" class="crs-sections hide">
 	<section>
 		<h2>Download data for all eligible OSP areas</h2>

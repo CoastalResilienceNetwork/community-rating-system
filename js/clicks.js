@@ -51,7 +51,6 @@ function ( declare, Query, QueryTask, FeatureLayer ) {
 						}
 					});
 					if (t.obj.active == "showInfo"){
-						$("#" + t.id + "selComReminder").slideUp();
 						$("#" + t.id + t.obj.active).slideDown(400, function(){
 							if (t.infoid.length > 0){
 								document.getElementById(t.id + t.infoid).scrollIntoView(false)
@@ -63,9 +62,6 @@ function ( declare, Query, QueryTask, FeatureLayer ) {
 							}
 						});						
 					}else{
-						if (t.obj.crsSelected.length == 0){
-							$("#" + t.id + "selComReminder").slideDown();	
-						}
 						if (t.obj.crsSelected.length > 0){
 							t.clicks[t.obj.active](t);
 						}
@@ -74,7 +70,7 @@ function ( declare, Query, QueryTask, FeatureLayer ) {
 				// Choose Community for downloads
 				$("#" + t.id + "chooseComDl").chosen({width:"240px"})
 					.change(function(c){
-						$("#" + t.id + "selComReminder").slideUp();
+						$( "#" + t.id + "tab-wrap").show();
 						t.obj.crsSelected = c.target.value;
 						t.obj.crsNoSpace = c.target.value.replace(/\s+/g, '');
 						$('#' + t.id + 'printAnchorDiv').empty();
