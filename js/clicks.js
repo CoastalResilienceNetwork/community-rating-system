@@ -1,7 +1,7 @@
 define([
-	"dojo/_base/declare", "esri/tasks/query", "esri/layers/FeatureLayer" 
+	"dojo/_base/declare", "esri/tasks/query", "esri/tasks/QueryTask", "esri/layers/FeatureLayer" 
 ],
-function ( declare, Query, FeatureLayer ) {
+function ( declare, Query, QueryTask, FeatureLayer ) {
         "use strict";
 
         return declare(null, { 
@@ -67,7 +67,6 @@ function ( declare, Query, FeatureLayer ) {
 							$("#" + t.id + "selComReminder").slideDown();	
 						}
 						if (t.obj.crsSelected.length > 0){
-							$("#" + t.id + t.obj.active).slideDown();
 							t.clicks[t.obj.active](t);
 						}
 					}
@@ -102,6 +101,7 @@ function ( declare, Query, FeatureLayer ) {
 				
 			},
 			downloadData:function(t){
+				$("#" + t.id + t.obj.active).slideDown();
 				$('#' + t.id + 'dlOspTop').slideUp();
 				$('#' + t.id + 'dlOspWrap').slideDown();
 				$('#' + t.id + 'downloadDiv p').show();
@@ -126,6 +126,7 @@ function ( declare, Query, FeatureLayer ) {
 				t.dynamicLayer1.setVisibleLayers(t.obj.visibleLayers1);
 			},
 			printParcels: function(t){
+				$("#" + t.id + t.obj.active).slideDown();
 				$('#' + t.id + 'pinTop').slideUp();
 				$('#' + t.id + 'pinWrap').slideDown();
 				$('#' + t.id + 'ch-PIN').attr("data-placeholder", "Find Parcel by PIN");			
@@ -158,27 +159,40 @@ function ( declare, Query, FeatureLayer ) {
 				});	
 			},
 			exploreFuture: function(t){
-				$.each($("#" + t.id + "futureToggle input"), function(i,v){
-					if (t.obj.futureToggle == v.value){
-						if ($("#" + t.id + t.obj.futureToggle).is(":hidden")){
-							$("#" + v.id).trigger("click")
-						}else{
-							$("#" + v.id).prop("checked", true)
-						}	
+				var q = new Query();
+				var qt = new QueryTask(t.url + '/' + t.FutureOSPParcels);
+				q.where = "CRS_NAME = '" + t.obj.crsSelected + "'";
+				qt.executeForCount(q,function(count){
+					if (count > 0){
+						$("#" + t.id + t.obj.active + "None").slideUp();
+						$("#" + t.id + t.obj.active).slideDown();
+						$.each($("#" + t.id + "futureToggle input"), function(i,v){
+							if (t.obj.futureToggle == v.value){
+								if ($("#" + t.id + t.obj.futureToggle).is(":hidden")){
+									$("#" + v.id).trigger("click")
+								}else{
+									$("#" + v.id).prop("checked", true)
+								}	
+							}
+						})
+						t.layerDefs = [];
+						// Set layer defs on layers id's in dlSspLayers array
+						$.each(t.dlOspLayers1, function(i,v){
+							t.layerDefs[v] = "CRS_NAME = '" + t.obj.crsSelected + "'"
+						}); 							 
+						//.this.navigation.clearFuture(t);
+						t.dynamicLayer.setLayerDefinitions(t.layerDefs);
+						t.dynamicLayer1.setLayerDefinitions(t.layerDefs);								
+						t.obj.visibleLayers = [t.CommunityBoundary];
+						t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
+						$('#' + t.id + 'curElOsp').prop('checked', t.obj.curElOsp).trigger("change");
+						$('#' + t.id + 'ImpactAd').prop('checked', t.obj.ImpactAd).trigger("change");		
+					}else{
+						$("#" + t.id + t.obj.active).slideUp();
+						$("#" + t.id + "no-future-parcels").html("No future OSP parcels in " + t.obj.crsSelected)
+						$("#" + t.id + t.obj.active + "None").slideDown();
 					}
-				})
-				t.layerDefs = [];
-				// Set layer defs on layers id's in dlSspLayers array
-				$.each(t.dlOspLayers1, function(i,v){
-					t.layerDefs[v] = "CRS_NAME = '" + t.obj.crsSelected + "'"
-				}); 							 
-				//.this.navigation.clearFuture(t);
-				t.dynamicLayer.setLayerDefinitions(t.layerDefs);
-				t.dynamicLayer1.setLayerDefinitions(t.layerDefs);								
-				t.obj.visibleLayers = [t.CommunityBoundary];
-				t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
-				$('#' + t.id + 'curElOsp').prop('checked', t.obj.curElOsp).trigger("change");
-				$('#' + t.id + 'ImpactAd').prop('checked', t.obj.ImpactAd).trigger("change");
+				})	
 			},
 			showInfo: function(t){
 				
