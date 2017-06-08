@@ -1,13 +1,13 @@
 // Pull in your favorite version of jquery 
-require({ 
-	packages: [{ name: "jquery", location: "http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/", main: "jquery.min" }] 
-});
+// require({ 
+// 	packages: [{ name: "jquery", location: "http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/", main: "jquery.min" }] 
+// });
 // Bring in dojo and javascript api classes as well as varObject.json, js files, and content.html
 define([
 	"dojo/_base/declare", "framework/PluginBase", "dijit/layout/ContentPane", "dojo/dom", "dojo/dom-style", "dojo/dom-geometry", "dojo/text!./obj.json", 
-	"dojo/text!./html/content.html", './js/jquery-ui-1.11.2/jquery-ui', './js/esriapi', './js/clicks', './js/future', './js/parcels', 'dojo/_base/lang'	
+	"dojo/text!./html/content.html", './js/esriapi', './js/clicks', './js/future', './js/parcels', 'dojo/_base/lang'	
 ],
-function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, content, ui, esriapi, clicks, future, parcels, lang ) {
+function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, content, esriapi, clicks, future, parcels, lang ) {
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 		toolbarName: "Community Rating System", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
@@ -33,6 +33,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function (showHelpOnStart) {
+			//$(".sidebar-content").addClass("ofOverride")
 			$('.sidebar-nav .nav-title').css("margin-left", "25px");
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {	
@@ -55,6 +56,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		deactivate: function () {
 			this.open = "no";	
 			$('.sidebar-nav .nav-title').css("margin-left", "0px");
+			//$(".sidebar-content").removeClass("ofOverride")
 		},	
 		// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 		// Write anything to you varObject.json file you have tracked during user activity.		
@@ -100,12 +102,13 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 				});
 			})
 			// Define Content Pane as HTML parent		
-			this.appDiv = new ContentPane({style:'padding:0; flex:1; display:flex; flex-direction:column;}'});
+			this.appDiv = new ContentPane({style:'padding:0; min-height:500px;}'});
+			//this.appDiv = new ContentPane({style:'padding:0; flex:1; display:flex; flex-direction:column;}'});
 			this.id = this.appDiv.id
 			dom.byId(this.container).appendChild(this.appDiv.domNode);	
-			$('#' + this.id).parent().addClass('flexColumn')
+			//$('#' + this.id).parent().addClass('flexColumn')
 			if (this.obj.stateSet == "no"){
-				$('#' + this.id).parent().parent().css('display', 'flex')
+				//$('#' + this.id).parent().parent().css('display', 'flex')
 			}		
 			// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
 			var idUpdate0 = content.replace(/for="/g, 'for="' + this.id);	
