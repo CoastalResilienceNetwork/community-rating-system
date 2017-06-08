@@ -33,7 +33,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function (showHelpOnStart) {
-			//$(".sidebar-content").addClass("ofOverride")
 			$('.sidebar-nav .nav-title').css("margin-left", "25px");
 			this.map.__proto__._params.maxZoom = 19;
 			if (this.rendered == false) {	
@@ -56,7 +55,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		deactivate: function () {
 			this.open = "no";	
 			$('.sidebar-nav .nav-title').css("margin-left", "0px");
-			//$(".sidebar-content").removeClass("ofOverride")
 		},	
 		// Called when user hits 'Save and Share' button. This creates the url that builds the app at a given state using JSON. 
 		// Write anything to you varObject.json file you have tracked during user activity.		
@@ -82,8 +80,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},	
 		// Called by activate and builds the plugins elements and functions
 		render: function() {
-			//this.oid = -1;
-			//$('.basemap-selector').trigger('change', 3);
 			this.mapScale  = this.map.getScale();
 			// BRING IN OTHER JS FILES
 			this.esriapi = new esriapi();
@@ -103,13 +99,8 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			})
 			// Define Content Pane as HTML parent		
 			this.appDiv = new ContentPane({style:'padding:0; min-height:500px;}'});
-			//this.appDiv = new ContentPane({style:'padding:0; flex:1; display:flex; flex-direction:column;}'});
 			this.id = this.appDiv.id
-			dom.byId(this.container).appendChild(this.appDiv.domNode);	
-			//$('#' + this.id).parent().addClass('flexColumn')
-			if (this.obj.stateSet == "no"){
-				//$('#' + this.id).parent().parent().css('display', 'flex')
-			}		
+			dom.byId(this.container).appendChild(this.appDiv.domNode);		
 			// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
 			var idUpdate0 = content.replace(/for="/g, 'for="' + this.id);	
 			var idUpdate = idUpdate0.replace(/id="/g, 'id="' + this.id);
