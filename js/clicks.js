@@ -88,11 +88,13 @@ function ( declare, Query, QueryTask, FeatureLayer ) {
 				// Download link clicks
 				$('#' + t.id + 'downloadDiv a').on('click', function(c){
 					var f = c.target.id.split("-").pop();
-					window.open("https://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + f, "_blank");
+					//window.open("https://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + f, "_blank");
+					window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + f, "_blank");
 				});
 				// Data download click
 				$('#' + t.id + 'dlBtn').on('click',  function(){
-					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Maps.zip", "_parent");
+					//window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Maps.zip", "_parent");
+					window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_Maps.zip", "_parent");
 				});	
 				
 			},
