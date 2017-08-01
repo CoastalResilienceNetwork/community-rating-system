@@ -210,9 +210,7 @@ label.checkBoxLabels input[type=checkbox]{
 .tabBtns{
 	margin-right:-6px; margin-bottom:0 !important; background:#f3f3f3; border-bottom: 1px solid #cdd5d5 !important; border-top: 1px solid #cdd5d5 !important;
 }
-.crs-sections{
 
-}
 .crs-sections > *{
 	padding-left:6px; padding-right:6px;
 }
@@ -221,6 +219,12 @@ label.checkBoxLabels input[type=checkbox]{
 }
 .crs-fut-sections > *{
 	padding-left:6px; padding-right:6px;
+}
+.crs-fut-sections .slider-container{
+	margin:4px 10px !important;
+}
+.slider-wrap{
+	display:flex; align-items:center; margin-left:25px;
 }
 .crs-sections h2{
 	font-size:20px;

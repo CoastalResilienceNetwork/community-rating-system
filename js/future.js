@@ -8,6 +8,13 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 
         return declare(null, { 
         	eventListeners: function(t){
+        		// Transparency slider
+        		$("#" + t.id + "sldr").slider({ min: 0, max: 10, range: false, values: [5], 
+        			change: function( event, ui ) {
+        				t.obj.sliderVal = 1-ui.value/10;
+        				t.dynamicLayer1.setOpacity(t.obj.sliderVal);
+        			}
+        		})
         		// Future PDF link
 				$('#' + t.id + 'futurePDF').on('click', function(){
 					//window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
@@ -180,6 +187,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							t.dynamicLayer1.setVisibleLayers(t.obj.visibleLayers1);
 						}	
 						t.obj.ImpactAd = true;
+						$("#" + t.id + "slider-wrap").slideDown();
 					}else{
 						var ind = t.obj.visibleLayers1.indexOf(t[c.target.value])
 						if (ind > -1){
@@ -187,6 +195,7 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 							t.dynamicLayer1.setVisibleLayers(t.obj.visibleLayers1);
 						}
 						t.obj.ImpactAd = false;
+						$("#" + t.id + "slider-wrap").slideUp();
 					}		
 				})
         	},
