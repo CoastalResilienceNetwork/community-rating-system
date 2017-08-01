@@ -33,7 +33,8 @@ function ( declare, Query, FeatureLayer ) {
 						$('.pinPDFLinks').on('click',function(e){
 							t.clicks.zoomSelectedClass(t, e.currentTarget.parentElement)
 							var pin = e.currentTarget.id.substring(e.currentTarget.id.indexOf('-')+1)
-							window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_" + pin + ".pdf", "_blank");
+							// window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_" + pin + ".pdf", "_blank");
+							window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_" + pin + ".pdf", "_blank");
 						});	
 						$('.pinZoomLinks').on('click', function(e){
 							t.pinTracker = "yes"
