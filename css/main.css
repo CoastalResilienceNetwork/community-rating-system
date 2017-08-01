@@ -125,10 +125,10 @@ label.checkBoxLabels input[type=checkbox]{
 .s2Atts{
 	font-weight:bold;
 }	
-/* chosen selected item bold */
 .crs-app{
-	background:#fff; position:absolute; z-index:1000; width:430px;
+	background:#fff; width:430px;
 }
+/* chosen selected item bold */
 .crs-app .chosen-wrap .chosen-container-single span{
 	font-weight:bold;
 }
@@ -209,9 +209,6 @@ label.checkBoxLabels input[type=checkbox]{
 }
 .tabBtns{
 	margin-right:-6px; margin-bottom:0 !important; background:#f3f3f3; border-bottom: 1px solid #cdd5d5 !important; border-top: 1px solid #cdd5d5 !important;
-}
-.crs-sections{
-	position:relative; top:100px;
 }
 .crs-sections > *{
 	padding-left:6px; padding-right:6px;
