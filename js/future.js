@@ -17,8 +17,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
         		})
         		// Future PDF link
 				$('#' + t.id + 'futurePDF').on('click', function(){
-					//window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
-					window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
+					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
+					//window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_Future_" + t.pin + ".pdf", "_blank");					
 				});
 				// Future toggle buttons click
 				$("#" + t.id + "futureToggle input").on('change', function(c){
@@ -158,8 +158,8 @@ function ( ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryT
 				});
 				// download parcel table
 				$('#' + t.id + 'futureTop50').on('click', function(){
-					// window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
-					window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
+					window.open("http://crs-maps.coastalresilience.org/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
+					//window.open("https://nsttnc.blob.core.windows.net/crs/" + t.obj.crsNoSpace + "_Future_Parcel_Table.zip", "_blank");					
 				});
 				// future layer checkbox clicks
 				$("#" + t.id + "curElOsp").on("change",function(c){
